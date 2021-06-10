@@ -1,0 +1,14 @@
+[user]
+  name = nothub
+  email = 48992448+nothub@users.noreply.github.com
+[diff]
+  submodule = log
+[color]
+  ui = auto
+[init]
+  defaultBranch = master
+[alias]
+  adog = log --all --decorate --oneline --graph
+  adg = log --all --decorate --graph
+[includeIf "gitdir:~/work/"]
+  path = ~/work/.gitconfig

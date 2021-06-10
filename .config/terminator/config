@@ -1,0 +1,37 @@
+[global_config]
+  window_state = maximise
+  title_transmit_bg_color = "#4c4c4c"
+  title_inactive_fg_color = "#afafaf"
+  title_inactive_bg_color = "#2d2d2d"
+  enabled_plugins = CustomCommandsMenu, InactivityWatch, ActivityWatch, APTURLHandler
+  suppress_multiple_term_dialog = True
+[keybindings]
+  paste = <Shift>Insert
+  broadcast_off = <Super>F10
+  broadcast_all = <Super>F9
+[profiles]
+  [[default]]
+    allow_bold = False
+    background_color = "#222222"
+    background_darkness = 0.95
+    background_type = transparent
+    cursor_color = "#e6db74"
+    font = DejaVu Sans Mono 10
+    foreground_color = "#e6db74"
+    show_titlebar = False
+    scrollback_lines = 25000
+    scrollback_infinite = True
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#e6e2bd:#002b36:#cb4b16:#bce271:#657b83:#839496:#6c71c4:#93a1a1:#faf7d3"
+    use_system_font = False
+    copy_on_selection = True
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      profile = default
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      size = 800, 600
+      type = Window
+[plugins]
