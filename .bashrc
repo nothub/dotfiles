@@ -9,13 +9,12 @@ shopt -s checkwinsize \
          histappend
 
 bind 'set completion-ignore-case on'
-bind 'TAB:menu-complete'
 
 HISTCONTROL=ignoredups
-HISTFILESIZE=20000
+HISTFILESIZE=50000
 HISTSIZE=10000
 HISTTIMEFORMAT="%F %T "
 
-for i in ~/.bashrc.d/[0-9]*; do
-  . "$i"
+for f in ~/.bashrc.d/[0-9]*; do
+  [[ -r $f ]] && . "$f"
 done
