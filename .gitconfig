@@ -1,6 +1,9 @@
 [user]
   name = nothub
   email = 48992448+nothub@users.noreply.github.com
+[core]
+  editor = vim
+  autocrlf = input
 [diff]
   submodule = log
 [color]
