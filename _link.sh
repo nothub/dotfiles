@@ -4,5 +4,9 @@ set -e
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# https://github.com/nothub/reclink
-reclink -s . -t "$HOME" -rq -i ".git" "_link.sh"
+if [ ! -f "_reclink" ]; then
+  curl "https://raw.githubusercontent.com/nothub/reclink/master/reclink.py" -o _reclink
+  chmod +x _reclink
+fi
+
+./_reclink -s . -t "$HOME" -rq -i ".git" ".gitignore" "_link.sh"
