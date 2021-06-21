@@ -5,7 +5,8 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 if [ ! -f "_reclink" ]; then
-  curl "https://raw.githubusercontent.com/nothub/reclink/master/reclink.py" -o _reclink
+  echo "installing reclink"
+  curl --progress-bar "https://raw.githubusercontent.com/nothub/reclink/master/reclink.py" -o _reclink
   chmod +x _reclink
 fi
 
