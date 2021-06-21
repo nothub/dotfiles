@@ -14,3 +14,10 @@ if [ -d "$HOME/.sdkman" ] && [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
   export SDKMAN_DIR="$HOME/.sdkman"
   source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
+
+# scrup
+if [ ! -f "$HOME/.local/bin/scrup" ]; then
+  echo "installing scrup"
+  curl --progress-bar "https://raw.githubusercontent.com/nothub/reclink/master/reclink.py" -o "$HOME/.local/bin/scrup"
+  chmod +x "$HOME/.local/bin/scrup"
+fi
