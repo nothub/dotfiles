@@ -8,6 +8,7 @@ shell:
     - "tmux attach || tmux"
 
 window:
+  decorations: none
   dynamic_padding: true
   startup_mode: Maximized
   dynamic_title: true
@@ -18,31 +19,46 @@ mouse:
 selection:
   save_to_clipboard: true
 
-draw_bold_text_with_bright_colors: true
+draw_bold_text_with_bright_colors: false
+
+font:
+  normal:
+    family: JetBrains Mono
+    style: Regular
+  bold:
+    family: JetBrains Mono
+    style: Bold
+  italic:
+    family: JetBrains Mono
+    style: Italic
+  bold_italic:
+    family: JetBrains Mono
+    style: Bold Italic
 
 schemes:
   hub: &hub
     primary:
       background: '0x232425'
-      foreground: '0xe9db8c'
+      #      foreground: '0xe9db8c'
+      foreground: '0xE6E2BD'
     normal:
       black:   '0x073642'
       red:     '0xDC322F'
       green:   '0x859900'
-      yellow:  '0xB58900'
+      yellow:  '0xFBBD00'
       blue:    '0x268BD2'
       magenta: '0xD33682'
       cyan:    '0x2AA198'
       white:   '0xE6E2BD'
-    bright:
-      black:   '0x05242C'
-      red:     '0x9A1C1A'
-      green:   '0x5A6800'
-      yellow:  '0x795B00'
-      blue:    '0x1A5F90'
-      magenta: '0x942058'
-      cyan:    '0x1C6E67'
-      white:   '0xC1B75B'
+#    bright:
+#      black:   '0x05242C'
+#      red:     '0x9A1C1A'
+#      green:   '0x5A6800'
+#      yellow:  '0x795B00'
+#      blue:    '0x1A5F90'
+#      magenta: '0x942058'
+#      cyan:    '0x1C6E67'
+#      white:   '0xC1B75B'
 
 colors: *hub
 
