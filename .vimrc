@@ -38,6 +38,7 @@ set norelativenumber
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " functions keys
+set pastetoggle=<F3>
 map <F4> :set list!<CR>
 map <F5> :set cursorline!<CR>
 
@@ -49,3 +50,6 @@ set backspace=indent,eol,start
 set mouse=a
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
+
+" command history
+set history=200
