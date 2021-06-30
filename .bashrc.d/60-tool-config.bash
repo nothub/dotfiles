@@ -18,6 +18,6 @@ fi
 # scrup
 if [ ! -f "$HOME/.local/bin/scrup" ]; then
   echo "installing scrup"
-  curl --progress-bar "https://gist.githubusercontent.com/nothub/fac9f54538f4fe9a8ae3ec44f22ca31e/raw/a1433a7598c47421d4e9ce5fb1f8027adb3c09dd/scrup.sh" -o "$HOME/.local/bin/scrup"
+  curl --progress-bar "https://gist.githubusercontent.com/nothub/fac9f54538f4fe9a8ae3ec44f22ca31e/raw/98b0b6e3b0fb9488af35a22664bb393ffb1076d6/scrup" -o "$HOME/.local/bin/scrup"
   chmod +x "$HOME/.local/bin/scrup"
 fi
