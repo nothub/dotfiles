@@ -4,10 +4,11 @@ set -e
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-if [ ! -f "_reclink" ]; then
+mkdir -p "$HOME/.local/bin/"
+if [ ! -f "$HOME/.local/bin/reclink" ]; then
   echo "installing reclink"
-  curl --progress-bar "https://raw.githubusercontent.com/nothub/reclink/master/reclink.py" -o _reclink
-  chmod +x _reclink
+  curl --progress-bar "https://raw.githubusercontent.com/nothub/reclink/master/reclink.py" -o "$HOME/.local/bin/reclink"
+  chmod +x "$HOME/.local/bin/reclink"
 fi
 
-./_reclink -s . -t "$HOME" -rq -i ".git" ".gitignore" "_link.sh"
+"$HOME/.local/bin/reclink" --source . --target "$HOME" --replace --quiet --ignore ".git" ".gitignore" "_link.sh"

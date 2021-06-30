@@ -39,7 +39,7 @@ schemes:
   hub: &hub
     primary:
       background: '0x232425'
-      #      foreground: '0xe9db8c'
+#      foreground: '0xe9db8c'
       foreground: '0xE6E2BD'
     normal:
       black:   '0x073642'
