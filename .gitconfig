@@ -1,5 +1,5 @@
 [user]
-  name = nothub
+  name = hub
   email = 48992448+nothub@users.noreply.github.com
 [core]
   editor = vim
@@ -9,7 +9,7 @@
 [color]
   ui = auto
 [init]
-  defaultBranch = master
+  defaultBranch = main
 [alias]
   adog = log --all --decorate --oneline --graph
   adg = log --all --decorate --graph
@@ -20,3 +20,10 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[commit]
+  verbose = true
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
+[url "ssh://git@gitlab.com/"]
+  insteadOf = https://gitlab.com/
+
