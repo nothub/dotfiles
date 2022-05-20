@@ -1,5 +1,5 @@
 # history search
-function hse() { cat ~/.bash_history | grep "$1"; }
+function hse() { grep --text -E "$1" "$HOME/.bash_history"; }
 export -f hse
 
 # git tag delete
