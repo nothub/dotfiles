@@ -8,4 +8,11 @@ export DO_NOT_TRACK=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
 # docker rootless
-export DOCKER_HOST=unix:///run/user/1000/docker.sock
+if [[ -S $XDG_RUNTIME_DIR/docker.sock ]]; then
+  export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+fi
+
+# locales
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LANGUAGE=en_US
