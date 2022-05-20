@@ -1,6 +1,14 @@
+" TODO: make categories
+set nocompatible
+set nostartofline
+
+" automatically write files when changing when multiple files open
+set autowrite
+
 " ui
 set number
 set ruler
+set showcmd
 set showmode
 set showmatch
 set visualbell
@@ -8,7 +16,7 @@ set visualbell
 " wrapping
 set nowrap
 set showbreak=+++
-set textwidth=120
+set textwidth=80
 
 " undo
 set undolevels=1000
@@ -24,15 +32,17 @@ set hlsearch
 set smartindent
 set autoindent
 set smarttab
-set expandtab
-set softtabstop=4
-set shiftwidth=4
+set expandtab " replace tabs with spaces automatically
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 
 " trailing spaces are errors
 match ErrorMsg '\s\+$'
 
-" disable relative line numbers
-set norelativenumber
+" line numbers
+set number
+set relativenumber
 
 " start at last sessions position
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
