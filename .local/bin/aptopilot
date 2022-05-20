@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eu
+
+# install missing dependencies (of some unsuccessful dpkg -i job)
+sudo apt-get --quiet --yes --fix-broken install
+
+# configure packages that were left unconfigured for some reason
+sudo dpkg --configure -a
+
+sudo apt-get --quiet --yes update
+
+sudo apt-get --quiet --yes --with-new-pkgs upgrade
+
+sudo apt-get --quiet --yes clean
+sudo apt-get --quiet --yes autoremove

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+nohup screenkey \
+  --timeout 3.5 \
+  --compr-cnt 1 \
+  --font "JetBrainsMono Nerd Font" \
+  --font-size medium \
+  --font-color "#E6E2BD" \
+  --bg-color "#232425" \
+  --opacity 0.75 \
+  --geometry "800x100+1500+20" \
+  --position fixed \
+  --bak-mode full \
+  --no-whitespace &

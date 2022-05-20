@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+
+if [[ $# -eq 1 ]]; then
+  args="--input=$(realpath "$1")"
+else
+  echo "Usage: $0 TARGET"
+  exit 0
+fi
+
+recaf_dir="$HOME/.recaf"
+mkdir -p "$recaf_dir"
+cd "$recaf_dir"
+
+json=$(curl --silent --location https://api.github.com/repos/Col-E/Recaf/releases/latest)
+name=$(echo "$json" | jq -r '.assets[0].name')
+url=$(echo "$json" | jq -r '.assets[0].browser_download_url')
+
+if [[ ! -f $name ]]; then
+  echo "downloading latest release: $name"
+  curl --progress-bar --location --remote-name --remote-time "$url"
+fi
+
+java -jar "$name" "$args"

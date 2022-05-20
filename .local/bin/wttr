@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+locations=Berlin,Amsterdam,Tenerife
+format="%l_%C_%t_%h_%w\n"
+
+# shellcheck disable=SC1083
+curl           \
+  --location   \
+  --silent     \
+  --compressed \
+  wttr.in/{"$locations"}?format="$format" | column -t -s "_"
