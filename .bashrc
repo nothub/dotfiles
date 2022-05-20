@@ -8,8 +8,6 @@ shopt -s checkwinsize \
          expand_aliases \
          histappend
 
-bind 'set completion-ignore-case on'
-
 HISTCONTROL=ignoredups
 HISTFILESIZE=50000
 HISTSIZE=10000
