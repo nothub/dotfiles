@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+if [[ -z $1 ]]; then
+    exit 1
+fi
+
+if [[ -n $2 ]]; then
+    host="$1"
+    port="$2"
+else
+    host="127.0.0.1"
+    port="$1"
+fi
+
+echo "testing $host:$port"
+
+timeout 1 bash -c "</dev/tcp/$host/$port" && exit 0 || exit 1;
