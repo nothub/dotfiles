@@ -1,0 +1,15 @@
+refresh-on-startup yes
+browser firefox
+max-items 0
+keep-articles-days 0
+
+color background         default   default
+color listnormal         default   default
+color listnormal_unread  default   default
+color listfocus          default   black
+color listfocus_unread   black     color9
+color info               default   black
+color article            default   default
+
+highlight article "https?://[^ ]+" color9 default
+highlight article "\\[image\\ [0-9]+\\]" color2 default
