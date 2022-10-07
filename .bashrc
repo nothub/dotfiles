@@ -1,4 +1,4 @@
-# dont process if noninteractive
+# ignore if non-interactive
 case $- in
 *i*) ;;
   *) return ;;
