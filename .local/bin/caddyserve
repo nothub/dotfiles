@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o errtrace
+
+trap finally SIGINT SIGTERM ERR EXIT
+
+default_port="8080"
+default_caddy_version="2-alpine"
+
+log() {
+  echo >&2 "$*"
+}
+
+finally() {
+  trap - SIGINT SIGTERM ERR EXIT
+  if [[ -f $config ]]; then rm -f "${config}"; fi
+  log "Bye :)"
+}
+
+usage() {
+  set +o xtrace
+  log "Usage: $(basename "${BASH_SOURCE[0]}") [-p=<port>] [-c=<version>] [-v] [-h] [--] [<path>]
+Specified path will be served with auto indexing Caddy file server.
+Options:
+  -p        Listen on port (default ${default_port})
+  -c        Caddy version  (default ${default_caddy_version})
+  -v        Enable verbose log output
+  -h, -?    Print this help message and exit"
+}
+
+check_dependency() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    log "Error: Missing dependency: $1"
+    exit 1
+  fi
+}
+
+sanitize() {
+  echo "$*" | inline-detox
+}
+
+find_engine() {
+  if   command -v docker >/dev/null 2>&1; then
+    echo "docker"
+  elif command -v podman >/dev/null 2>&1; then
+    echo "podman"
+  else
+    log "Error: No compatible container engine found!"
+    exit 1
+  fi
+}
+
+# ENTRYPOINT
+
+check_dependency detox
+
+port="${default_port}"
+caddy_version="${default_caddy_version}"
+while getopts p:c:vh? opt; do
+  case $opt in
+  p) port="$OPTARG" ;;
+  c) caddy_version="$OPTARG" ;;
+  v) set -o xtrace ;;
+  h | \? | *) usage ; exit ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+config=$(mktemp)
+{
+  echo "{"
+  echo "    debug"
+  echo "}"
+  echo ":80 {"
+  echo "    root * /var/www"
+  echo "    encode gzip"
+  echo "    file_server browse"
+  echo "}"
+} >"${config}"
+
+path=$(realpath "${1:-$PWD}")
+
+log "Serving ${path} on http://localhost:${port}"
+
+engine="$(find_engine)"
+$(${engine} --version >/dev/null 2>&1 || echo "sudo") "${engine}" run \
+  --name "caddy-$(sanitize "${path}")" \
+  --interactive \
+  --tty \
+  --rm \
+  --publish "${port}:80" \
+  --volume  "${path}:/var/www":ro \
+  --volume  "${config}:/etc/caddy/Caddyfile":ro \
+  "caddy:${caddy_version}"
