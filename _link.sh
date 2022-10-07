@@ -7,4 +7,4 @@ set -euo pipefail
   --target "$HOME" \
   --replace \
   --quiet \
-  --ignore ".git" ".gitignore" "_link.sh"
+  --ignore ".git" ".gitignore" "_link.sh" ".idea"
