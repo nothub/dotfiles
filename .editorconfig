@@ -8,14 +8,13 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{gradle, java}]
+[*.{gradle, java, bash, sh}]
 indent_size = 4
 
 [*.{json, toml, xml, yaml, yml}]
 indent_size = 2
 
-[*.{md, markdown}]
-max_line_length = 9001
+[*.md]
 trim_trailing_whitespace = false
 
 [Makefile]
