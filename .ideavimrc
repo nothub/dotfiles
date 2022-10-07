@@ -1,0 +1,12 @@
+source ~/.vimrc
+
+"" docs: https://github.com/JetBrains/ideavim/wiki
+
+"" Map \r to the Reformat Code action
+"map \r <Action>(ReformatCode)
+
+"" Map <leader>d to start debug
+"map <leader>d <Action>(Debug)
+
+"" Map \b to toggle the breakpoint on the current line
+"map \b <Action>(ToggleLineBreakpoint)
