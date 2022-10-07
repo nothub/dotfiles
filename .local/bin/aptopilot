@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-set -eu
+set -o errexit
+set -o nounset
 
 # install missing dependencies (of some unsuccessful dpkg -i job)
 sudo apt-get --quiet --yes --fix-broken install
