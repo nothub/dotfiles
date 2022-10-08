@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+set -o errexit
+set -o pipefail
 
 if [[ -z $1 ]]; then
     exit 1
