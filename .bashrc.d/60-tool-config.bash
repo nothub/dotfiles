@@ -42,8 +42,3 @@ elif [[ -d /nix/var/nix/profiles/default/etc/profile.d ]]; then
     source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
     source "/nix/var/nix/profiles/default/etc/profile.d/nix.sh"
 fi
-
-# direnv
-if command -v direnv >/dev/null 2>&1; then
-    eval "$(direnv hook bash)"
-fi
