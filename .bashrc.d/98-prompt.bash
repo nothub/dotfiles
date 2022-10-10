@@ -6,7 +6,7 @@ PROMPT_COMMAND=__prompt_command
 
 __prompt_command() {
 
-    local exit_code="$?"
+    local last_exit_status="$?"
 
     local FG_DEFAULT='\[\033[39m\]'
     local FG_RED='\[\033[31m\]'
@@ -17,8 +17,8 @@ __prompt_command() {
 
     PS1="${DIM_ON}"
 
-    if [[ "$exit_code" != 0 ]]; then
-        PS1+="=> ${FG_RED}$exit_code${FG_RED}\n"
+    if [[ "${last_exit_status}" != 0 ]]; then
+        PS1+="=> ${FG_RED}${last_exit_status}${FG_DEFAULT}\n"
     fi
 
     PS1+="\u@\h:\w"
