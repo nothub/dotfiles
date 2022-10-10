@@ -8,41 +8,51 @@ __prompt_command() {
 
     local last_exit_status="$?"
 
-    local FG_DEFAULT='\[\033[39m\]'
-    local FG_RED='\[\033[31m\]'
-    local FG_CYAN='\[\033[36m\]'
-    local FG_YELLOW='\[\033[33m\]'
-    local DIM_ON='\[\033[2m\]'
-    local RESET='\[\033[0m\]'
+    local ansi_fg_default='\[\033[39m\]'
+    local ansi_fg_red='\[\033[31m\]'
+    local ansi_dim_on='\[\033[2m\]'
+    local ansi_reset='\[\033[0m\]'
 
-    PS1="${DIM_ON}"
+    PS1="${ansi_dim_on}"
 
     if [[ "${last_exit_status}" != 0 ]]; then
-        PS1+="=> ${FG_RED}${last_exit_status}${FG_DEFAULT}\n"
+        PS1+="=> ${ansi_fg_red}${last_exit_status}${ansi_fg_default}\n"
     fi
 
     PS1+="\u@\h:\w"
 
-    # nix shell
+    local infos
+    infos=()
+
     if [[ -n $IN_NIX_SHELL ]]; then
-        PS1+=" (${FG_CYAN}nix${FG_DEFAULT})"
+        infos+=("nix")
     fi
 
-    # python venv
     if [[ -n $VIRTUAL_ENV ]]; then
-        PS1+=" (${FG_YELLOW}venv${FG_DEFAULT})"
+        infos+=("venv")
     fi
 
-    # git branch
     local git_branch
     git_branch=$(__git_ps1 | sed s/[\(\)\ ]//g)
     if [[ -n $git_branch ]]; then
         if [[ $git_branch == *"main"* ]] || [[ $git_branch == *"master"* ]]; then
-            git_branch="${FG_RED}$git_branch${FG_DEFAULT}"
+            git_branch="${ansi_fg_red}${git_branch}${ansi_fg_default}"
         fi
-        PS1+=" (git:$git_branch)"
+        infos+=("git:${git_branch}")
     fi
 
-    PS1+="\n\$${RESET} "
+    if [[ ${#infos[@]} -gt 0 ]]; then
+        PS1+=" ["
+        for i in "${infos[@]}"; do
+            PS1+=" ${i}"
+        done
+        PS1+=" ]"
+    fi
+
+    PS1+="\n"
+    PS1+="${ansi_dim_on}" # workaround for broken ansi state (lost ansi flags prior to last newline) on window resize
+    PS1+="\$"
+    PS1+="${ansi_reset}"
+    PS1+=" "
 
 }
