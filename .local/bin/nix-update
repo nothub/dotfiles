@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+if [[ $(stat -c "%u" "/nix") == 0 ]]; then
+  echo >&2 "multi-user environment"
+  nix-channel --update
+  nix-env -iA nixpkgs.nix nixpkgs.cacert
+  systemctl daemon-reload
+  systemctl restart nix-daemon
+else
+  echo >&2 "single-user environment"
+  nix-channel --update
+  nix-env -iA nixpkgs.nix nixpkgs.cacert
+fi
