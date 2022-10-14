@@ -24,12 +24,16 @@ __prompt_command() {
     local infos
     infos=()
 
+    if command -v kubens &>/dev/null; then
+        infos+=("k8s:$(kubens -c)")
+    fi
+
     if [[ -n $IN_NIX_SHELL ]]; then
-        infos+=("nix")
+        infos+=("env:nix")
     fi
 
     if [[ -n $VIRTUAL_ENV ]]; then
-        infos+=("venv")
+        infos+=("env:venv")
     fi
 
     local git_branch
