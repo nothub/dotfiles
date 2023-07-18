@@ -24,8 +24,8 @@ __prompt_command() {
     local infos
     infos=()
 
-    if command -v kubens &>/dev/null; then
-        infos+=("k8s:$(kubens -c)")
+    if command -v kubectl &>/dev/null; then
+        infos+=("k8s:$(kubectl config view --minify -o jsonpath='{..namespace}')")
     fi
 
     if [[ -n $IN_NIX_SHELL ]]; then
