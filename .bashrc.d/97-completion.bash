@@ -10,26 +10,42 @@ elif [[ -r /etc/bash_completion ]]; then
     source /etc/bash_completion
 fi
 
-if command -v pandoc &>/dev/null; then
+should_add() {
+    if command -v "${1}" &>/dev/null && ! complete -p | grep "${1}" &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+if should_add pandoc; then
     source <(pandoc --bash-completion)
 fi
 
-if command -v podman &>/dev/null; then
+if should_add podman; then
     source <(podman completion bash)
 fi
 
-if command -v k3s &>/dev/null; then
+if should_add k3s; then
     source <(k3s completion bash)
 fi
 
-if command -v kubectl &>/dev/null; then
+if should_add kubectl; then
     source <(kubectl completion bash)
 fi
 
-if command -v nerdctl &>/dev/null; then
+if should_add nerdctl; then
     source <(nerdctl completion bash)
 fi
 
-if command -v packwiz &>/dev/null; then
+if should_add packwiz; then
     source <(packwiz completion bash)
+fi
+
+if should_add gopass; then
+    source <(gopass completion bash)
+fi
+
+if should_add hcloud; then
+    source <(hcloud completion bash)
 fi
