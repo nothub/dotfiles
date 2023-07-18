@@ -18,6 +18,14 @@ export -f perms-reset-to-default
 function d() { ddgr --expand "$@"; }
 export -f d
 
+# latest nixos packages hash
+function nix-pkg-hash() {
+    echo >&2 "latest nixpkgs (nixos-unstable):"
+    curl --fail --location --silent --show-error https://api.github.com/repos/NixOS/nixpkgs/commits/nixos-unstable | jq -r '.sha'
+}
+export -f nix-pkg-hash
+
+# psgrep
 function psgrep() { ps -aux | grep -E "PID.*TTY.*TIME|$*" | grep -v grep; }
 export -f psgrep
 
