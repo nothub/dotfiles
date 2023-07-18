@@ -1,6 +1,8 @@
 alias ll="ls -lAh"
 alias cll="clear && ll"
 
+alias rm="echo 'rm bad, use trash instead!' >&2 ; false"
+
 alias nano="vim"
 
 alias cd..="cd .."
@@ -11,9 +13,7 @@ alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
 alias o="xdg-open"
 
-if command -v idea >/dev/null 2>&1; then
-    alias e="idea -e"
-elif command -v vim >/dev/null 2>&1; then
+if command -v vim >/dev/null 2>&1; then
     alias e="vim"
 elif command -v vi >/dev/null 2>&1; then
     alias e="vi"
@@ -21,6 +21,10 @@ elif command -v nano >/dev/null 2>&1; then
     alias e="nano"
 elif command -v pico >/dev/null 2>&1; then
     alias e="pico"
+elif command -v idea >/dev/null 2>&1; then
+    alias e="idea -e"
+elif command -v geany >/dev/null 2>&1; then
+    alias e="geany"
 else
     alias e="xdg-open"
 fi
@@ -42,8 +46,13 @@ if command -v git >/dev/null 2>&1; then
     alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
 fi
 
-if [[ -f ${HOME}/.bash_aliases ]]; then
+if [[ -r ${HOME}/.bash_aliases ]]; then
     source "${HOME}/.bash_aliases"
+fi
+
+if [[ -r "${HOME}/nextcloud/Stuff/keepass.tc" ]]; then
+    alias keepass-mount="sudo cryptsetup open /home/hub/nextcloud/Stuff/keepass.tc keepass"
+    alias keepass-umount="sudo umount /dev/mapper/keepass; sudo cryptsetup luksClose keepass"
 fi
 
 # sdkman
