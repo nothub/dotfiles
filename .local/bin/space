@@ -4,7 +4,6 @@ set -o errexit
 set -o pipefail
 
 rand() {
-  local count
   if [[ -n $2 ]]; then count=$2; else count=1; fi
   echo -n "$1" | grep -Eo '\S{1}' | shuf | head --lines "$count"
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+
 set -o errexit
+set -o pipefail
 
 if [[ $# -eq 1 ]]; then
   args="--input=$(realpath "$1")"
