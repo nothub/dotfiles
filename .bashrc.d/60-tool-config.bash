@@ -29,11 +29,6 @@ if command -v vim >/dev/null 2>&1; then
     fi
 fi
 
-# golang
-if [[ -d "${HOME}/go" ]]; then
-    export GOPATH="${HOME}/go"
-fi
-
 # nix
 if [[ -r "${HOME}/.nix-profile/etc/profile.d/nix.sh" ]]; then
     source "${HOME}/.nix-profile/etc/profile.d/nix.sh"
