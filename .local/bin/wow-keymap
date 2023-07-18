@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+
+state_file="$(mktemp)"
+
+log() {
+    printf >&2 "%s\t%s\n" "$(date +%s%3N)" "$*"
+}
+
+game_active() {
+    xdotool getwindowfocus getwindowname 2> /dev/null | grep --quiet "World of Warcraft"
+}
+
+: > "${state_file}"
+
+(
+    log "watching keyboard events"
+    sudo evtest "/dev/input/by-id/usb-046a_0011-event-kbd" | while read -r line; do
+        if ! game_active; then continue; fi
+        if echo "$line" | grep --quiet --extended-regexp ".*, type 1 \(EV_KEY\), code 59 \(KEY_F1\), value 1"; then
+            log "toggle on"
+            notify-send -t 500 "toggle on"
+            echo "active" > "${state_file}"
+        elif echo "$line" | grep --quiet --extended-regexp ".*, type 1 \(EV_KEY\), code 60 \(KEY_F2\), value 1"; then
+            log "toggle off"
+            notify-send -t 500 "toggle off"
+            : > "${state_file}"
+        fi
+    done
+) &
+
+(
+    log "watching mouse events"
+    sudo evtest "/dev/input/by-id/usb-Logitech_USB-PS_2_Optical_Mouse-event-mouse" | while read -r line; do
+        if ! game_active; then continue; fi
+        if echo "$line" | grep --quiet --extended-regexp ".*, type 1 \(EV_KEY\), code 275 \(BTN_SIDE\), value 1"; then
+            log "redirect on"
+            echo "active" > "${state_file}"
+        elif echo "$line" | grep --quiet --extended-regexp ".*, type 1 \(EV_KEY\), code 275 \(BTN_SIDE\), value 0"; then
+            log "redirect off"
+            : > "${state_file}"
+        fi
+    done
+) &
+
+while true; do
+    if grep --quiet "active" "${state_file}" && game_active; then
+        log "send key"
+        xdotool key "KP_Insert"
+    else
+        : > "${state_file}"
+    fi
+    sleep 0.100
+done

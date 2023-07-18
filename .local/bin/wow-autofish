@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# do not forget something like:
+# https://www.curseforge.com/wow/addons/interactivefishingbobber
+
+hotkey_fish="9"
+hotkey_interact="0"
+
+set -o errexit
+set -o pipefail
+
+log() {
+    printf >&2 "%s\t%s\n" "$(date +%s%3N)" "$*"
+}
+
+game_active() {
+    xdotool getwindowfocus getwindowname 2> /dev/null | grep --quiet "World of Warcraft"
+}
+
+while true; do
+    if ! game_active; then
+        log "window inactive"
+        sleep "3"
+        continue
+    fi
+
+    delay="$(echo "$(shuf -i 11-13 -n 1) + 0.$(shuf -i 0-99 -n 1)" | bc)"
+    log "fishing for ${delay} sec"
+    xdotool key "${hotkey_fish}"
+    sleep ${delay}
+
+    if ! game_active; then continue; fi
+
+    xdotool key "${hotkey_interact}"
+
+    sleep "1.$(shuf -i 0-99 -n 1)"
+done
