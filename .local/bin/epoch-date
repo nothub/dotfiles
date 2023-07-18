@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+epoch="${1:-$(date +%s)}"
+echo "${epoch}"
+date --date=@"$epoch" --utc "+%Y-%m-%d %H:%M:%S utc"
+date --date=@"$epoch" --utc --iso-8601="seconds"

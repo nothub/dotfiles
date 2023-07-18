@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+
+if [[ -z "$1" ]] || [[ ! -r "$1" ]] ||
+   [[ -z "$2" ]] || [[ ! -r "$2" ]]; then
+    echo >&2 "Usage: $(basename "${BASH_SOURCE[0]}") <path> <path>"
+    exit 2
+fi
+
+a=$(sha256sum "$1")
+b=$(sha256sum "$2")
+
+echo "${a}" >&2
+echo "${b}" >&2
+
+if [ "${a/$1/}" == "${b/$2/}" ]; then
+    echo "OK"
+else
+    exit 1
+fi

@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+usage() {
+    echo >&2 "cmdplot periodically logs a commands exit status or plots logged data.
+
+Usage:
+  cmdplot log  [-f=<path>] [-d=<sec>] [-v] [--] <cmd>
+  cmdplot plot [-f=<path>] [-d=<sec>] [-v]
+  cmdplot -h
+
+Options:
+  -f <path>  Path to logfile
+  -d <sec>   Delay between logs or plots
+  -v         Verbose debug output
+  -h         Print help and exit"
+}
+
+log() {
+    set +e
+    ${cmd} > /dev/null
+    status="$?"
+    set -e
+    printf "%s,%s\n" "$(date +%s)" "${status}" >> "${file}"
+}
+
+plot() {
+    clear
+    gnuplot \
+        -e "set terminal dumb 80,16" \
+        -e "set offsets graph 0.1, graph 0.1, graph 0.1, graph 0.1" \
+        -e "set tics nomirror" \
+        -e "set xdata time" \
+        -e 'set timefmt "%s"' \
+        -e 'set format x "%H:%M"' \
+        -e "set datafile separator ','" \
+        -e "plot '$(basename "${file}")' using 1:2:1:ytic(2) with lines t \"\""
+}
+
+loop() {
+    while true; do
+        local start
+        start="$(date +%s.%N)"
+        "$@"
+        local delta
+        delta="$(echo "$(echo "${start} + ${delay}" | bc) - $(date +%s.%N)" | bc)"
+        if (($(echo "$delta > 0" | bc -l))); then
+            sleep "${delta}"
+        fi
+    done
+}
+
+if [[ $# -lt 1 ]]; then
+    usage
+    exit 1
+elif [[ $1 == "-h" ]]; then
+    usage
+    exit 0
+fi
+
+unset mode
+case "$1" in
+    "log") mode="log" ;;
+    "plot") mode="plot" ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac
+shift
+
+file="${HOME}/cmdplot.csv"
+delay="10"
+while getopts f:d:v opt; do
+    case $opt in
+        f) file="$OPTARG" ;;
+        d) delay="$OPTARG" ;;
+        v) set -o xtrace ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+case $mode in
+    "log")
+        cmd="$*"
+        if [[ -z ${cmd} ]]; then
+            printf "No command defined!\n\n" >&2
+            usage
+            exit 1
+        fi
+        loop log
+        ;;
+    "plot") loop plot ;;
+esac

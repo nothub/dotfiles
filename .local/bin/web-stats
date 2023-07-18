@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+set -o errexit
+
+log_file="$(mktemp --suffix .log)"
+report="$(mktemp --suffix .html)"
+
+scp hub@hub.lol:/opt/services/traefik/logs/access.log "${log_file}"
+
+cat "${log_file}" |
+  docker run --rm -i -e LANG="$LANG" \
+    allinurl/goaccess                \
+    -o html                          \
+    --anonymize-ip                   \
+    --agent-list                     \
+    --log-format COMBINED            \
+    - >"${report}"
+
+librewolf "${report}"

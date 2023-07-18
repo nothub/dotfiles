@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+
+# Control X220 ThinkLight with a simple script.
+
+ledFile="/sys/devices/platform/thinkpad_acpi/leds/tpacpi\:\:thinklight/brightness"
+ledValue=$(cat "$ledFile")
+
+if [ -z ${1+x} ]; then
+
+  if [ $ledValue -eq 0 ]; then
+    echo 1 > $ledFile;
+  elif [ $ledValue -gt 0 ]; then
+    echo 0 > $ledFile;
+  else
+    echo "something went wrong! '$ledValue' '$ledFile'";
+  fi
+
+else
+
+  if [ $1 -eq 0 ]; then
+    echo 0 > $ledFile;
+  elif [ $1 -gt 0 ]; then
+    echo 1 > $ledFile;
+  else
+    echo "something went wrong! '$ledValue' '$ledFile'";
+  fi
+
+fi

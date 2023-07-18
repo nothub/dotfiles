@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+shfmt \
+    --write \
+    --simplify \
+    --indent 4 \
+    --binary-next-line \
+    --case-indent \
+    --space-redirects \
+    "${@}"

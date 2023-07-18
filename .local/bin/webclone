@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+dir="$(realpath "$(echo "${1}" | inline-detox)")"
+
+httrack --path "${dir}" --mirror --continue --update --clean "${1}"
+
+rm -f "${dir}/hts-log.txt"
+rm -rf "${dir}/hts-cache/"

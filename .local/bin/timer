@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+for i in $(seq "${1}" -1 1); do
+    echo -ne "\033[1K\r${i}"
+    sleep 1
+done
+
+paplay "/usr/share/sounds/freedesktop/stereo/complete.oga"

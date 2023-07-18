@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+log() {
+    echo >&2 "$*"
+}
+
+usage() {
+    set +o xtrace
+    log "Usage: $(basename "${BASH_SOURCE[0]}") -u=url [-v] [-h] [--] (<text>...|-)
+Message contents will be read from arguments or stdin.
+Options:
+  -u    Webhook url
+  -v    Enable verbose output
+  -h    Print this help and exit
+Supported Webhook providers:
+  Google Chat ( https://chat.googleapis.com/v1/spaces/... )
+  Discord     ( https://discord.com/api/webhooks/... )"
+}
+
+check_dependency() {
+    if ! command -v "$1" > /dev/null 2>&1; then
+        log "Error: missing dependency: $1"
+        exit 1
+    fi
+}
+
+read_stdin() {
+    if [[ -p /dev/stdin ]]; then
+        local line
+        while IFS= read -r line; do
+            echo "${line}"
+        done
+    fi
+}
+
+check_dependency curl
+check_dependency jq
+
+url=""
+while getopts u:vh opt; do
+    case $opt in
+        u) url="$OPTARG" ;;
+        v) set -o xtrace ;;
+        h | *)
+            usage
+            exit
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -gt 0 ]] && [[ $* != "-" ]]; then
+    text="$*"
+else
+    text="$(read_stdin)"
+fi
+
+if [[ -z $url ]]; then
+    log "Error: webhook url required"
+    usage
+    exit 1
+fi
+
+if [[ -z $text ]]; then
+    log "Error: missing message content"
+    usage
+    exit 1
+fi
+
+if echo "${url}" | grep --quiet --extended-regexp "https\:\/\/chat.googleapis\.com\/v1\/.*"; then
+    payload="$(echo '{"text": ""}' | jq --raw-output --arg text "$text" '.text |= $text')"
+elif echo "${url}" | grep --quiet --extended-regexp "https\:\/\/discord\.com\/api\/webhooks\/.*"; then
+    payload="$(echo '{"content": ""}' | jq --raw-output --arg text "$text" '.content |= $text')"
+else
+    log "Error: unknown webhook provider"
+    exit 1
+fi
+
+curl \
+    --request POST \
+    --header "Content-Type: application/json; charset=UTF-8" \
+    --data "${payload}" \
+    "$url"

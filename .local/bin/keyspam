@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# TODO: flags and help message
+
+# mouse keycodes:
+# left='1' middle='2' right='3', wheel-up='4' wheel-down='5'
+#
+# keyboard keycodes:
+# https://gitlab.com/cunidev/gestures/-/wikis/xdotool-list-of-key-codes
+
+set -o errexit
+set -o pipefail
+
+mode="key" # 'key' or 'click'
+key_code="x"
+
+window_name="Cell to Singularity"
+
+repeats=10000
+delay=0
+
+while true; do
+  if [[ ${repeats} -le 0 ]]; then break; fi
+
+  if ! xdotool getwindowfocus getwindowname 2>/dev/null | grep --quiet "${window_name}"; then
+    sleep 0.1
+    continue
+  fi
+
+  xdotool "${mode}" "${key_code}"
+  repeats="$((repeats - 1))"
+
+  if [[ ${delay} -gt 0 ]]; then sleep "${delay}"; fi
+done

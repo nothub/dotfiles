@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+set -o errexit
+#set -o nounset
+set -o pipefail
+#set -o xtrace
+set -o errtrace
+
+trap finally SIGINT SIGTERM ERR EXIT
+
+log() {
+  echo >&2 "$*"
+}
+
+finally() {
+  trap - SIGINT SIGTERM ERR EXIT
+  log "Bye ;)"
+}
+
+usage() {
+  set +o xtrace
+  local script_name
+  script_name="$(basename "${BASH_SOURCE[0]}")"
+  log "Usage: ${script_name} -a=<text> [-b=<text>] [-s=<text>] [-v] [-h] [--] [<arg>...]
+Fancy tool to concat some strings.
+Reads inputs either from args or from stdin if no args are present.
+Options:
+  -a <text>  A message
+  -b <text>  B message
+  -s <text>  Separator string
+  -v         Enable verbose output
+  -h, -?     Print this help and exit"
+}
+
+read_stdin() {
+  if [[ -p /dev/stdin ]]; then
+    local line
+    while IFS= read -r line; do
+      echo "${line}"
+    done
+  fi
+}
+
+check_dependency() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    log "Error: Missing dependency: $1"
+    exit 1
+  fi
+}
+
+sanitize() {
+  echo "$*" | inline-detox
+}
+
+# ENTRYPOINT
+
+check_dependency curl
+check_dependency detox
+check_dependency jq
+
+# read options
+unset a b s
+s="_"
+while getopts a:b:s:vh? opt; do
+  case $opt in
+  a) a="$OPTARG" ;;
+  b) b="$OPTARG" ;;
+  s) s=$(sanitize "$OPTARG") ;;
+  v) set -o xtrace ;;
+  h | \? | *) usage ; exit ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# check required options
+if [[ -z $a ]]; then
+  log "Error: Missing option: -a"
+  exit 1
+fi
+
+# print to stderr
+log "A friendly log message :)"
+
+# print to stdout
+echo "${a}${s}${*:-$(read_stdin)}${s}${b}"
