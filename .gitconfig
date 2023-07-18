@@ -1,29 +1,37 @@
 [user]
-  name = hub
+  name = Florian Hübner
   email = code@hub.lol
+
 [core]
   editor = vim
   autocrlf = input
+
 [diff]
   submodule = log
+
 [color]
   ui = auto
+
 [init]
   defaultBranch = main
+
 [alias]
   adog = log --all --decorate --oneline --graph
   adg = log --all --decorate --graph
+
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
+
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+
 [commit]
   verbose = true
+
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
 [url "ssh://git@gitlab.com/"]
   insteadOf = https://gitlab.com/
-
