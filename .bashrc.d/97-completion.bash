@@ -49,3 +49,7 @@ fi
 if should_add hcloud; then
     source <(hcloud completion bash)
 fi
+
+if should_add terraform; then
+  complete -C /usr/bin/terraform terraform
+fi
