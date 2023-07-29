@@ -8,19 +8,15 @@ query() {
   xfconf-query --channel xfce4-keyboard-shortcuts --property "${1}" --create --type string --set "${2}"
 }
 
-save() {
-  xfconf-query --channel xfce4-keyboard-shortcuts --list --verbose >~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
-}
-
 arrows() {
-  echo >&2 "applying arrow layout"
+  echo >&2 "applying arrow tiling layout"
   query "/xfwm4/custom/<Super>Left" "tile_left_key"
   query "/xfwm4/custom/<Super>Right" "tile_right_key"
   query "/xfwm4/custom/<Super>Up" "maximize_window_key"
 }
 
 numpad() {
-  echo >&2 "applying numpad layout"
+  echo >&2 "applying numpad tiling layout"
   query "/xfwm4/custom/<Super>KP_1" "tile_down_left_key"
   query "/xfwm4/custom/<Super>KP_2" "tile_down_key"
   query "/xfwm4/custom/<Super>KP_3" "tile_down_right_key"
@@ -32,14 +28,18 @@ numpad() {
   query "/xfwm4/custom/<Super>KP_9" "tile_up_right_key"
 }
 
+query "/commands/custom/<Super>p" "xfce4-display-settings --minimal"
+query "/commands/custom/<Super>l" "xflock4"
+query "/commands/custom/<Super>f" "exo-open --launch FileManager"
+query "/commands/custom/<Super>m" "exo-open --launch MailReader"
+query "/commands/custom/<Super>w" "exo-open --launch WebBrowser"
+query "/commands/custom/<Super>t" "exo-open --launch TerminalEmulator"
+query "/commands/custom/<Super>Return" "exo-open --launch TerminalEmulator"
+
 # chassis type as defined in smbios spec
 type=$(cat /sys/class/dmi/id/chassis_type)
-echo >&2 "xfce4 keybinds for chassis type ${type}"
-
+echo >&2 "detected chassis type ${type}"
 case "${type}" in
 3 | 4 | 5 | 6 | 7) numpad ;;
-9 | 10)            arrows ;;
-*)                 arrows ;;
+*) arrows ;;
 esac
-
-save
