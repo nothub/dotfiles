@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+query() {
+  xfconf-query --channel xfce4-keyboard-shortcuts --property "${1}" --create --type string --set "${2}"
+}
+
+save() {
+  xfconf-query --channel xfce4-keyboard-shortcuts --list --verbose >~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+}
+
+arrows() {
+  echo >&2 "applying arrow layout"
+  query "/xfwm4/custom/<Super>Left" "tile_left_key"
+  query "/xfwm4/custom/<Super>Right" "tile_right_key"
+  query "/xfwm4/custom/<Super>Up" "maximize_window_key"
+}
+
+numpad() {
+  echo >&2 "applying numpad layout"
+  query "/xfwm4/custom/<Super>KP_1" "tile_down_left_key"
+  query "/xfwm4/custom/<Super>KP_2" "tile_down_key"
+  query "/xfwm4/custom/<Super>KP_3" "tile_down_right_key"
+  query "/xfwm4/custom/<Super>KP_4" "tile_left_key"
+  query "/xfwm4/custom/<Super>KP_5" "maximize_window_key"
+  query "/xfwm4/custom/<Super>KP_6" "tile_right_key"
+  query "/xfwm4/custom/<Super>KP_7" "tile_up_left_key"
+  query "/xfwm4/custom/<Super>KP_8" "tile_up_key"
+  query "/xfwm4/custom/<Super>KP_9" "tile_up_right_key"
+}
+
+# chassis type as defined in smbios spec
+type=$(cat /sys/class/dmi/id/chassis_type)
+echo >&2 "xfce4 keybinds for chassis type ${type}"
+
+case "${type}" in
+3 | 4 | 5 | 6 | 7) numpad ;;
+9 | 10)            arrows ;;
+*)                 arrows ;;
+esac
+
+save
