@@ -1,9 +1,11 @@
 [Desktop Entry]
-Name=Load XFCE4 Keybinds
+Name=XFCE4 Keybinds
+Comment=Apply custom XFCE4 Keybinds
 Exec=/home/hub/.local/bin/xfce4-keybinds.go
 Type=Application
 Categories=Other
 Terminal=true
 StartupNotify=false
-Hidden=true
+Hidden=false
 X-GNOME-Autostart-enabled=true
+RunHook=0
