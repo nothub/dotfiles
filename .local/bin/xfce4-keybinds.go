@@ -43,7 +43,6 @@ func main() {
 
 	if isDesktop() {
 		setAll(numpadTiling)
-		setAll(arrowTiling)
 	} else {
 		setAll(arrowTiling)
 	}
