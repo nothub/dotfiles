@@ -41,9 +41,9 @@ func main() {
 	set("/commands/custom/<Super>l", "xflock4")
 	set("/commands/custom/<Super>p", "xfce4-display-settings --minimal")
 
-	// tiling
 	if isDesktop() {
 		setAll(numpadTiling)
+		setAll(arrowTiling)
 	} else {
 		setAll(arrowTiling)
 	}
