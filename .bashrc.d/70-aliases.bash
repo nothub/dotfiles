@@ -65,3 +65,5 @@ alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
 alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/all-spark-notebook:latest'
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
+
+alias vpn-trio='sudo openvpn --config ~/.ovpn/fhuebner@vpn.triology.de.ovpn'
