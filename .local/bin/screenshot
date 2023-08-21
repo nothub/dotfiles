@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+set -o errexit
+set -o nounset
+
+dir="${HOME}/pictures/screenshots/"
+
+mkdir -p "${dir}"
+cd "${dir}"
+
+scrot --select --freeze --quality 95 --silent
