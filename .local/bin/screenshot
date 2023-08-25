@@ -3,9 +3,22 @@
 set -o errexit
 set -o nounset
 
-dir="${HOME}/pictures/screenshots/"
+archive="${HOME}/screenshots/"
+mkdir -p "${archive}"
+cd "${archive}"
 
-mkdir -p "${dir}"
-cd "${dir}"
+# shellcheck disable=SC2016
+filename=$(
+  scrot \
+    --select \
+    --freeze \
+    --line style=dash,width=1 \
+    --quality 95 \
+    --silent \
+    --exec 'echo $f'
+)
 
-scrot --select --freeze --quality 95 --silent
+xclip -in \
+  -selection "clipboard" \
+  -target "image/png" \
+  "${filename}"
