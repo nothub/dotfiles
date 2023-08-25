@@ -3,7 +3,7 @@
   email = code@hub.lol
 
 [core]
-  editor = vim
+  editor = micro
   autocrlf = input
 
 [diff]

@@ -1,9 +1,6 @@
 alias ll="ls -lAh"
-alias cll="clear && ll"
 
 alias rm="echo 'rm bad, use trash instead!' >&2 ; false"
-
-alias nano="vim"
 
 alias cd..="cd .."
 
@@ -13,17 +10,19 @@ alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
 alias o="xdg-open"
 
-if command -v vim >/dev/null 2>&1; then
-    alias e="vim"
-elif command -v vi >/dev/null 2>&1; then
-    alias e="vi"
-elif command -v nano >/dev/null 2>&1; then
+if command -v micro >/dev/null; then
+    alias e="micro"
+elif command -v nano >/dev/null; then
     alias e="nano"
-elif command -v pico >/dev/null 2>&1; then
+elif command -v pico >/dev/null; then
     alias e="pico"
-elif command -v idea >/dev/null 2>&1; then
+elif command -v vim >/dev/null; then
+    alias e="vim"
+elif command -v vi >/dev/null; then
+    alias e="vi"
+elif command -v idea >/dev/null; then
     alias e="idea -e"
-elif command -v geany >/dev/null 2>&1; then
+elif command -v geany >/dev/null; then
     alias e="geany"
 else
     alias e="xdg-open"
