@@ -30,6 +30,10 @@ if should_add k3s; then
     source <(k3s completion bash)
 fi
 
+if should_add k3d; then
+    source <(k3d completion bash)
+fi
+
 if should_add kubectl; then
     source <(kubectl completion bash)
 fi
