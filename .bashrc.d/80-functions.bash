@@ -24,20 +24,3 @@ function nix-pkg-hash() {
     curl --fail --location --silent --show-error https://api.github.com/repos/NixOS/nixpkgs/commits/nixos-unstable | jq -r '.sha'
 }
 export -f nix-pkg-hash
-
-# psgrep
-function psgrep() { ps -aux | grep -E "PID.*TTY.*TIME|$*" | grep -v grep; }
-export -f psgrep
-
-# sdkman helper
-function sdk-switch-java() {
-    if [[ -z ${SDKMAN_DIR} ]]; then
-        echo >&2 "Error: $SDKMAN_DIR not set"
-        return 1
-    fi
-    if [[ $# -le 0 ]]; then
-        echo >&2 "Error: missing version argument"
-        return 1
-    fi
-    sdk use java "$(find "${SDKMAN_DIR}/candidates/java/" -maxdepth 1 -type d -regex ".*\/java\/${1}.*" -exec basename {} \; | sort -n -r | head -n 1)"
-}
