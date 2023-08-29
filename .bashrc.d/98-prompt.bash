@@ -1,4 +1,5 @@
 if [[ -f /usr/share/git/git-prompt.sh ]]; then
+    # shellcheck disable=SC1091
     source /usr/share/git/git-prompt.sh
 fi
 
