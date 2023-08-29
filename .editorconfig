@@ -8,10 +8,10 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{gradle, java, bash, sh}]
+[*.{sh,bash}]
 indent_size = 4
 
-[*.{json, toml, xml, yaml, yml}]
+[*.{json,toml,xml,yaml,yml}]
 indent_size = 2
 
 [*.md]
