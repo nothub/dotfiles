@@ -13,25 +13,3 @@ fi
 
 # less non-text input files
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# sdkman
-if [[ -r "${HOME}/.sdkman/bin/sdkman-init.sh" ]]; then
-    export SDKMAN_DIR="${HOME}/.sdkman"
-    source "${HOME}/.sdkman/bin/sdkman-init.sh"
-fi
-
-# vim plugins
-if command -v vim >/dev/null 2>&1; then
-    if [[ ! -d ${HOME}/.vim/pack/vendor/start/nerdtree ]]; then
-        echo >&2 "installing nerdtree"
-        git clone https://github.com/preservim/nerdtree.git "${HOME}/.vim/pack/vendor/start/nerdtree"
-        vim -u NONE -c "helptags ${HOME}/.vim/pack/vendor/start/nerdtree/doc" -c q
-    fi
-fi
-
-# nix
-if [[ -r "${HOME}/.nix-profile/etc/profile.d/nix.sh" ]]; then
-    source "${HOME}/.nix-profile/etc/profile.d/nix.sh"
-elif [[ -r "/nix/var/nix/profiles/default/etc/profile.d/nix.sh" ]]; then
-    source "/nix/var/nix/profiles/default/etc/profile.d/nix.sh"
-fi
