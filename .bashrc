@@ -13,7 +13,7 @@ HISTFILESIZE=50000
 HISTSIZE=10000
 HISTTIMEFORMAT="%F %T "
 
-for file in ~/.bashrc.d/[0-9]*; do
+for file in "${HOME}/.bashrc.d/"[0-9]*; do
     if test -r "${file}"; then
         # shellcheck disable=SC1090
         . "${file}"
