@@ -1,13 +1,3 @@
-init_sdkman() {
-    if test -r "${HOME}/.sdkman/bin/sdkman-init.sh"; then
-        export SDKMAN_DIR="${HOME}/.sdkman"
-        # shellcheck disable=SC1090
-        source "${HOME}/.sdkman/bin/sdkman-init.sh"
-    fi
-}
-
-init_sdkman
-
 function sdk-switch-java() {
     if [[ -z ${SDKMAN_DIR} ]]; then
         echo >&2 "Error: $SDKMAN_DIR not set"
