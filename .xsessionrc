@@ -1,0 +1,4 @@
+if test -r "${HOME}/.profile"; then
+  # shellcheck source=.profile
+  . "${HOME}/.profile"
+fi
