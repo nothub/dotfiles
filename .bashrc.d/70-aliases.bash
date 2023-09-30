@@ -58,7 +58,7 @@ alias click-loop='while (true); do sleep 1; xdotool click 1; done'
 
 alias vpn-trio='sudo openvpn --config ~/.ovpn/fhuebner@vpn.triology.de.ovpn'
 
-if [[ -r ${HOME}/.bash_aliases ]]; then
-    # shellcheck disable=SC1090
+if [[ -r "${HOME}/.bash_aliases" ]]; then
+    # shellcheck disable=SC1090,SC1091
     source "${HOME}/.bash_aliases"
 fi
