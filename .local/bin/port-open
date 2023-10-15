@@ -17,4 +17,16 @@ fi
 
 echo "testing $host:$port"
 
-timeout 1 bash -c "</dev/tcp/$host/$port" && exit 0 || exit 1;
+set +o errexit
+timeout 1 bash -c "</dev/tcp/$host/$port"
+state="$?"
+set -o errexit
+
+if [[ $state = 0 ]]; then
+    echo "success"
+elif [[ $state = 124 ]]; then
+    echo "timeout"
+else
+    echo "failed with exit code: ${state}"
+    # https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html
+fi
