@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+hash="$(openssl dgst -sha512 -binary "${1}" | openssl base64 -A )"
+
+cat << EOF
+<script src="${1}"
+        integrity="sha512-${hash}"
+        crossorigin="anonymous"></script>
+EOF
