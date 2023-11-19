@@ -41,4 +41,4 @@ fi
 cp "$script_dir/template" "$script_dir/$script_name"
 ln -s "$(realpath "$script_dir/$script_name")" "$(realpath "$HOME/.local/bin/$script_name")"
 
-vim "$HOME/.local/bin/$script_name"
+micro "$HOME/.local/bin/$script_name"
