@@ -8,18 +8,25 @@ add_path() {
     # already present in $PATH
     ;;
   *)
-    export PATH="$1:${PATH}"
+    # append to $PATH
+    export PATH="${PATH}:${1}"
     ;;
   esac
 }
 
-# ~/.local/bin
+# fhs
+add_path "/usr/local/bin"
+add_path "/usr/bin"
+add_path "/bin"
+add_path "/usr/local/sbin"
+add_path "/usr/sbin"
+add_path "/sbin"
+
+# home local
 mkdir -p "${HOME}/.local/bin"
 add_path "${HOME}/.local/bin"
-
-# appimages
-mkdir -p "${HOME}/appimages"
-add_path "${HOME}/appimages"
+mkdir -p "${HOME}/.local/appimages"
+add_path "${HOME}/.local/appimages"
 
 # go
 add_path "/usr/local/go/bin"
