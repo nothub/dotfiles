@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+git log --name-only --pretty=format: | grep -v '^\s*$' | sort | uniq -c | sort -nr
