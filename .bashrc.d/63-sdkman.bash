@@ -1,6 +1,6 @@
 function sdk-switch-java() {
     if [[ -z ${SDKMAN_DIR} ]]; then
-        echo >&2 "Error: $SDKMAN_DIR not set"
+        echo >&2 "Error: \$SDKMAN_DIR not set"
         return 1
     fi
     if [[ $# -le 0 ]]; then
