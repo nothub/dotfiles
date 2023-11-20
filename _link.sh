@@ -13,4 +13,5 @@ set -eu
         ".idea" \
         ".vscode" \
         "_link.sh" \
-        "_lint.sh"
+        "_lint.sh" \
+        "README.md"
