@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if test -f /etc/os-release; then
+  source /etc/os-release
+elif test -f /usr/lib/os-release; then
+  source /usr/lib/os-release
+elif test -f /etc/lsb-release; then
+  source /etc/lsb-release
+fi
+os_name="${ID}"
+os_ver="${VERSION_ID}"
+
+machine_type="tty"
+if test "$XDG_SESSION_TYPE" == "x11" || test "$XDG_SESSION_TYPE" == "wayland"; then
+  machine_type="desktop"
+fi
+
+printf "detected: %s %s (%s)\n" "${os_name}" "${os_ver}" "${machine_type}"
+
+if test ! -f ".pkgs/${os_name}-${os_ver}"; then
+  echo "no packages defined for ${os_name} ${os_ver}"
+  exit 1
+fi
+
+mapfile -t <".pkgs/${os_name}-${os_ver}"
+packages=("${MAPFILE[@]}")
+
+if test "${machine_type}" == "desktop" && test -f ".pkgs/${os_name}-${os_ver}-desktop"; then
+  echo "including desktop packages"
+  mapfile -t <".pkgs/${os_name}-${os_ver}-desktop"
+  packages+=("${MAPFILE[@]}")
+fi
+
+case $os_name in
+'debian' | 'ubuntu')
+  sudo apt-get update
+  sudo apt-get install --no-install-recommends "${packages[@]}"
+  sudo apt-get clean
+  sudo apt-get autoremove
+  ;;
+esac
