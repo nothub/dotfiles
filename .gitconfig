@@ -1,6 +1,7 @@
 [user]
   name = Florian Hübner
   email = code@hub.lol
+  signingKey = ~/.ssh/id_ed25519
 
 [core]
   editor = micro
@@ -8,6 +9,11 @@
 
 [diff]
   submodule = log
+  algorithm = histogram
+  noprefix = true
+
+[gpg]
+  format = ssh
 
 [color]
   ui = auto
@@ -29,4 +35,5 @@
   required = true
 
 [commit]
+  gpgsign = true
   verbose = true
