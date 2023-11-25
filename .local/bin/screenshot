@@ -22,3 +22,13 @@ xclip -in \
   -selection "clipboard" \
   -target "image/png" \
   "${filename}"
+
+# TODO: implement scrup flow
+# 1. scrup calls scrot
+# 2. scrot saves file
+# 3. scrup writes csv entry
+# 4. xclip copies file
+# 5. curl upload to remote
+# 6. xclip copies url
+# 7. show desktop notification
+# 8. scrup adds url to csv entry
