@@ -15,9 +15,11 @@ os_name="${ID}"
 os_ver="${VERSION_ID}"
 
 machine_type="tty"
+set +o nounset
 if test "$XDG_SESSION_TYPE" == "x11" || test "$XDG_SESSION_TYPE" == "wayland"; then
   machine_type="desktop"
 fi
+set -o nounset
 
 printf "detected: %s %s (%s)\n" "${os_name}" "${os_ver}" "${machine_type}"
 
