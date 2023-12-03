@@ -4,6 +4,8 @@ export LC_ALL="en_US.UTF-8"
 export LANGUAGE="en_US"
 export LOCALE_ARCHIVE="/usr/lib/locale/locale-archive" # https://nixos.wiki/wiki/Locales
 
+export TERM=xterm-256color
+
 # docker rootless
 if test -S "$XDG_RUNTIME_DIR/docker.sock"; then
   export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/docker.sock"
