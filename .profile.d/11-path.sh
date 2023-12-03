@@ -47,3 +47,6 @@ add_path "${HOME}/.platformio/penv/bin"
 
 # jetbrains shortcuts
 add_path "${HOME}/.local/share/JetBrains/Toolbox/scripts"
+
+# android
+add_path "${HOME}/adb-fastboot/platform-tools"
