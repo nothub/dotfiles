@@ -9,7 +9,6 @@ set -eu
     --quiet \
     --ignore \
         ".git" \
-        ".gitignore" \
         ".idea" \
         ".vscode" \
         "_link.sh" \
