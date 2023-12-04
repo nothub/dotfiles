@@ -6,6 +6,7 @@
 [core]
   editor = micro
   autocrlf = input
+  excludesfile = ~/.gitignores
 
 [diff]
   submodule = log
