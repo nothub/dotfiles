@@ -15,10 +15,9 @@ fi
 
 export ANSIBLE_STDOUT_CALLBACK="yaml"
 
-export GOTELEMETRY="off"
-
-export DO_NOT_TRACK="1" # https://do-not-track.dev/
-
-export DOTNET_CLI_TELEMETRY_OPTOUT="true"
-
 export MC_EULA="true"
+
+# spyware opt-out
+export DO_NOT_TRACK="1"
+export GOTELEMETRY="off"
+export DOTNET_CLI_TELEMETRY_OPTOUT="true"
