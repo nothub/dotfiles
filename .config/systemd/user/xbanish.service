@@ -3,7 +3,7 @@ Description=hide mouse cursor when typing
 After=graphical.target
 
 [Service]
-ExecStart=/usr/local/bin/xbanish
+ExecStart=/usr/bin/xbanish
 
 [Install]
 WantedBy=multi-user.target
