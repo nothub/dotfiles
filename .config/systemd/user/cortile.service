@@ -1,0 +1,9 @@
+[Unit]
+Description=window tiling manager
+After=graphical.target
+
+[Service]
+ExecStart=/usr/local/bin/cortile
+
+[Install]
+WantedBy=multi-user.target
