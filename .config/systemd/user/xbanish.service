@@ -1,5 +1,6 @@
 [Unit]
-Description=xbanish
+Description=hide mouse cursor when typing
+After=graphical.target
 
 [Service]
 ExecStart=/usr/local/bin/xbanish
