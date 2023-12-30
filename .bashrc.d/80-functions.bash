@@ -24,3 +24,13 @@ function nix-pkg-hash() {
     curl --fail --location --silent --show-error https://api.github.com/repos/NixOS/nixpkgs/commits/nixos-unstable | jq -r '.sha'
 }
 export -f nix-pkg-hash
+
+function topp() {
+    local proc_infos
+    proc_infos="$(pgrep -f "$1")"
+    if test -z "${proc_infos}"; then
+        echo >&2 "no such process"
+        return 1
+    fi
+    top -p "$(echo "${proc_infos}" | cut -d " " -f 3 | head -n 1)"
+}
