@@ -6,4 +6,4 @@ After=graphical.target
 ExecStart=/usr/bin/xbanish
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
