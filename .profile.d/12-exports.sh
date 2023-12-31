@@ -8,6 +8,8 @@ export TERM=xterm-256color
 
 export EDITOR=/usr/bin/micro
 
+export GOROOT="${HOME}/.go"
+
 # docker rootless
 if test -S "$XDG_RUNTIME_DIR/docker.sock"; then
   export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/docker.sock"
