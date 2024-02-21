@@ -1,7 +1,6 @@
 [user]
   name = Florian Hübner
   email = florian.huebner@cloudogu.com
-  signingKey = ~/.ssh/tuxedo_ed25519
 
 [commit]
   gpgsign = false
