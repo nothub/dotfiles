@@ -41,7 +41,7 @@ __prompt_command() {
     local git_branch
     git_branch=$(__git_ps1 | sed s/[\(\)\ ]//g)
     if [[ -n $git_branch ]]; then
-        if [[ $git_branch == *"main"* ]] || [[ $git_branch == *"master"* ]]; then
+        if [[ $git_branch == *"main"* ]] || [[ $git_branch == *"master"* ]] || [[ $git_branch == *"trunk"* ]]; then
             git_branch="${ansi_fg_red}${git_branch}${ansi_fg_default}"
         fi
         infos+=("git:${git_branch}")
