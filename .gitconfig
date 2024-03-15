@@ -1,7 +1,7 @@
 [user]
   name = Florian Hübner
-  email = code@hub.lol
-  signingKey = ~/.ssh/id_ed25519
+  email = fhuebner@posteo.de
+  signingkey = 89AFBFB19EBA410D
 
 [core]
   editor = micro
@@ -12,9 +12,6 @@
   submodule = log
   algorithm = histogram
   noprefix = true
-
-[gpg]
-  format = ssh
 
 [color]
   ui = auto
