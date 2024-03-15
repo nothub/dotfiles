@@ -14,7 +14,7 @@
   noprefix = true
 
 [color]
-  ui = auto
+  ui = false
 
 [init]
   defaultBranch = main
