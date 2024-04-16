@@ -6,7 +6,7 @@ export LOCALE_ARCHIVE="/usr/lib/locale/locale-archive" # https://nixos.wiki/wiki
 
 export TERM=xterm-256color
 
-export EDITOR=/usr/bin/micro
+export EDITOR=/usr/bin/vim
 
 export GOROOT="${HOME}/.go"
 

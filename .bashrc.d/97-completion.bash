@@ -26,9 +26,9 @@ fi
 #    source <(podman completion bash)
 #fi
 
-if should_add nerdctl; then
-    source <(nerdctl completion bash)
-fi
+#if should_add nerdctl; then
+#    source <(nerdctl completion bash)
+#fi
 
 if should_add kubectl; then
     source <(kubectl completion bash)
