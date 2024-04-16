@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 
 if [[ $# -eq 1 ]]; then
-  args="--input=$(realpath "$1")"
+    args="--input=$(realpath "$1")"
 else
-  echo "Usage: $0 TARGET"
-  exit 0
+    echo "Usage: $0 TARGET"
+    exit 0
 fi
 
 recaf_dir="$HOME/.recaf"
@@ -19,8 +19,8 @@ name=$(echo "$json" | jq -r '.assets[0].name')
 url=$(echo "$json" | jq -r '.assets[0].browser_download_url')
 
 if [[ ! -f $name ]]; then
-  echo "downloading latest release: $name"
-  curl --progress-bar --location --remote-name --remote-time "$url"
+    echo "downloading latest release: $name"
+    curl --progress-bar --location --remote-name --remote-time "$url"
 fi
 
 java -jar "$name" "$args"

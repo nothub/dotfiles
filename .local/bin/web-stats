@@ -7,13 +7,13 @@ report="$(mktemp --suffix .html)"
 
 scp hub@hub.lol:/opt/services/traefik/logs/access.log "${log_file}"
 
-cat "${log_file}" |
-  docker run --rm -i -e LANG="$LANG" \
-    allinurl/goaccess                \
-    -o html                          \
-    --anonymize-ip                   \
-    --agent-list                     \
-    --log-format COMBINED            \
-    - >"${report}"
+cat "${log_file}" \
+    | docker run --rm -i -e LANG="$LANG" \
+        allinurl/goaccess \
+        -o html \
+        --anonymize-ip \
+        --agent-list \
+        --log-format COMBINED \
+        - > "${report}"
 
 librewolf "${report}"

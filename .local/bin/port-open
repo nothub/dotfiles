@@ -23,13 +23,13 @@ state="$?"
 set -o errexit
 
 case $state in
-0)
-    echo "success"
-    ;;
-124)
-    echo "timeout"
-    ;;
-*)
-    echo "failure (exit code: ${state})"
-    ;;
+    0)
+        echo "success"
+        ;;
+    124)
+        echo "timeout"
+        ;;
+    *)
+        echo "failure (exit code: ${state})"
+        ;;
 esac

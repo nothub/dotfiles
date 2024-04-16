@@ -1,17 +1,17 @@
 add_path() {
-  if test ! -d "${1}"; then
-    # skip nonexistent dirs
-    return
-  fi
-  case $PATH in
-  *$1*)
-    # already present in $PATH
-    ;;
-  *)
-    # append to $PATH
-    export PATH="${PATH}:${1}"
-    ;;
-  esac
+    if test ! -d "${1}"; then
+        # skip nonexistent dirs
+        return
+    fi
+    case $PATH in
+        *$1*)
+            # already present in $PATH
+            ;;
+        *)
+            # append to $PATH
+            export PATH="${PATH}:${1}"
+            ;;
+    esac
 }
 
 # fhs

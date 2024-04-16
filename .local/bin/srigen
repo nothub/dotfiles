@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-hash="$(openssl dgst -sha512 -binary "${1}" | openssl base64 -A )"
+hash="$(openssl dgst -sha512 -binary "${1}" | openssl base64 -A)"
 
 cat << EOF
 <script src="${1}"

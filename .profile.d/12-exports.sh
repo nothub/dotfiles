@@ -12,7 +12,7 @@ export GOROOT="${HOME}/.go"
 
 # docker rootless
 if test -S "$XDG_RUNTIME_DIR/docker.sock"; then
-  export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/docker.sock"
+    export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/docker.sock"
 fi
 
 export ANSIBLE_STDOUT_CALLBACK="yaml"

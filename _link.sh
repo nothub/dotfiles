@@ -8,9 +8,10 @@ set -eu
     --replace \
     --quiet \
     --ignore \
-        ".git" \
-        ".idea" \
-        ".vscode" \
-        "_link.sh" \
-        "_lint.sh" \
-        "README.md"
+    ".git" \
+    ".idea" \
+    ".vscode" \
+    "_fmt.sh" \
+    "_link.sh" \
+    "_lint.sh" \
+    "README.md"

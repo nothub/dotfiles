@@ -1,11 +1,12 @@
 #!/usr/bin/env sh
+
 xrandr \
-	--output DP-1 \
-		--off \
-	--output HDMI-0 \
-		--primary \
-		--mode 1920x1080 \
-		--pos 1080x478 \
-		--rotate normal \
-	--output DVI-I-0 \
-		--off
+    --output DP-1 \
+    --off \
+    --output HDMI-0 \
+    --primary \
+    --mode 1920x1080 \
+    --pos 1080x478 \
+    --rotate normal \
+    --output DVI-I-0 \
+    --off

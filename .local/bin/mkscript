@@ -4,38 +4,38 @@ set -o errexit
 set -o pipefail
 
 print_usage() {
-  cat <<EOM
+    cat << EOM
 Usage: "$(basename "${BASH_SOURCE[0]}")" [-v] [-h] <arg>...
 
 Options:
   -v       Enable verbose output
   -h       Show this help and exit
 EOM
-  exit
+    exit
 }
 
 log() {
-  echo >&2 "$*"
+    echo >&2 "$*"
 }
 
 while getopts a:b:vh opt; do
-  case $opt in
-  v) set -x ;;
-  h | *) print_usage ;;
-  esac
+    case $opt in
+        v) set -x ;;
+        h | *) print_usage ;;
+    esac
 done
 shift $((OPTIND - 1))
 
 if [[ $# -lt 1 ]]; then
-  print_usage
+    print_usage
 fi
 
 script_dir="$(dirname "$(readlink -f -- "$0")")"
 script_name=$(echo "$*" | inline-detox -v)
 
 if [[ -e "$script_dir/$script_name" || -e "$HOME/.local/bin/$script_name" ]]; then
-  log "file exists!"
-  exit 1
+    log "file exists!"
+    exit 1
 fi
 
 cp "$script_dir/template" "$script_dir/$script_name"

@@ -5,11 +5,11 @@ set -o nounset
 set -o pipefail
 
 if test -f /etc/os-release; then
-  source /etc/os-release
+    source /etc/os-release
 elif test -f /usr/lib/os-release; then
-  source /usr/lib/os-release
+    source /usr/lib/os-release
 elif test -f /etc/lsb-release; then
-  source /etc/lsb-release
+    source /etc/lsb-release
 fi
 os_name="${ID}"
 os_ver="${VERSION_ID}"
@@ -17,31 +17,31 @@ os_ver="${VERSION_ID}"
 machine_type="tty"
 set +o nounset
 if test "$XDG_SESSION_TYPE" == "x11" || test "$XDG_SESSION_TYPE" == "wayland"; then
-  machine_type="desktop"
+    machine_type="desktop"
 fi
 set -o nounset
 
 printf "detected: %s %s (%s)\n" "${os_name}" "${os_ver}" "${machine_type}"
 
 if test ! -f ".pkgs/${os_name}-${os_ver}"; then
-  echo "no packages defined for ${os_name} ${os_ver}"
-  exit 1
+    echo "no packages defined for ${os_name} ${os_ver}"
+    exit 1
 fi
 
-mapfile -t <".pkgs/${os_name}-${os_ver}"
+mapfile -t < ".pkgs/${os_name}-${os_ver}"
 packages=("${MAPFILE[@]}")
 
 if test "${machine_type}" == "desktop" && test -f ".pkgs/${os_name}-${os_ver}-desktop"; then
-  echo "including desktop packages"
-  mapfile -t <".pkgs/${os_name}-${os_ver}-desktop"
-  packages+=("${MAPFILE[@]}")
+    echo "including desktop packages"
+    mapfile -t < ".pkgs/${os_name}-${os_ver}-desktop"
+    packages+=("${MAPFILE[@]}")
 fi
 
 case $os_name in
-'debian' | 'ubuntu')
-  sudo apt-get update
-  sudo apt-get install --no-install-recommends "${packages[@]}"
-  sudo apt-get clean
-  sudo apt-get autoremove
-  ;;
+    'debian' | 'ubuntu')
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends "${packages[@]}"
+        sudo apt-get clean
+        sudo apt-get autoremove
+        ;;
 esac

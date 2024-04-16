@@ -3,7 +3,7 @@
 set -eu
 
 tzdate() {
-  printf "%s\t${1}\n" "$(TZ="${1}" date "+%H:%M:%S %Z")"
+    printf "%s\t${1}\n" "$(TZ="${1}" date "+%H:%M:%S %Z")"
 }
 
 tzdate "Europe/Berlin"

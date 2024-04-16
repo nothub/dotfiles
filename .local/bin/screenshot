@@ -9,19 +9,19 @@ cd "${archive}"
 
 # shellcheck disable=SC2016
 filename=$(
-  scrot \
-    --select \
-    --freeze \
-    --line style=dash,width=1 \
-    --quality 95 \
-    --silent \
-    --exec 'echo $f'
+    scrot \
+        --select \
+        --freeze \
+        --line style=dash,width=1 \
+        --quality 95 \
+        --silent \
+        --exec 'echo $f'
 )
 
 xclip -in \
-  -selection "clipboard" \
-  -target "image/png" \
-  "${filename}"
+    -selection "clipboard" \
+    -target "image/png" \
+    "${filename}"
 
 # TODO: implement scrup flow
 # 1. scrup calls scrot
