@@ -30,3 +30,15 @@ function topp() {
     fi
     top -p "$(echo "${proc_infos}" | cut -d " " -f 3 | head -n 1)"
 }
+
+function semver_next_major() {
+    git describe --abbrev=0 | awk -F '.' '{$1+=1; OFS="."; print}' | tr ' ' '.'
+}
+
+function semver_next_minor() {
+    git describe --abbrev=0 | awk -F '.' '{$2+=1; OFS="."; print}' | tr ' ' '.'
+}
+
+function semver_next_patch() {
+    git describe --abbrev=0 | awk -F '.' '{$3+=1; OFS="."; print}' | tr ' ' '.'
+}
