@@ -4,7 +4,7 @@
   signingkey = 89AFBFB19EBA410D
 
 [core]
-  editor = micro
+  editor = vim
   autocrlf = input
   excludesfile = ~/.gitignoreglobal
 
