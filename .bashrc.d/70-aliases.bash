@@ -62,3 +62,7 @@ if [[ -r "${HOME}/.bash_aliases" ]]; then
     # shellcheck disable=SC1090,SC1091
     source "${HOME}/.bash_aliases"
 fi
+
+alias md='glow -p'
+
+alias k='kubectl'
