@@ -12,7 +12,7 @@ nohup screenkey \
   --bg-color "#232425" \
   --opacity 0.75 \
   --geometry "800x100+1500+20" \
-  --position fixed \
+  --position bottom \
   --bak-mode full \
   --no-whitespace &
 
