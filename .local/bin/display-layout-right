@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 xrandr \
 	--output DP-1 \
 		--off \
