@@ -12,6 +12,7 @@ __prompt_command() {
     local ansi_fg_default='\[\033[39m\]'
     local ansi_fg_red='\[\033[31m\]'
     local ansi_fg_blue='\[\033[34m\]'
+    local ansi_fg_cyan='\[\033[36m\]'
     local ansi_dim_on='\[\033[2m\]'
     local ansi_reset='\[\033[0m\]'
 
@@ -27,7 +28,11 @@ __prompt_command() {
     infos=()
 
     if [[ -n $IN_NIX_SHELL ]]; then
-        infos+=("env:${ansi_fg_blue}nix${ansi_fg_default}")
+        if test "${DEVBOX_SHELL_ENABLED}" = "1"; then
+            infos+=("env:${ansi_fg_blue}devbox${ansi_fg_default}")
+        else
+            infos+=("env:${ansi_fg_cyan}nix${ansi_fg_default}")
+        fi
     fi
 
     if [[ -n $VIRTUAL_ENV ]]; then
