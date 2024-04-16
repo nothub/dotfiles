@@ -8,4 +8,6 @@ init_nix() {
     fi
 }
 
-init_nix
+if ! command -v devbox; then
+    init_nix
+fi
