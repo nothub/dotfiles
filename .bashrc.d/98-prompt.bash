@@ -26,10 +26,6 @@ __prompt_command() {
     local infos
     infos=()
 
-    if command -v kubectl &>/dev/null && kubectl config view --minify &>/dev/null; then
-        infos+=("k8s:$(kubectl config view --minify -o jsonpath='{..namespace}')")
-    fi
-
     if [[ -n $IN_NIX_SHELL ]]; then
         infos+=("env:${ansi_fg_blue}nix${ansi_fg_default}")
     fi
