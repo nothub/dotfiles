@@ -11,7 +11,7 @@ elif [[ -r /etc/bash_completion ]]; then
 fi
 
 should_add() {
-    if command -v "${1}" &>/dev/null && ! complete -p | grep "${1}" &>/dev/null; then
+    if command -v "${1}" &> /dev/null && ! complete -p | grep "${1}" &> /dev/null; then
         return 0
     else
         return 1

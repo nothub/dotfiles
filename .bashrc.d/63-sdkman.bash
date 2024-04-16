@@ -1,6 +1,6 @@
 function sdk-switch-java() {
     if [[ -z ${SDKMAN_DIR} ]]; then
-        echo >&2 "Error: \$SDKMAN_DIR not set"
+        echo >&2 'Error: $SDKMAN_DIR not set'
         return 1
     fi
     if [[ $# -le 0 ]]; then
@@ -12,9 +12,9 @@ function sdk-switch-java() {
         -maxdepth 1 \
         -type d \
         -regex ".*\/java\/${1}.*" \
-        -exec basename {} \; |
-        sort -n -r |
-        head -n 1)"
+        -exec basename {} \; \
+        | sort -n -r \
+        | head -n 1)"
     if test -z "${candidate}"; then
         echo >&2 "Error: no sdkman java candidates"
         return 1

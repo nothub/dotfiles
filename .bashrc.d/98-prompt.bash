@@ -18,7 +18,7 @@ __prompt_command() {
 
     PS1="${ansi_dim_on}"
 
-    if [[ "${last_exit_status}" != 0 ]]; then
+    if [[ ${last_exit_status} != 0 ]]; then
         PS1+="=> ${ansi_fg_red}${last_exit_status}${ansi_fg_default}\n"
     fi
 
@@ -58,7 +58,7 @@ __prompt_command() {
 
     PS1+="\n"
     PS1+="${ansi_dim_on}" # workaround for broken ansi state (lost ansi flags prior to last newline) on window resize
-    PS1+="\$"
+    PS1+='$'
     PS1+="${ansi_reset}"
     PS1+=" "
 

@@ -42,7 +42,7 @@ alias pip="pip3"
 alias ssh="TERM=xterm-256color ssh" # kitty otherwise breaks stuff because of dumb politics
 alias icat="kitty +kitten icat"
 
-if command -v git >/dev/null 2>&1; then
+if command -v git > /dev/null 2>&1; then
     alias git-submodules-update="git pull --recurse-submodules && git submodule update --remote --recursive"
     alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
 fi
