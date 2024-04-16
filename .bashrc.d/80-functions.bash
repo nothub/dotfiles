@@ -42,3 +42,10 @@ function semver_next_minor() {
 function semver_next_patch() {
     git describe --abbrev=0 | awk -F '.' '{$3+=1; OFS="."; print}' | tr ' ' '.'
 }
+
+function video_shrink() {
+    local file
+    file="${1}"
+    ffmpeg -i "${file}" -vcodec libx265 -crf 24 \
+        "${file%.*}-shrink.${file##*.}"
+}
