@@ -1,6 +1,6 @@
 alias ll="ls -lAh"
 
-alias rm="echo 'rm bad, use trash instead!' >&2 ; false"
+#alias rm="echo 'rm bad, use trash instead!' >&2 ; false"
 
 alias cd..="cd .."
 
