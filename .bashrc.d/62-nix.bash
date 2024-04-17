@@ -1,4 +1,4 @@
-init_nix() {
+if ! command -v devbox > /dev/null; then
     if test -r "${HOME}/.nix-profile/etc/profile.d/nix.sh"; then
         # shellcheck disable=SC1090,SC1091
         source "${HOME}/.nix-profile/etc/profile.d/nix.sh"
@@ -6,8 +6,4 @@ init_nix() {
         # shellcheck disable=SC1090,SC1091
         source "/nix/var/nix/profiles/default/etc/profile.d/nix.sh"
     fi
-}
-
-if ! command -v devbox; then
-    init_nix
 fi
