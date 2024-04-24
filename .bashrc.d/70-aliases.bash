@@ -26,6 +26,8 @@ elif command -v kate > /dev/null; then
     alias e="kate"
 elif command -v idea > /dev/null; then
     alias e="idea -e"
+elif command -v sensible-editor > /dev/null; then
+    alias e="sensible-editor"
 else
     alias e="xdg-open"
 fi
@@ -47,18 +49,11 @@ if command -v git > /dev/null 2>&1; then
     alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
 fi
 
-if [[ -r "${HOME}/nextcloud/Stuff/keepass.tc" ]]; then
-    alias keepass-mount="sudo cryptsetup open /home/hub/nextcloud/Stuff/keepass.tc keepass"
-    alias keepass-umount="sudo umount /dev/mapper/keepass; sudo cryptsetup luksClose keepass"
-fi
-
 alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
 
 alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/all-spark-notebook:latest'
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
-
-alias vpn-trio='sudo openvpn --config ~/.ovpn/fhuebner@vpn.triology.de.ovpn'
 
 if [[ -r "${HOME}/.bash_aliases" ]]; then
     # shellcheck disable=SC1090,SC1091
