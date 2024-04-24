@@ -42,10 +42,8 @@ alias pip="pip3"
 alias ssh="TERM=xterm-256color ssh" # kitty otherwise breaks stuff because of dumb politics
 alias icat="kitty +kitten icat"
 
-if command -v git > /dev/null 2>&1; then
-    alias git-submodules-update="git pull --recurse-submodules && git submodule update --remote --recursive"
-    alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
-fi
+alias git-submodules-update="git pull --recurse-submodules && git submodule update --remote --recursive"
+alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
 
 alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
 
@@ -53,7 +51,7 @@ alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/al
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
 
-if [[ -r "${HOME}/.bash_aliases" ]]; then
+if test -r "${HOME}/.bash_aliases"; then
     # shellcheck disable=SC1090,SC1091
     source "${HOME}/.bash_aliases"
 fi
