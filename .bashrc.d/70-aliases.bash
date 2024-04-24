@@ -1,7 +1,5 @@
 alias ll="ls -lAh"
 
-#alias rm="echo 'rm bad, use trash instead!' >&2 ; false"
-
 alias cd..="cd .."
 
 alias record="LC_ALL='en_US.UTF-8' asciinema rec -i 4"
