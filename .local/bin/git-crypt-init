@@ -18,12 +18,8 @@ for key in "${keys[@]}"; do
     git-crypt add-gpg-user --trusted "${key}"
 done
 
-# create secret dir
-if test ! -f .gitattributes; then
-    touch .gitattributes
-fi
-
 # set git-crypt attributes
+touch .gitattributes
 if ! cat .gitattributes | grep -F 'secrets/** filter=git-crypt diff=git-crypt'; then
     echo 'secrets/** filter=git-crypt diff=git-crypt' >> .gitattributes
     git add .gitattributes
