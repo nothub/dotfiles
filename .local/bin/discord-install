@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+set -o errexit
+set -o nounset
+
+f="$(mktemp)"
+mv "${f}" "${f}.deb"
+f="${f}.deb"
+curl -Lo "${f}" 'https://discord.com/api/download/stable?platform=linux&format=deb'
+sudo apt install "${f}"
+rm -f "${f}"
