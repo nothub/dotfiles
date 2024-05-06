@@ -51,3 +51,5 @@ fi
 alias md='glow -p'
 
 alias k='kubectl'
+
+alias go-coverage='go test -v ./... -covermode=count -coverprofile=coverage.out && go tool cover -func=coverage.out -o=coverage.out'
