@@ -3,9 +3,15 @@
 set -o errexit
 set -o nounset
 
-f="$(mktemp)"
-mv "${f}" "${f}.deb"
-f="${f}.deb"
+f="$(mktemp).deb"
+
 curl -Lo "${f}" 'https://discord.com/api/download/stable?platform=linux&format=deb'
+
+if ! file "${f}" | grep -F 'Debian binary package' > /dev/null; then
+  echo "file ${f} is no debian binary package"
+  exit 1
+fi
+
 sudo apt install "${f}"
+
 rm -f "${f}"
