@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+keys=(
+    '3381 E16D 05B2 61B4 5FE1 DD32 89AF BFB1 9EBA 410D' # fhuebner@posteo.de
+    'CA68 95A1 2E85 9100 970D 3B30 A25E 2D0E 413D 26C9' # florian.huebner@cloudogu.com
+)
+
+# initialize git-crypt
+git-crypt init
+
+# register pgp keys
+for key in "${keys[@]}"; do
+    gpg --recv-keys "${key}"
+    git-crypt add-gpg-user --trusted "${key}"
+done
+
+# create secret dir
+if test ! -f .gitattributes; then
+    touch .gitattributes
+fi
+
+# set git-crypt attributes
+if ! cat .gitattributes | grep -F 'secrets/** filter=git-crypt diff=git-crypt'; then
+    echo 'secrets/** filter=git-crypt diff=git-crypt' >> .gitattributes
+    git add .gitattributes
+    git commit -m 'Add git-crypt attributes' .gitattributes
+fi
+
+# create example secret
+mkdir -p secrets
+echo "{}" > secrets/example.json
