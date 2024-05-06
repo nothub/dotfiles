@@ -7,3 +7,5 @@ build/
 
 creds.json
 credentials.json
+
+coverage.out
