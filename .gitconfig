@@ -1,37 +1,34 @@
 [user]
-  name = Florian Hübner
-  email = fhuebner@posteo.de
-  signingkey = 89AFBFB19EBA410D
+	name = Florian Hübner
+	email = fhuebner@posteo.de
+	signingkey = 89AFBFB19EBA410D
 
 [core]
-  editor = vim
-  autocrlf = input
-  excludesfile = ~/.gitignoreglobal
+	editor = vim
+	autocrlf = input
+	excludesfile = ~/.gitignoreglobal
 
 [diff]
-  submodule = log
-  algorithm = histogram
-  noprefix = true
+	submodule = log
+	algorithm = histogram
+	noprefix = true
 
 [color]
-  ui = false
+	ui = auto
 
 [init]
-  defaultBranch = main
+	defaultBranch = main
 
 [alias]
-  adog = log --all --decorate --oneline --graph
-  adg = log --all --decorate --graph
-
-[includeIf "gitdir:~/work/"]
-  path = ~/work/.gitconfig
+	adog = log --all --decorate --oneline --graph
+	adg = log --all --decorate --graph
 
 [filter "lfs"]
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
-  required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 
 [commit]
-  gpgsign = true
-  verbose = true
+	gpgsign = true
+	verbose = true
