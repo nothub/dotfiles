@@ -22,37 +22,37 @@ if should_add docker; then
     source <(docker completion bash)
 fi
 
-#if should_add podman; then
-#    source <(podman completion bash)
-#fi
+if should_add podman; then
+    source <(podman completion bash)
+fi
 
-#if should_add nerdctl; then
-#    source <(nerdctl completion bash)
-#fi
+if should_add nerdctl; then
+    source <(nerdctl completion bash)
+fi
 
 if should_add kubectl; then
     source <(kubectl completion bash)
 fi
 
-#if should_add k3d; then
-#    source <(k3d completion bash)
-#fi
-
-#if should_add k3s; then
-#    source <(k3s completion bash)
-#fi
-
-#if should_add hcloud; then
-#    source <(hcloud completion bash)
-#fi
-
-if should_add gopass; then
-    source <(gopass completion bash)
+if should_add k3d; then
+    source <(k3d completion bash)
 fi
 
-#if should_add pandoc; then
-#    source <(pandoc --bash-completion)
-#fi
+if should_add k3s; then
+    source <(k3s completion bash)
+fi
+
+if should_add hcloud; then
+    source <(hcloud completion bash)
+fi
+
+if should_add devbox; then
+    source <(devbox completion bash)
+fi
+
+if should_add pandoc; then
+    source <(pandoc --bash-completion)
+fi
 
 if should_add tofu; then
     complete -C /usr/bin/tofu tofu
@@ -62,6 +62,6 @@ if should_add terraform; then
     complete -C /usr/bin/terraform terraform
 fi
 
-#if should_add packer; then
-#    complete -C /usr/bin/packer packer
-#fi
+if should_add packer; then
+    complete -C /usr/bin/packer packer
+fi
