@@ -49,3 +49,10 @@ function video_shrink() {
     ffmpeg -i "${file}" -vcodec libx265 -crf 24 \
         "${file%.*}-shrink.${file##*.}"
 }
+
+function video_mk4_to_mp4() {
+    local name
+    name="${1}"
+    name="${name%.*}"
+	ffmpeg -i "${name}.mkv" -c copy "${name}.mp4"
+}
