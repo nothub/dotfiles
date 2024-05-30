@@ -50,7 +50,7 @@ function video_shrink() {
         "${file%.*}-shrink.${file##*.}"
 }
 
-function video_mk4_to_mp4() {
+function video_mkv_to_mp4() {
     local name
     name="${1}"
     name="${name%.*}"
