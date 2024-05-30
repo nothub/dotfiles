@@ -17,6 +17,7 @@ htop
 iftop
 jp2a
 jq
+kubernetes-split-yaml
 libarchive-tools
 lsb-release
 lynx
