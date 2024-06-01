@@ -43,16 +43,6 @@ function semver_next_patch() {
     git describe --abbrev=0 | awk -F '.' '{$3+=1; OFS="."; print}' | tr ' ' '.'
 }
 
-function video_shrink() {
-    local file
-    file="${1}"
-    ffmpeg -i "${file}" -vcodec libx265 -crf 24 \
-        "${file%.*}-shrink.${file##*.}"
-}
-
-function video_mkv_to_mp4() {
-    local name
-    name="${1}"
-    name="${name%.*}"
-	ffmpeg -i "${name}.mkv" -c copy "${name}.mp4"
+function video_conv_mp4() {
+    ffmpeg -i "${1}" -c copy "${1%.*}.mp4"
 }

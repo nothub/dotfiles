@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+set -eu
+
+orig_file="${1}"
+temp_file="$(mktemp -u "${orig_file%.*}-shrink.${orig_file##*.}")"
+
+ffmpeg -i "${orig_file}" -vcodec libx265 -crf 24 "${temp_file}"
+mv -vf "${temp_file}" "${orig_file}"
