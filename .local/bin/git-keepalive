@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+
+set -eu
+
+url="${1}"
+tag="${2:-KEEPALIVE}"
+dir="$(mktemp -du)"
+
+git clone --depth=1 "${url}" "${dir}"
+(
+    cd "${dir}"
+
+    # create tag
+    git tag "${tag}"
+    git push origin "refs/tags/${tag}"
+
+    # remove tag
+    git tag -d "${tag}"
+    git push origin ":refs/tags/${tag}"
+)
+
+rm -rf "${dir}"
