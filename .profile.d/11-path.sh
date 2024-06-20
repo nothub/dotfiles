@@ -41,7 +41,6 @@ add_path "${HOME}/.zig"
 
 # rust
 add_path "${HOME}/.cargo/bin"
-add_path "${HOME}/.cargo/env"
 
 # platformio
 add_path "${HOME}/.platformio/penv/bin"
