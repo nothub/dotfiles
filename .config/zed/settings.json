@@ -7,13 +7,32 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
-  "features": {
-    "copilot": false
-  },
-  "telemetry": {
-    "diagnostics": false,
-    "metrics": false
-  },
-  "ui_font_size": 16,
-  "buffer_font_size": 16
+    "autosave": {
+        "after_delay": {
+            "milliseconds": 500
+        }
+    },
+    "auto_update": true,
+    "confirm_quit": false,
+    "cursor_blink": false,
+    "scrollbar": {
+        "show": "always"
+    },
+    "format_on_save": "on",
+    "use_autoclose": true,
+    "hour_format": "hour24",
+    "preferred_line_length": 80,
+    "tab_size": 4,
+    "copy_on_select": true,
+    "working_directory": "current_project_directory",
+    "remove_trailing_whitespace_on_save": true,
+    "features": {
+        "copilot": false
+    },
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false
+    },
+    "ui_font_size": 16,
+    "buffer_font_size": 16
 }
