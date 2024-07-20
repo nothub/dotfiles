@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -e
+
+if test -z "${1}"; then
+  echo 1>&2 'need url arg'
+  exit 1
+fi
+
+set -x
+
+curl -fsSL -o /dev/null --write-out '%{json}' "${1}" | jq
