@@ -2,13 +2,21 @@
 
 set -eu
 
-orig_file="${1}"
-temp_file="${orig_file%.*}-shrink.${orig_file##*.}"
+shrink() {
 
-ffmpeg -loglevel warning -stats -stats_period 1 -i "${orig_file}" -vcodec libx265 -crf 24 "${temp_file}"
+    orig_file="${1}"
+    temp_file="${orig_file%.*}-shrink.${orig_file##*.}"
 
-orig_size="$(du -h "${orig_file}" | awk '{print $1;}')"
-temp_size="$(du -h "${temp_file}" | awk '{print $1;}')"
-printf "shrinked from %s to %s\n" "${orig_size}" "${temp_size}" >&2
+    ffmpeg -loglevel warning -stats -stats_period 1 -i "${orig_file}" -vcodec libx265 -crf 24 "${temp_file}"
 
-mv -vf "${temp_file}" "${orig_file}"
+    orig_size="$(du -h "${orig_file}" | awk '{print $1;}')"
+    temp_size="$(du -h "${temp_file}" | awk '{print $1;}')"
+    printf "shrinked from %s to %s\n" "${orig_size}" "${temp_size}" >&2
+
+    mv -vf "${temp_file}" "${orig_file}"
+
+}
+
+for arg in "$@"; do
+    shrink "$arg"
+done
