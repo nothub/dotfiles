@@ -36,6 +36,9 @@ add_path "${HOME}/.local/bin"
 mkdir -p "${HOME}/.local/appimages"
 add_path "${HOME}/.local/appimages"
 
+# neovim
+add_path "/opt/nvim-linux64/bin"
+
 # go
 add_path "${HOME}/.go/bin"
 add_path "${HOME}/go/bin"
