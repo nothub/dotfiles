@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+set -e
+
+file="${HOME}/nextcloud/Dokumente/bp.csv"
+
+if test "$#" -ne 3; then
+    echo >&2 "Usage: bp <sys> <dia> <pul>"
+    exit 1
+fi
+
+set -u
+
+sys="$1"
+dia="$2"
+pul="$3"
+
+date="$(date --iso-8601=date)"
+time="$(date +%H:%M)"
+
+if test ! -f "${file}"; then
+    printf 'date,time,sys,dia,pul\n' > "${file}"
+fi
+
+printf '%s,%s,%s,%s,%s\n' "${date}" "${time}" "${sys}" "${dia}" "${pul}" >> "${file}"
