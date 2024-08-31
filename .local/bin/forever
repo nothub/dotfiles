@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+set -eu
+
+if test "$#" -lt 1; then
+    echo >&2 "Usage: forever <command>"
+    exit 1
+fi
+
+while true; do
+    eval "$@"
+    sleep 0.1
+done
