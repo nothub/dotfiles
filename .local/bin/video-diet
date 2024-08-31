@@ -2,6 +2,11 @@
 
 set -eu
 
+if test "$#" -lt 1; then
+    echo >&2 "Usage: video-diet [<path>...]"
+    exit 1
+fi
+
 shrink() {
 
     orig_file="${1}"
