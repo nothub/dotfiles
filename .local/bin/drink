@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+set -e
+
+file="${HOME}/nextcloud/Dokumente/drink.csv"
+
+if test "$#" -ne 1 -a "$#" -ne 2; then
+    echo >&2 "Usage: drink <liters> [<type>]"
+    exit 1
+fi
+
+liters="${1}"
+type="${2:-water}"
+
+set -u
+
+date="$(date --iso-8601=date)"
+
+if test ! -f "${file}"; then
+    printf 'date,liters,type\n' > "${file}"
+fi
+
+printf '%s,%s,%s\n' "${date}" "${liters}" "${type}" >> "${file}"
+
+echo "logged ${liters} liters of ${type}"
