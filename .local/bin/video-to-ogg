@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+set -eu
+
+if test "$#" -lt 1; then
+    echo >&2 "Usage: video-to-ogg [<path>...]"
+    exit 1
+fi
+
+convert() {
+    file="${1}"
+    ffmpeg \
+    -loglevel warning \
+    -stats \
+    -stats_period 1 \
+    -i "${file}" \
+    -vn \
+    -acodec libvorbis \
+    -y \
+    "${file%.mp4}.ogg"
+}
+
+for arg in "$@"; do
+    convert "$arg"
+done
