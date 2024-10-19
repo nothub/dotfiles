@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+
+set -eu
+
+# get image: https://api.nasa.gov/planetary/earth/imagery
+
+lat="52.27"
+lon="10.53"
+dim="0.500"
+date="$(date --utc +%Y-%m-%d)"
+api_key="$(cat "${HOME}/.config/nasa-token" | tr -d '\n' | tr -d ' ')"
+out_file="$(mktemp -t XXXXXXXX.png)"
+
+set -x
+
+curl \
+  -G \
+  -fsSL \
+  -o "${out_file}" \
+  -d "lat=${lat}" \
+  -d "lon=${lon}" \
+  -d "dim=${dim}" \
+  -d "date=${date}" \
+  -d "api_key=${api_key}" \
+  'https://api.nasa.gov/planetary/earth/imagery'
+
+echo "${out_file}"
+xdg-open "${out_file}"
