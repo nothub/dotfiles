@@ -39,11 +39,6 @@ add_path "${HOME}/.local/appimages"
 # neovim
 add_path "/opt/nvim-linux64/bin"
 
-# go
-add_path "${HOME}/.go/bin"
-add_path "${HOME}/go/bin"
-add_path "/usr/local/go/bin"
-
 # nim
 add_path "${HOME}/.nim-lang/bin"
 
