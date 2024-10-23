@@ -1,21 +1,20 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
+set -o nounset
 set -o errexit
-set -o pipefail
 
-if [[ -z $1 ]]; then
-    exit 1
-fi
+case $# in
+    2)
+        host="$1"
+        port="$2"
+        ;;
+    *)
+        echo >&2 "Usage: port-open <host> <port>"
+        exit 1
+        ;;
+esac
 
-if [[ -n $2 ]]; then
-    host="$1"
-    port="$2"
-else
-    host="127.0.0.1"
-    port="$1"
-fi
-
-echo "testing $host:$port"
+echo >&2 "testing $host:$port"
 
 set +o errexit
 timeout 1 bash -c "</dev/tcp/$host/$port"
@@ -24,12 +23,15 @@ set -o errexit
 
 case $state in
     0)
-        echo "success"
+        echo >&2 "success"
+        exit 0
         ;;
     124)
-        echo "timeout"
+        echo >&2 "timeout"
+        exit 1
         ;;
     *)
-        echo "failure (exit code: ${state})"
+        echo >&2 "failure (exit code: ${state})"
+        exit 1
         ;;
 esac
