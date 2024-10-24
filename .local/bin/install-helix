@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+
+set -eu
+
+json=$(curl --silent --location https://api.github.com/repos/helix-editor/helix/releases/latest)
+pattern="helix-[0-9]+\\\\.[0-9]+-$(uname -m)-linux\\\\.tar\\\\.xz"
+url=$(echo "$json" | jq -r ".assets[] | select(.name | test(\"${pattern}\")) | .browser_download_url")
+
+tmp_file="$(mktemp).tar.xz"
+tmp_dir="$(mktemp -d)"
+
+curl -f#L -o "${tmp_file}" "${url}"
+file "${tmp_file}"
+sha256sum "${tmp_file}"
+
+tar -x -C "${tmp_dir}" --strip-components 1 -f "${tmp_file}"
+
+# binary
+mkdir -p "${HOME}/.local/bin"
+cp -f "${tmp_dir}/hx" "${HOME}/.local/bin/"
+chmod +x "${HOME}/.local/bin/hx"
+
+# config
+mkdir -p "${HOME}/.config/helix/runtime"
+cp -rf "${tmp_dir}/runtime" "${HOME}/.config/helix/"
+
+# completion
+mkdir -p "${HOME}/.local/share/bash-completion"
+cp -f "${tmp_dir}/contrib/completion/hx.bash" "${HOME}/.local/share/bash-completion/"
+
+# cleanup
+rm -f "${tmp_file}"
+rm -rf "${tmp_dir}"
+
+hx --health
