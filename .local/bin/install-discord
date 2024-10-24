@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+set -o errexit
+set -o nounset
+
+tmp_file="$(mktemp).deb"
+
+curl -f#Lo "${tmp_file}" 'https://discord.com/api/download/stable?platform=linux&format=deb'
+
+if ! file "${tmp_file}" | grep -F 'Debian binary package' > /dev/null; then
+    echo "file ${tmp_file} is no debian binary package"
+    exit 1
+fi
+
+sudo apt install "${tmp_file}"
+
+rm -f "${tmp_file}"
