@@ -8,7 +8,9 @@ alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
 alias o="xdg-open"
 
-if command -v vim > /dev/null; then
+if command -v hx > /dev/null; then
+    alias e="hx"
+elif command -v vim > /dev/null; then
     alias e="vim"
 elif command -v nvim > /dev/null; then
     alias e="vi"
