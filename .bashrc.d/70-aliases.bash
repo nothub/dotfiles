@@ -1,3 +1,8 @@
+if test -r "${HOME}/.bash_aliases"; then
+    # shellcheck disable=SC1090,SC1091
+    source "${HOME}/.bash_aliases"
+fi
+
 alias ll="ls -lAh"
 
 alias cd..="cd .."
@@ -45,11 +50,6 @@ alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
 alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/all-spark-notebook:latest'
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
-
-if test -r "${HOME}/.bash_aliases"; then
-    # shellcheck disable=SC1090,SC1091
-    source "${HOME}/.bash_aliases"
-fi
 
 alias md='glow -p'
 
