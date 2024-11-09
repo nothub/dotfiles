@@ -34,6 +34,7 @@ alias ssh-pass="ssh -o PreferredAuthentications=password -o PubkeyAuthentication
 alias path='echo $PATH | sed -e "s/:/\n/g"'
 
 alias cal="ncal -b -M"
+alias kw='date +%W'
 
 alias python="python3"
 alias pip="pip3"
