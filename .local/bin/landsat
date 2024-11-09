@@ -14,15 +14,15 @@ out_file="$(mktemp -t XXXXXXXX.png)"
 set -x
 
 curl \
-  -G \
-  -fsSL \
-  -o "${out_file}" \
-  -d "lat=${lat}" \
-  -d "lon=${lon}" \
-  -d "dim=${dim}" \
-  -d "date=${date}" \
-  -d "api_key=${api_key}" \
-  'https://api.nasa.gov/planetary/earth/imagery'
+    -G \
+    -fsSL \
+    -o "${out_file}" \
+    -d "lat=${lat}" \
+    -d "lon=${lon}" \
+    -d "dim=${dim}" \
+    -d "date=${date}" \
+    -d "api_key=${api_key}" \
+    'https://api.nasa.gov/planetary/earth/imagery'
 
 echo "${out_file}"
 xdg-open "${out_file}"
