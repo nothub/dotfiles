@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+
+set -eu
+
+VERSION=v0.49.1
+
+docker rm -f cadvisor
+
+docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --publish=8042:8080 \
+  --detach=true \
+  --name=cadvisor \
+  --privileged \
+  --device=/dev/kmsg \
+  "gcr.io/cadvisor/cadvisor:${VERSION}"
+
+echo >&2 "http://127.0.0.1:8042/"
