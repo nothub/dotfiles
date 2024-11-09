@@ -39,7 +39,10 @@ alias kw='date +%W'
 alias python="python3"
 alias pip="pip3"
 
-alias ssh="TERM=xterm-256color ssh" # kitty otherwise breaks stuff because of dumb politics
+# need to set $TERM for these, otherwise some stuff breaks
+alias ssh="TERM=xterm-256color ssh"
+alias vagrant="TERM=xterm-256color vagrant"
+
 alias icat="kitty +kitten icat"
 
 alias git-submodules-update="git pull --recurse-submodules && git submodule update --remote --recursive"
