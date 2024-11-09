@@ -49,6 +49,8 @@ alias git-submodules-update="git pull --recurse-submodules && git submodule upda
 alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
 alias git-hotstuff="git log --name-only --pretty=format: | grep -v '^\s*$' | sort | uniq -c | sort -nr"
 
+alias passgen="pwgen --ambiguous --secure 14 2 | sed -z 's/\n/+/'"
+
 alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
 
 alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/all-spark-notebook:latest'
