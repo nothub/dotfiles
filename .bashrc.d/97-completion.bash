@@ -31,7 +31,7 @@ if should_add nerdctl; then
 fi
 
 if should_add kubectl; then
-    source <(kubectl completion bash)
+    source <(timeout --verbose --kill-after=1s 1s kubectl completion bash)
 fi
 
 if should_add k3d; then
