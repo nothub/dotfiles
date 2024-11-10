@@ -13,6 +13,8 @@ alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
 alias o="xdg-open"
 
+alias rg="rg --max-columns=1000"
+
 if command -v hx > /dev/null; then
     alias e="hx"
 elif command -v vim > /dev/null; then
