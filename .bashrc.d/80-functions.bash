@@ -46,3 +46,10 @@ function semver_next_patch() {
 function video_conv_mp4() {
     ffmpeg -i "${1}" -c copy "${1%.*}.mp4"
 }
+
+function freemem() {
+    kb=$(cat /proc/meminfo | grep -F 'MemAvailable:' | awk '{print $2}')
+    mb=$((kb / 1024))
+    gb=$((mb / 1024))
+    echo "${gb}"
+}
