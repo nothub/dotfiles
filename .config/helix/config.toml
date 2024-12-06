@@ -1,0 +1,17 @@
+theme = "gruvbox"
+
+[editor]
+rulers = [80]
+
+[editor.statusline]
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+[keys.normal]
+C-right = "move_next_word_start"
+C-left = "move_prev_word_end"
+
+[keys.insert]
+C-right = "move_next_word_start"
+C-left = "move_prev_word_end"
