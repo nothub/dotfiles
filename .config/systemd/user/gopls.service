@@ -1,0 +1,9 @@
+[Unit]
+Description=go language server.
+After=graphical.target
+
+[Service]
+ExecStart=/usr/bin/gopls serve
+
+[Install]
+WantedBy=default.target
