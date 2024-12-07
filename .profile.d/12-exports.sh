@@ -10,7 +10,22 @@ fi
 
 export TERM=xterm-256color
 
-export EDITOR=/usr/bin/vim
+if command -v hx > /dev/null; then
+    EDITOR="$(which hx)"
+    export EDITOR
+elif command -v vim > /dev/null; then
+    EDITOR="$(which vim)"
+    export EDITOR
+elif command -v vi > /dev/null; then
+    EDITOR="$(which vi)"
+    export EDITOR
+elif command -v nano > /dev/null; then
+    EDITOR="$(which nano)"
+    export EDITOR
+elif command -v micro > /dev/null; then
+    EDITOR="$(which micro)"
+    export EDITOR
+fi
 
 # docker rootless
 if test -S "$XDG_RUNTIME_DIR/docker.sock"; then

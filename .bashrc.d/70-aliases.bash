@@ -12,24 +12,11 @@ alias record="LC_ALL='en_US.UTF-8' asciinema rec -i 4"
 alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
 alias o="xdg-open"
+if test -n "${EDITOR}"; then
+    alias e='${EDITOR}'
+fi
 
 alias rg="rg --max-columns=1000"
-
-if command -v hx > /dev/null; then
-    alias e="hx"
-elif command -v vim > /dev/null; then
-    alias e="vim"
-elif command -v nvim > /dev/null; then
-    alias e="vi"
-elif command -v micro > /dev/null; then
-    alias e="micro"
-elif command -v nano > /dev/null; then
-    alias e="nano"
-elif command -v sensible-editor > /dev/null; then
-    alias e="sensible-editor"
-else
-    alias e="xdg-open"
-fi
 
 alias ssh-pass="ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no"
 
