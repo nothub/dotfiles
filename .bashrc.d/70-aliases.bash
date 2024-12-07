@@ -11,7 +11,10 @@ alias record="LC_ALL='en_US.UTF-8' asciinema rec -i 4"
 
 alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
-alias o="xdg-open"
+if command -v xdg-open > /dev/null; then
+    alias o="xdg-open"
+fi
+
 if test -n "${EDITOR}"; then
     alias e='${EDITOR}'
 fi
