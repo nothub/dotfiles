@@ -2,7 +2,11 @@
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LANGUAGE="en_US"
-export LOCALE_ARCHIVE="/usr/lib/locale/locale-archive" # https://nixos.wiki/wiki/Locales
+
+# https://nixos.wiki/wiki/Locales
+if test -z "${LOCALE_ARCHIVE}" && test -f "/usr/lib/locale/locale-archive"; then
+    export LOCALE_ARCHIVE="/usr/lib/locale/locale-archive"
+fi
 
 export TERM=xterm-256color
 
