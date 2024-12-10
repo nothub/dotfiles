@@ -33,6 +33,7 @@ openssl
 openvpn
 ripgrep
 rsync
+s3cmd
 screen
 screenfetch
 software-properties-common

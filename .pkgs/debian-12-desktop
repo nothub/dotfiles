@@ -46,6 +46,7 @@ python3-venv
 python3-wheel
 python-is-python3
 qdirstat
+s3cmd
 scdoc
 scrot
 shellcheck
