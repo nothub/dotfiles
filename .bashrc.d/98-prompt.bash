@@ -11,7 +11,10 @@ __prompt_command() {
 
     local ansi_fg_default='\[\033[39m\]'
     local ansi_fg_red='\[\033[31m\]'
+    local ansi_fg_green='\[\033[32m\]'
+    local ansi_fg_yellow='\[\033[33m\]'
     local ansi_fg_blue='\[\033[34m\]'
+    local ansi_fg_purple='\[\033[35m\]'
     local ansi_fg_cyan='\[\033[36m\]'
     local ansi_dim_on='\[\033[2m\]'
     local ansi_reset='\[\033[0m\]'
@@ -36,7 +39,7 @@ __prompt_command() {
     fi
 
     if [[ -n $VIRTUAL_ENV ]]; then
-        infos+=("env:venv")
+        infos+=("env:${ansi_fg_yellow}venv${ansi_fg_default}")
     fi
 
     local git_branch
