@@ -4,6 +4,7 @@ theme = "gruvbox"
 cursorline = true
 rulers = [80]
 bufferline = "multiple"
+shell = ["sh", "-c"]
 
 [editor.statusline]
 mode.normal = "NORMAL"
@@ -15,6 +16,9 @@ insert = "bar"
 
 [editor.indent-guides]
 render = true
+
+[editor.file-picker]
+hidden = false
 
 [keys.normal]
 C-right = "move_next_word_start"
