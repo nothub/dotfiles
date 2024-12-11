@@ -26,10 +26,14 @@ elif command -v micro > /dev/null; then
     EDITOR="$(which micro)"
     export EDITOR
 fi
+echo "\$EDITOR = ${EDITOR}" >> "${HOME}/.profile.log"
 
 # docker rootless
 if test -S "$XDG_RUNTIME_DIR/docker.sock"; then
     export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/docker.sock"
+fi
+if test -n "${DOCKER_HOST}"; then
+    echo "\$DOCKER_HOST = ${DOCKER_HOST}" >> "${HOME}/.profile.log"
 fi
 
 export ANSIBLE_STDOUT_CALLBACK="yaml"

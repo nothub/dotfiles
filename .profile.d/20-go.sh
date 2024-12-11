@@ -31,4 +31,5 @@ fi
 
 if test -n "${GOROOT}"; then
     add_path "${GOROOT}/bin"
+    echo "\$GOROOT = ${GOROOT}" >> "${HOME}/.profile.log"
 fi

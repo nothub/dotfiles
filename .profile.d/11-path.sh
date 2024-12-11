@@ -6,7 +6,7 @@ add_path() {
     fi
 
     if test ! -d "${1}"; then
-        echo >&2 "${1} is not a directory!"
+        echo "${1} is not a directory!" >> "${HOME}/.profile.log"
         return
     fi
 
@@ -17,6 +17,7 @@ add_path() {
         *)
             # append to $PATH
             export PATH="${PATH}:${1}"
+            echo "\$PATH += ${1}" >> "${HOME}/.profile.log"
             ;;
     esac
 
