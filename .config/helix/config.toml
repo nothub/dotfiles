@@ -7,9 +7,9 @@ bufferline = "multiple"
 shell = ["sh", "-c"]
 
 [editor.statusline]
-mode.normal = "📑NOR"
-mode.insert = "📝INS"
-mode.select = "🕵️SEL"
+mode.normal = "🧭"
+mode.insert = "✍️"
+mode.select = "✂️"
 
 [editor.cursor-shape]
 insert = "bar"
