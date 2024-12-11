@@ -2,14 +2,14 @@ theme = "gruvbox"
 
 [editor]
 cursorline = true
-rulers = [80]
+rulers = [81]
 bufferline = "multiple"
 shell = ["sh", "-c"]
 
 [editor.statusline]
-mode.normal = "NORMAL"
-mode.insert = "INSERT"
-mode.select = "SELECT"
+mode.normal = "📑NOR"
+mode.insert = "📝INS"
+mode.select = "🕵️SEL"
 
 [editor.cursor-shape]
 insert = "bar"
@@ -19,6 +19,9 @@ render = true
 
 [editor.file-picker]
 hidden = false
+
+[editor.lsp]
+display-messages = true
 
 [keys.normal]
 C-right = "move_next_word_start"
