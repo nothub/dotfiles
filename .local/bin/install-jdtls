@@ -8,7 +8,7 @@ runtime_dir="${HOME}/.local/share/jdtls-runtime"
 work_dir="$(mktemp -d)"
 cd "${work_dir}"
 
-echo >&2 "downloading latest stable release"
+echo >&2 "downloading jdtls v${jdtls_version}"
 remote_file="$(curl -fsSL "https://download.eclipse.org/jdtls/milestones/${jdtls_version}/latest.txt")"
 curl -fL# -o 'jdtls.tar.gz' \
     "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/${jdtls_version}/${remote_file}"
@@ -27,6 +27,6 @@ mkdir -p "${runtime_dir}"
 
 tar xzf jdtls.tar.gz --directory="${runtime_dir}"
 
-echo >&2 "jdtls v${jdtls_version} was installed to: ${runtime_dir}"
+echo >&2 "runtime installed to: ${runtime_dir}"
 
 rm -rf "${work_dir}"
