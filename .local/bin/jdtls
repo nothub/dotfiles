@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+set -eu
+
+runtime_dir="${HOME}/.local/share/jdtls-runtime"
+config_dir="${HOME}/.config/jdtls"
+workspace_dir="${HOME}/.cache/jdtls/${PWD#"${HOME}"}"
+
+if test ! -d "${runtime_dir}"; then
+    echo >&2 "missing jdtls runtime"
+    echo >&2 "download from: http://download.eclipse.org/jdtls/milestones"
+    echo >&2 "and unpack to: ${runtime_dir}"
+    exit 1
+fi
+
+set -x
+
+"${runtime_dir}/bin/jdtls" -configuration "${config_dir}" -data "${workspace_dir}"

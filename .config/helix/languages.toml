@@ -1,7 +1,15 @@
+[language-server.jdtls]
+command = "jdtls"
+
+[[language]]
+name = "java"
+roots = ["build.gradle", "pom.xml"]
+language-servers = ["jdtls"]
+
 [language-server.godot]
 command = "nc"
-args = [ "127.0.0.1", "6005"]
+args = ["127.0.0.1", "6005"]
 
 [[language]]
 name = "gdscript"
-language-servers = [ "godot" ]
+language-servers = ["godot"]
