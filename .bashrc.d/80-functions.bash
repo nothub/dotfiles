@@ -53,3 +53,10 @@ function freemem() {
     gb=$((mb / 1024))
     echo "${gb}"
 }
+
+function sort_in_place() {
+    f="$(mktemp)"
+    cp "${1}" "${f}"
+    cat "${f}" | sort -g > "${1}"
+    rm -f "${f}"
+}
