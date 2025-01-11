@@ -1,26 +1,37 @@
 #!/usr/bin/env bash
 
 set -o errexit
+set -o nounset
 set -o pipefail
 
-if [[ $# -eq 1 ]]; then
-    args="--input=$(realpath "$1")"
-else
-    echo "Usage: $0 TARGET"
-    exit 0
+jars_dir="${HOME}/.local/share/recaf"
+
+if test ! $# -eq 1; then
+    echo "Usage: recaf <PATH>"
+    exit 1
 fi
 
-recaf_dir="$HOME/.recaf"
-mkdir -p "$recaf_dir"
-cd "$recaf_dir"
+find_jar() {
+    find "${jars_dir}" -maxdepth 1 \
+        | grep -oP '.*\d+\.\d+\.\d+.*\.jar' \
+        | sort -t. -k1,1n -k2,2n -k3,3n \
+        | tail -n1
+}
 
-json=$(curl --silent --location https://api.github.com/repos/Col-E/Recaf/releases/latest)
-name=$(echo "$json" | jq -r '.assets[0].name')
-url=$(echo "$json" | jq -r '.assets[0].browser_download_url')
+if test -z "$(find_jar)"; then
 
-if [[ ! -f $name ]]; then
-    echo "downloading latest release: $name"
-    curl --progress-bar --location --remote-name --remote-time "$url"
+    echo >&2 "downloading latest release"
+
+    json=$(curl --silent --location "https://api.github.com/repos/Col-E/Recaf/releases/latest")
+    pattern='recaf-.+-jar-with-dependencies\\.jar'
+    url=$(echo "$json" | jq -r ".assets[] | select(.name | test(\"${pattern}\")) | .browser_download_url")
+
+    mkdir -p "${jars_dir}"
+    (
+        cd "${jars_dir}"
+        curl -f#LO "${url}"
+    )
+
 fi
 
-java -jar "$name" "$args"
+java -jar "$(find_jar)" "--input=${1}"
