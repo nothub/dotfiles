@@ -37,6 +37,9 @@ add_path "${HOME}/.local/bin"
 mkdir -p "${HOME}/.local/appimages"
 add_path "${HOME}/.local/appimages"
 
+# go
+add_path "${HOME}/go/bin"
+
 # nim
 add_path "${HOME}/.nim-lang/bin"
 
