@@ -83,3 +83,9 @@ fi
 if should_add packer; then
     complete -C /usr/bin/packer packer
 fi
+
+if should_add deno; then
+    if test -f "${HOME}/.local/share/bash-completion/completions/deno.bash"; then
+        source "${HOME}/.local/share/bash-completion/completions/deno.bash"
+    fi
+fi

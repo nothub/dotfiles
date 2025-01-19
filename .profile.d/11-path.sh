@@ -16,6 +16,7 @@ add_path() {
             ;;
         *)
             # append to $PATH
+            # TODO: is appending correct or should this be prepended?
             export PATH="${PATH}:${1}"
             echo "\$PATH += ${1}" >> "${HOME}/.profile.log"
             ;;
@@ -57,3 +58,6 @@ add_path "${HOME}/.local/share/JetBrains/Toolbox/scripts"
 
 # android
 add_path "${HOME}/adb-fastboot/platform-tools"
+
+# deno
+add_path "${HOME}/.deno/bin"
