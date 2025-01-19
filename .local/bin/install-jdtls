@@ -1,6 +1,15 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -eu
+set -o errexit
+set -o nounset
+set -o pipefail
+
+trap finally SIGINT SIGTERM EXIT ERR
+
+finally() {
+    trap - SIGINT SIGTERM EXIT ERR
+    rm -rf "${work_dir}"
+}
 
 jdtls_version="1.43.0"
 runtime_dir="${HOME}/.local/share/jdtls-runtime"
