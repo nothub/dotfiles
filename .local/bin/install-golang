@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+tmp_file="$(mktemp).tar.gz"
+trgt_dir="${HOME}/.local/go"
+
+trap finally SIGINT SIGTERM EXIT ERR
+finally() {
+    trap - SIGINT SIGTERM EXIT ERR
+    rm -f "${tmp_file}"
+}
+
+go_ver="$(curl -fsSL 'https://go.dev/dl/?mode=json' \
+    | jq -r ' first( .[] | select( .stable == true ) | .version )')"
+
+echo >&2 "Installing ${go_ver} to ${trgt_dir}"
+
+curl -f#L -o "${tmp_file}" "https://go.dev/dl/${go_ver}.linux-amd64.tar.gz"
+file "${tmp_file}"
+sha256sum "${tmp_file}"
+
+rm -rf "${trgt_dir}"
+mkdir -p "${trgt_dir}"
+
+tar -x -C "${trgt_dir}" --strip-components 1 -f "${tmp_file}"
+
+echo >&2 "Don't forget to set: GOROOT=\"${trgt_dir}\""
+export GOROOT="${trgt_dir}"
