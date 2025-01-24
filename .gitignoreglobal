@@ -9,5 +9,9 @@ build/
 
 creds.json
 credentials.json
+.netrc
+.npmrc
 
 coverage.out
+
+*.log
