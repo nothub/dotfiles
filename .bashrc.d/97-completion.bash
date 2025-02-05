@@ -89,3 +89,7 @@ if should_add deno; then
         source "${HOME}/.local/share/bash-completion/completions/deno.bash"
     fi
 fi
+
+if should_add talosctl; then
+    source <(talosctl completion bash)
+fi
