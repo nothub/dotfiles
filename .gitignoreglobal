@@ -11,6 +11,10 @@ creds.json
 credentials.json
 .netrc
 .npmrc
+.pypirc
+.yarnrc
+.yarnrc.yml
+.yarnrc.yaml
 
 coverage.out
 
