@@ -31,9 +31,9 @@ fi
 mapfile -t < ".pkgs/${os_name}-${os_ver}"
 packages=("${MAPFILE[@]}")
 
-if test "${machine_type}" == "desktop" && test -f ".pkgs/${os_name}-${os_ver}-desktop"; then
-    echo "including desktop packages"
-    mapfile -t < ".pkgs/${os_name}-${os_ver}-desktop"
+if test "${machine_type}" == "desktop" && test -f ".pkgs/${os_name}-${os_ver}-gui"; then
+    echo "including gui packages"
+    mapfile -t < ".pkgs/${os_name}-${os_ver}-gui"
     packages+=("${MAPFILE[@]}")
 fi
 
