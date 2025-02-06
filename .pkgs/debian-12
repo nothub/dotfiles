@@ -72,6 +72,8 @@ openvpn
 pandoc
 pax-utils
 pkg-config
+podman
+podman-compose
 popularity-contest
 python-is-python3
 python3-pip
