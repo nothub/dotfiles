@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+install_dir="/usr/share/discord"
+tmp_file="$(mktemp).deb"
+
+trap finally SIGINT SIGTERM EXIT ERR
+finally() {
+    trap - SIGINT SIGTERM EXIT ERR
+    rm -f "${tmp_file}"
+}
+
+latest_version="$(curl -fsSL 'https://discord.com/api/updates/stable?platform=linux' | jq -r '.name')"
+current_version="$(cat "${install_dir}/resources/build_info.json" | jq -r '.version')"
+
+if test "${latest_version}" != "${current_version}"; then
+    curl -f#Lo "${tmp_file}" 'https://discord.com/api/download/stable?platform=linux&format=deb'
+    if ! file --mime "${tmp_file}" | grep -F 'application/vnd.debian.binary-package' > /dev/null; then
+        echo >&2 "file ${tmp_file} is not a debian binary package"
+        exit 1
+    fi
+    sudo apt install "${tmp_file}"
+fi
+
+${install_dir}/Discord
