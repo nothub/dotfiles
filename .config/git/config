@@ -6,7 +6,7 @@
 [core]
 	editor = hx
 	autocrlf = input
-	excludesfile = ~/.gitignoreglobal
+	excludesfile = ~/.config/git/ignores
 
 [diff]
 	submodule = log
@@ -27,6 +27,11 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
+	required = true
+
+[filter "age"]
+	clean = age -R ~/.ssh/id_ed25519.pub -a -
+	smudge = age -d -i ~/.ssh/id_ed25519 -
 	required = true
 
 [commit]
