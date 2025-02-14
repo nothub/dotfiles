@@ -8,10 +8,8 @@ shopt -s checkwinsize \
     expand_aliases \
     histappend
 
-HISTCONTROL=ignoredups
-HISTFILESIZE=50000
-HISTSIZE=10000
-HISTTIMEFORMAT="%F %T "
+HISTCONTROL=ignoreboth
+HISTSIZE=4096
 
 for file in "${HOME}/.bashrc.d/"[0-9]*; do
     if test -r "${file}"; then
