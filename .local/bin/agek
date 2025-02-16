@@ -6,13 +6,20 @@ set -o pipefail
 
 function is_keyfile() {
     local f="$1"
-    while IFS= read -r line || [[ -n $line ]]; do
+    if test ! -s "${f}"; then
+        return 1
+    fi
+    while IFS= read -r line; do
         if test -z "${line}"; then
             continue
         fi
-        if [[ ${line} =~ ^age1.+ ]] \
-            || [[ ${line} =~ ^ssh-ed25519.+ ]] \
-            || [[ ${line} =~ ^ssh-rsa.+ ]]; then
+        if [[ ${line} =~ ^age1.+ ]]; then
+            continue
+        fi
+        if [[ ${line} =~ ^ssh-ed25519.+ ]]; then
+            continue
+        fi
+        if [[ ${line} =~ ^ssh-rsa.+ ]]; then
             continue
         fi
         return 1
