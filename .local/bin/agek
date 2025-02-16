@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+function is_keyfile() {
+    local f="$1"
+    while IFS= read -r line || [[ -n $line ]]; do
+        if test -z "${line}"; then
+            continue
+        fi
+        if [[ ${line} =~ ^age1.+ ]] \
+            || [[ ${line} =~ ^ssh-ed25519.+ ]] \
+            || [[ ${line} =~ ^ssh-rsa.+ ]]; then
+            continue
+        fi
+        return 1
+    done < "${f}"
+    return 0
+}
+
+cmd=()
+cmd+=("age")
+
+while IFS= read -r -d '' f; do
+    if is_keyfile "${f}"; then
+        echo "agek: ${f}"
+        cmd+=("-R='${f}'")
+    fi
+done < <(find "${HOME}/.ssh/" -type f -print0)
+
+f="$(realpath "keys")"
+if test -f "${f}"; then
+    if is_keyfile "${f}"; then
+        echo "agek: ${f}"
+        cmd+=("-R='${f}'")
+    fi
+fi
+
+"${cmd[@]}" "${@}"
