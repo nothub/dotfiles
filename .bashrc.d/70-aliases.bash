@@ -19,7 +19,7 @@ if test -n "${EDITOR}"; then
     alias e='${EDITOR}'
 fi
 
-alias rg="rg --max-columns=1000"
+alias rg="rg --hidden --max-columns=1000"
 
 alias ssh-pass="ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no"
 
