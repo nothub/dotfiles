@@ -45,7 +45,7 @@ alias passgen="pwgen --ambiguous --secure 14 2 | sed -z 's/\n/+/'"
 
 alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
 
-alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/all-spark-notebook:latest'
+alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/scipy-notebook:latest'
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
 
