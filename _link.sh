@@ -9,6 +9,7 @@ set -eu
     --quiet \
     --ignore \
     ".git" \
+    ".gitattributes" \
     ".idea" \
     ".vscode" \
     "_fmt.sh" \
