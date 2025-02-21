@@ -40,6 +40,10 @@ if should_add k3d; then
     source <(k3d completion bash)
 fi
 
+if should_add k3s; then
+    source <(k3s completion bash)
+fi
+
 if should_add k9s; then
     source <(k9s completion bash)
 fi
@@ -94,4 +98,9 @@ fi
 
 if should_add talosctl; then
     source <(talosctl completion bash)
+fi
+
+if should_add vagrant; then
+    # shellcheck disable=SC1090
+    source "$(find /opt/vagrant -type f -wholename '*/bash/completion.sh')"
 fi
