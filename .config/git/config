@@ -34,6 +34,14 @@
 	smudge = age -d -i ~/.ssh/id_ed25519 -
 	required = true
 
+[filter "git-crypt"]
+	smudge = git-crypt smudge
+	clean = git-crypt clean
+	required = true
+
+[diff "git-crypt"]
+	textconv = git-crypt diff
+
 [commit]
 	gpgsign = true
 	verbose = true
