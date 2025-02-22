@@ -30,7 +30,7 @@
 	required = true
 
 [filter "age"]
-	clean = agek -a -
+	clean = age -R=authorized_keys -a -
 	smudge = age -d -i ~/.ssh/id_ed25519 -
 	required = true
 
