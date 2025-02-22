@@ -29,11 +29,6 @@
 	process = git-lfs filter-process
 	required = true
 
-[filter "age"]
-	clean = age -R=authorized_keys -a -
-	smudge = age -d -i ~/.ssh/id_ed25519 -
-	required = true
-
 [filter "git-crypt"]
 	smudge = git-crypt smudge
 	clean = git-crypt clean
@@ -45,6 +40,3 @@
 [commit]
 	gpgsign = true
 	verbose = true
-
-[pull]
-	ff = only
