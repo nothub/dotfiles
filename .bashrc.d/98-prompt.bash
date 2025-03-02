@@ -33,6 +33,13 @@ __prompt_command() {
     local infos
     infos=()
 
+    if pstree -ls $$ \
+        | sed -E 's/-+-pstree.*//' \
+        | head -1 | sed 's/---bash-+-grep//' \
+        | grep -qE '(---sh|---bash|---csh|---dash|---fish|---ksh|---osh|---tcsh|---zsh)'; then
+        infos+=("nested")
+    fi
+
     if [[ -n $IN_NIX_SHELL ]]; then
         if test "${DEVBOX_SHELL_ENABLED}" = "1"; then
             infos+=("env:${ansi_fg_blue}devbox${ansi_fg_default}")
