@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+args=("${@:-"${PWD}"}")
+
+cloc \
+    --exclude-content='\.git' \
+    --exclude-content='\.gitattributes$' \
+    --exclude-content='\.gitignore$' \
+    \
+    --exclude-content='\.devbox' \
+    --exclude-content='devbox.json$' \
+    --exclude-content='devbox.lock$' \
+    \
+    --exclude-content='\.idea' \
+    --exclude-content='\.iml$' \
+    \
+    --exclude-content='\.vscode' \
+    \
+    --exclude-content='\.github' \
+    \
+    --exclude-content='\.terraform' \
+    \
+    --exclude-content='build' \
+    --exclude-content='out' \
+    \
+    --exclude-lang='Markdown' \
+    \
+    "${args[@]}"
