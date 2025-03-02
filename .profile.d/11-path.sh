@@ -26,14 +26,6 @@ add_path() {
 
 }
 
-# fhs
-add_path "/usr/local/bin"
-add_path "/usr/bin"
-add_path "/bin"
-add_path "/usr/local/sbin"
-add_path "/usr/sbin"
-add_path "/sbin"
-
 # home local
 mkdir -p "${HOME}/.local/bin"
 add_path "${HOME}/.local/bin"
@@ -63,3 +55,8 @@ add_path "${HOME}/adb-fastboot/platform-tools"
 
 # deno
 add_path "${HOME}/.deno/bin"
+
+# fhs
+add_path "/usr/local/bin"
+add_path "/usr/bin"
+add_path "/bin"
