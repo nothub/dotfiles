@@ -1,3 +1,5 @@
+# shellcheck shell=sh
+
 find_goroot() {
 
     if test -d "${HOME}/.local/go/bin"; then

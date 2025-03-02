@@ -1,7 +1,9 @@
+# shellcheck shell=bash
+
 # ignore if non-interactive
 case $- in
-*i*) ;;
-*) return ;;
+    *i*) ;;
+    *) return ;;
 esac
 
 shopt -s checkwinsize \

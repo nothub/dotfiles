@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 if [[ -f /usr/share/git/git-prompt.sh ]]; then
     # shellcheck disable=SC1091
     source /usr/share/git/git-prompt.sh
@@ -5,6 +7,7 @@ fi
 
 PROMPT_COMMAND=__prompt_command
 
+# shellcheck disable=SC2034
 __prompt_command() {
 
     local last_exit_status="$?"

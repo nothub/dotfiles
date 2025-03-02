@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # load all private keys in ~/.ssh
 find "${HOME}/.ssh" -type f -exec file {} \; \
     | grep 'OpenSSH private key' \

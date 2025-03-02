@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # shellcheck source=/dev/null
 
 bind 'set completion-ignore-case on'

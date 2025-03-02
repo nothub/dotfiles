@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # regex grep bash history
 function hse() { grep --text -E "$1" "${HOME}/.bash_history"; }
 export -f hse

@@ -1,3 +1,5 @@
+# shellcheck shell=sh
+
 add_path() {
 
     if test ! -e "${1}"; then
