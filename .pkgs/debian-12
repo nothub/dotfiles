@@ -16,6 +16,7 @@ ca-certificates
 caca-utils
 clang
 clang-format
+cloc
 cmake
 cmatrix
 cryptsetup
