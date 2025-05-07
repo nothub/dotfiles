@@ -108,5 +108,6 @@ weechat
 wget
 whiptail
 wireguard
+xmlstarlet
 xxd
 yq
