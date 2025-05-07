@@ -39,15 +39,9 @@ alias vagrant="TERM=xterm-256color vagrant"
 
 alias icat="kitty +kitten icat"
 
-alias git-submodules-update="git pull --recurse-submodules && git submodule update --remote --recursive"
-alias git-contribs="git log --all | sed -n 's/Author: //p' | sort -u"
-alias git-hotstuff="git log --name-only --pretty=format: | grep -v '^\s*$' | sort | uniq -c | sort -nr"
-
 alias passgen="pwgen --ambiguous --secure 14 2 | sed -z 's/\n/+/'"
 
 alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
-
-alias docker-jupyter='docker run --name jupyter -it --rm -p 8888:8888 jupyter/scipy-notebook:latest'
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
 
