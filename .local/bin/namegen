@@ -1,0 +1,456 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# Words (attributes and names) taken from Moby (Docker):
+# https://github.com/moby/moby/blob/890d48de199919d00bf3b1b6822fdddcaf27e65c/pkg/namesgenerator/names-generator.go
+# (Apache License)
+
+attributes=(
+    'admiring'
+    'adoring'
+    'affectionate'
+    'agitated'
+    'amazing'
+    'angry'
+    'awesome'
+    'beautiful'
+    'blissful'
+    'bold'
+    'boring'
+    'brave'
+    'busy'
+    'charming'
+    'clever'
+    'compassionate'
+    'competent'
+    'condescending'
+    'confident'
+    'cool'
+    'cranky'
+    'crazy'
+    'dazzling'
+    'determined'
+    'distracted'
+    'dreamy'
+    'eager'
+    'ecstatic'
+    'elastic'
+    'elated'
+    'elegant'
+    'eloquent'
+    'epic'
+    'exciting'
+    'fervent'
+    'festive'
+    'flamboyant'
+    'focused'
+    'friendly'
+    'frosty'
+    'funny'
+    'gallant'
+    'gifted'
+    'goofy'
+    'gracious'
+    'great'
+    'happy'
+    'hardcore'
+    'heuristic'
+    'hopeful'
+    'hungry'
+    'infallible'
+    'inspiring'
+    'intelligent'
+    'interesting'
+    'jolly'
+    'jovial'
+    'keen'
+    'kind'
+    'laughing'
+    'loving'
+    'lucid'
+    'magical'
+    'modest'
+    'musing'
+    'mystifying'
+    'naughty'
+    'nervous'
+    'nice'
+    'nifty'
+    'nostalgic'
+    'objective'
+    'optimistic'
+    'peaceful'
+    'pedantic'
+    'pensive'
+    'practical'
+    'priceless'
+    'quirky'
+    'quizzical'
+    'recursing'
+    'relaxed'
+    'reverent'
+    'romantic'
+    'sad'
+    'serene'
+    'sharp'
+    'silly'
+    'sleepy'
+    'stoic'
+    'strange'
+    'stupefied'
+    'suspicious'
+    'sweet'
+    'tender'
+    'thirsty'
+    'trusting'
+    'unruffled'
+    'upbeat'
+    'vibrant'
+    'vigilant'
+    'vigorous'
+    'wizardly'
+    'wonderful'
+    'xenodochial'
+    'youthful'
+    'zealous'
+    'zen'
+)
+
+people=(
+    'agnesi'
+    'albattani'
+    'allen'
+    'almeida'
+    'antonelli'
+    'archimedes'
+    'ardinghelli'
+    'aryabhata'
+    'austin'
+    'babbage'
+    'banach'
+    'banzai'
+    'bardeen'
+    'bartik'
+    'bassi'
+    'beaver'
+    'bell'
+    'benz'
+    'bhabha'
+    'bhaskara'
+    'black'
+    'blackburn'
+    'blackwell'
+    'bohr'
+    'booth'
+    'borg'
+    'bose'
+    'bouman'
+    'boyd'
+    'brahmagupta'
+    'brattain'
+    'brown'
+    'buck'
+    'burnell'
+    'cannon'
+    'carson'
+    'cartwright'
+    'carver'
+    'cerf'
+    'chandrasekhar'
+    'chaplygin'
+    'chatelet'
+    'chatterjee'
+    'chaum'
+    'chebyshev'
+    'clarke'
+    'cohen'
+    'colden'
+    'cori'
+    'cray'
+    'curie'
+    'curran'
+    'darwin'
+    'davinci'
+    'dewdney'
+    'dhawan'
+    'diffie'
+    'dijkstra'
+    'dirac'
+    'driscoll'
+    'dubinsky'
+    'easley'
+    'edison'
+    'einstein'
+    'elbakyan'
+    'elgamal'
+    'elion'
+    'ellis'
+    'engelbart'
+    'euclid'
+    'euler'
+    'faraday'
+    'feistel'
+    'fermat'
+    'fermi'
+    'feynman'
+    'franklin'
+    'gagarin'
+    'galileo'
+    'galois'
+    'ganguly'
+    'gates'
+    'gauss'
+    'germain'
+    'goldberg'
+    'goldstine'
+    'goldwasser'
+    'golick'
+    'goodall'
+    'gould'
+    'greider'
+    'grothendieck'
+    'haibt'
+    'hamilton'
+    'haslett'
+    'hawking'
+    'heisenberg'
+    'hellman'
+    'hermann'
+    'herschel'
+    'hertz'
+    'heyrovsky'
+    'hodgkin'
+    'hofstadter'
+    'hoover'
+    'hopper'
+    'hugle'
+    'hypatia'
+    'ishizaka'
+    'jackson'
+    'jang'
+    'jemison'
+    'jennings'
+    'jepsen'
+    'johnson'
+    'joliot'
+    'jones'
+    'kalam'
+    'kapitsa'
+    'kare'
+    'keldysh'
+    'keller'
+    'kepler'
+    'khayyam'
+    'khorana'
+    'kilby'
+    'kirch'
+    'knuth'
+    'kowalevski'
+    'lalande'
+    'lamarr'
+    'lamport'
+    'leakey'
+    'leavitt'
+    'lederberg'
+    'lehmann'
+    'lewin'
+    'lichterman'
+    'liskov'
+    'lovelace'
+    'lumiere'
+    'mahavira'
+    'margulis'
+    'matsumoto'
+    'maxwell'
+    'mayer'
+    'mccarthy'
+    'mcclintock'
+    'mclaren'
+    'mclean'
+    'mcnulty'
+    'meitner'
+    'mendel'
+    'mendeleev'
+    'meninsky'
+    'merkle'
+    'mestorf'
+    'mirzakhani'
+    'montalcini'
+    'moore'
+    'morse'
+    'moser'
+    'murdock'
+    'napier'
+    'nash'
+    'neumann'
+    'newton'
+    'nightingale'
+    'nobel'
+    'noether'
+    'northcutt'
+    'noyce'
+    'panini'
+    'pare'
+    'pascal'
+    'pasteur'
+    'payne'
+    'perlman'
+    'pike'
+    'poincare'
+    'poitras'
+    'proskuriakova'
+    'ptolemy'
+    'raman'
+    'ramanujan'
+    'rhodes'
+    'ride'
+    'ritchie'
+    'robinson'
+    'roentgen'
+    'rosalind'
+    'rubin'
+    'saha'
+    'sammet'
+    'sanderson'
+    'satoshi'
+    'shamir'
+    'shannon'
+    'shaw'
+    'shirley'
+    'shockley'
+    'shtern'
+    'sinoussi'
+    'snyder'
+    'solomon'
+    'spence'
+    'stonebraker'
+    'sutherland'
+    'swanson'
+    'swartz'
+    'swirles'
+    'taussig'
+    'tesla'
+    'tharp'
+    'thompson'
+    'torvalds'
+    'tu'
+    'turing'
+    'varahamihira'
+    'vaughan'
+    'villani'
+    'visvesvaraya'
+    'volhard'
+    'wescoff'
+    'wilbur'
+    'wiles'
+    'williams'
+    'williamson'
+    'wilson'
+    'wing'
+    'wozniak'
+    'wright'
+    'wu'
+    'yalow'
+    'yonath'
+    'zhukovsky'
+)
+
+opt_count='1'
+opt_length=''
+opt_prefix=''
+opt_suffix=''
+opt_wordsep=''
+
+print_usage() {
+    echo "Usage:"
+    echo "  ${0} -c 16 -l 14"
+    echo "  ${0} -p 'my_' -s '_foo' -w '+'"
+    echo "  ${0} -h"
+    echo "Options:"
+    echo "  -c <number>    Count of generated names"
+    echo "  -l <number>    Filter by name length"
+    echo '  -p <string>    Name prefix'
+    echo '  -s <string>    Name suffix'
+    echo '  -w <string>    Word separator'
+    echo "  -h             Print help message"
+}
+
+while getopts 'c:l:p:s:w:h' flag; do
+    case "${flag}" in
+        c) opt_count="${OPTARG}" ;;
+        l) opt_length="${OPTARG}" ;;
+        p) opt_prefix="${OPTARG}" ;;
+        s) opt_suffix="${OPTARG}" ;;
+        w) opt_wordsep="${OPTARG}" ;;
+        h)
+            print_usage
+            exit 0
+            ;;
+        *)
+            print_usage >&2
+            exit 1
+            ;;
+    esac
+done
+
+if test "${opt_count}" -lt "1" 2> /dev/null; then
+    echo >&2 "Invalid name count: \"${opt_count}\""
+    exit 1
+fi
+
+if test -n "${opt_length}" -a "${opt_length}" -lt "1" 2> /dev/null; then
+    echo >&2 "Invalid length filter: \"${opt_length}\""
+    exit 1
+fi
+
+names=()
+runs=0
+
+while test "${#names[@]}" -lt "${opt_count}"; do
+
+    set +e
+    ((runs++))
+    set -e
+    if test "${runs}" -ge "100000"; then
+        if test "${#names[@]}" -gt "0"; then
+            printf >&2 "Found %s of %s results.\n" \
+                "${#names[@]}" \
+                "${opt_count}"
+            printf '%s\n' "${names[@]}"
+        else
+            echo >&2 "Found no results!"
+        fi
+        echo >&2 "This was 100k tries, you probably have to tweak some options..."
+        exit 1
+    fi
+
+    name="$(
+        printf "%s%s%s%s%s" \
+            "${opt_prefix}" \
+            "${attributes[$((RANDOM % "${#attributes[@]}"))]}" \
+            "${opt_wordsep}" \
+            "${people[$((RANDOM % "${#people[@]}"))]}" \
+            "${opt_suffix}"
+    )"
+
+    if test -n "${opt_length}"; then
+        if test "${#name}" -ne "${opt_length}"; then
+            continue
+        fi
+    fi
+
+    if printf '%s\0' "${names[@]}" | grep -Fqxz -- "${name}"; then
+        continue
+    fi
+
+    names+=("${name}")
+
+done
+
+printf >&2 "Found %s results in %s tries.\n" \
+    "${#names[@]}" \
+    "${runs}"
+printf '%s\n' "${names[@]}"
