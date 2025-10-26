@@ -62,3 +62,12 @@ function sort_in_place() {
     cat "${f}" | sort -g > "${1}"
     rm -f "${f}"
 }
+
+function mc_version() {
+    curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' \
+        | jq -r '.versions | map(select(.type == "release")) | .[0].id'
+}
+
+function forgejo_version() {
+    dig +short -t TXT release.forgejo.org | tr -d '"' | cut -d'=' -f2
+}
