@@ -23,5 +23,12 @@ shrink() {
 }
 
 for arg in "$@"; do
-    shrink "$arg"
+    path="$(realpath "${arg}")"
+    if test -f "${path}"; then
+        shrink "${path}"
+    elif test -d "${path}"; then
+        find "${path}" -type f -exec "$0" {} \;
+    else
+        echo >&2 "ignoring: ${path}"
+    fi
 done
