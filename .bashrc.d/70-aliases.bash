@@ -54,3 +54,5 @@ alias go-coverage='go test -v ./... -covermode=count -coverprofile=coverage.out 
 alias trivy='docker run --rm -v /tmp/trivy-cache:/root/.cache -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image'
 
 alias ai='ollama run deepseek-r1:14b'
+
+alias docker-cleanup='docker-clean stop --images --networks --log'
