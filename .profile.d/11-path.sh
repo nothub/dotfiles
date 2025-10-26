@@ -56,6 +56,9 @@ add_path "${HOME}/adb-fastboot/platform-tools"
 # deno
 add_path "${HOME}/.deno/bin"
 
+# flutter
+add_path "${HOME}/.local/flutter"
+
 # fhs
 add_path "/usr/local/bin"
 add_path "/usr/bin"
