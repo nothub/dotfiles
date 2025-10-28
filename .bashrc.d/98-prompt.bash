@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 
-if [[ -f /usr/share/git/git-prompt.sh ]]; then
+if test -f /usr/share/git/git-prompt.sh; then
     # shellcheck disable=SC1091
     source /usr/share/git/git-prompt.sh
 fi
@@ -24,7 +24,7 @@ __prompt_command() {
 
     PS1="${ansi_dim_on}"
 
-    if [[ ${last_exit_status} != 0 ]]; then
+    if test "${last_exit_status}" != 0; then
         PS1+="=> ${ansi_fg_red}${last_exit_status}${ansi_fg_default}\n"
     fi
 
@@ -40,7 +40,7 @@ __prompt_command() {
         infos+=("nested")
     fi
 
-    if [[ -n $IN_NIX_SHELL ]]; then
+    if test -n "${IN_NIX_SHELL:-}"; then
         if test "${DEVBOX_SHELL_ENABLED}" = "1"; then
             infos+=("env:${ansi_fg_blue}devbox${ansi_fg_default}")
         else
@@ -48,20 +48,20 @@ __prompt_command() {
         fi
     fi
 
-    if [[ -n $VIRTUAL_ENV ]]; then
+    if test -n "${VIRTUAL_ENV:-}"; then
         infos+=("env:${ansi_fg_yellow}venv${ansi_fg_default}")
     fi
 
     local git_branch
     git_branch=$(__git_ps1 | sed s/[\(\)\ ]//g)
-    if [[ -n $git_branch ]]; then
+    if test -n "${git_branch}"; then
         if [[ $git_branch == *"main"* ]] || [[ $git_branch == *"master"* ]] || [[ $git_branch == *"trunk"* ]]; then
             git_branch="${ansi_fg_red}${git_branch}${ansi_fg_default}"
         fi
         infos+=("git:${git_branch}")
     fi
 
-    if [[ ${#infos[@]} -gt 0 ]]; then
+    if test "${#infos[@]}" -gt 0; then
         PS1+=" ["
         for i in "${infos[@]}"; do
             PS1+=" ${i}"
