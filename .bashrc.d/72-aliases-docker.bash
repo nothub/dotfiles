@@ -11,3 +11,5 @@ alias docker-trivy="docker run -it --rm \
     -v \"/tmp/trivy-cache:/root/.cache\" \
     -v \"/var/run/docker.sock:/var/run/docker.sock\" \
     aquasec/trivy image"
+
+alias docker-cleanup='docker-clean stop --images --networks --log'
