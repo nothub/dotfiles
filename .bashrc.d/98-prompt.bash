@@ -33,7 +33,7 @@ __prompt_command() {
     local infos
     infos=()
 
-    if pstree -ls $$ \
+    if command -v pstree > /dev/null && pstree -ls $$ \
         | sed -E 's/-+-pstree.*//' \
         | head -1 | sed 's/---bash-+-grep//' \
         | grep -qE '(---sh|---bash|---csh|---dash|---fish|---ksh|---osh|---tcsh|---zsh)'; then
@@ -52,13 +52,15 @@ __prompt_command() {
         infos+=("env:${ansi_fg_yellow}venv${ansi_fg_default}")
     fi
 
-    local git_branch
-    git_branch=$(__git_ps1 | sed s/[\(\)\ ]//g)
-    if test -n "${git_branch}"; then
-        if [[ $git_branch == *"main"* ]] || [[ $git_branch == *"master"* ]] || [[ $git_branch == *"trunk"* ]]; then
-            git_branch="${ansi_fg_red}${git_branch}${ansi_fg_default}"
+    if command -v __git_ps1 > /dev/null; then
+        local git_branch
+        git_branch=$(__git_ps1 | sed s/[\(\)\ ]//g)
+        if test -n "${git_branch}"; then
+            if [[ $git_branch == *"main"* ]] || [[ $git_branch == *"master"* ]] || [[ $git_branch == *"trunk"* ]]; then
+                git_branch="${ansi_fg_red}${git_branch}${ansi_fg_default}"
+            fi
+            infos+=("git:${git_branch}")
         fi
-        infos+=("git:${git_branch}")
     fi
 
     if test "${#infos[@]}" -gt 0; then

@@ -14,4 +14,4 @@ if [[ -x /usr/bin/dircolors ]]; then
 fi
 
 # less non-text input files
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+command -v lesspipe > /dev/null && [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
