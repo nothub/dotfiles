@@ -24,6 +24,8 @@ fi
 
 alias rg="rg --hidden --max-columns=1000"
 
+alias ssh-copy-id-pass="ssh-copy-id -o PreferredAuthentications=password -o PubkeyAuthentication=no"
+
 alias ssh-pass="ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no"
 
 alias path='echo $PATH | sed -e "s/:/\n/g"'
