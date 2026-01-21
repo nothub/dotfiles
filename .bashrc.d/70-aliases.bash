@@ -10,7 +10,7 @@ alias ll="ls -lAh"
 
 alias cd..="cd .."
 
-if command -v trash-put; then
+if command -v trash-put > /dev/null; then
     # There are edge cases when trying to alias rm. It is missing some
     # (GNU) *rm* options, e.g. -I or --no-preserve-root. But none of these
     # options are part of the POSIX standard anyways, so it is acceptable
