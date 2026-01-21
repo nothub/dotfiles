@@ -9,3 +9,5 @@ tzdate() {
 tzdate "Europe/Berlin"
 tzdate "Europe/London"
 tzdate "America/New_York"
+tzdate "America/Chicago"
+tzdate "America/El_Salvador"
