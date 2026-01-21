@@ -5,6 +5,7 @@ if test -r "${HOME}/.bash_aliases"; then
     source "${HOME}/.bash_aliases"
 fi
 
+alias l="ls -lAh"
 alias ll="ls -lAh"
 
 alias cd..="cd .."
