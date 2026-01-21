@@ -66,3 +66,7 @@ function mc_version() {
 function forgejo_version() {
     dig +short -t TXT release.forgejo.org | tr -d '"' | cut -d'=' -f2
 }
+
+function lan_cidrs() {
+    ip a | grep -F '    inet ' | awk '{print $2}'
+}
