@@ -10,6 +10,14 @@ alias ll="ls -lAh"
 
 alias cd..="cd .."
 
+if command -v trash-put; then
+    # There are edge cases when trying to alias rm. It is missing some
+    # (GNU) *rm* options, e.g. -I or --no-preserve-root. But none of these
+    # options are part of the POSIX standard anyways, so it is acceptable
+    # if it causes the deletion to fail gracefully.
+    alias rm="trash-put"
+fi
+
 alias record="LC_ALL='en_US.UTF-8' asciinema rec -i 4"
 
 alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
