@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+set -eu
+
+analyze() {
+
+    case "$(file -ib "${1}" | awk -F\; '{print $1}')" in
+        'video/mp4') ;;
+        'video/webm') ;;
+        'video/x-m4v') ;;
+        'video/x-matroska') ;;
+        *)
+            echo >&2 "ignoring: ${1}"
+            return
+            ;;
+    esac
+
+    echo >&2 "checking: ${1}"
+
+    size_mb=$(echo "$(stat -c%s "${1}") / 1024 / 1024" | bc -l)
+    size_gb=$(echo "${size_mb} / 1024" | bc -l)
+
+    duration=$(ffprobe -v error -show_entries format=duration \
+        -of default=noprint_wrappers=1:nokey=1 "${1}")
+
+    if test -z "${duration}" || test "${duration}" == "N/A"; then
+        return
+    fi
+
+    duration_min=$(echo "${duration} / 60" | bc -l)
+
+    if (($(echo "${duration_min} > 0" | bc -l))); then
+        data_per_minute=$(echo "${size_mb} / ${duration_min}" | bc -l)
+        if test "$(printf "%.0f" "${size_mb}")" -lt 50; then
+            echo >&2 "ignoring: ${1}"
+            return
+        fi
+        if test "$(printf "%.0f" "${data_per_minute}")" -lt 30; then
+            echo >&2 "ignoring: ${1}"
+            return
+        fi
+        printf "%.2fmb/s %.2fgb %s\n" "${data_per_minute}" "${size_gb}" "${1}"
+    fi
+
+}
+
+if test "$#" -lt 1; then
+    echo >&2 "usage:   video-mbpm <path>..."
+    echo >&2 "example: video-mbpm foo/a foo/b | sort -n | less"
+    exit 1
+fi
+
+for arg in "$@"; do
+    path="$(realpath "${arg}")"
+    if test -f "${path}"; then
+        analyze "${path}"
+    elif test -d "${path}"; then
+        find "${path}" -type f -exec "$0" {} \;
+    else
+        echo >&2 "ignoring: ${path}"
+    fi
+done
