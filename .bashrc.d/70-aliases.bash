@@ -41,7 +41,8 @@ alias icat="kitty +kitten icat"
 
 alias passgen="pwgen --ambiguous --secure 14 2 | sed -z 's/\n/+/'"
 
-alias nmap-scan="sudo nmap -T3 -F -O --traceroute"
+alias nmap-scan="sudo nmap -v -T3 -A"
+alias nmap-scan-fast="sudo nmap -v -T3 -F"
 
 alias click-loop='while (true); do sleep 1; xdotool click 1; done'
 
