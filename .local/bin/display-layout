@@ -56,6 +56,9 @@ case "$(hostname -f)" in
             "center")
                 xrandr "${screen_left_off[@]}" "${screen_right_off[@]}" "${screen_center[@]}"
                 ;;
+            "right+center")
+                xrandr "${screen_left_off[@]}" "${screen_right[@]}" "${screen_center[@]}"
+                ;;
             *)
                 echo 1>&2 "unknown mode"
                 exit 1
