@@ -5,7 +5,7 @@ set -o nounset
 
 function print_mit() {
     cat << EOL
-MIT License
+The MIT License (MIT)
 
 Copyright (c) ${year} ${name}
 
