@@ -1,0 +1,22 @@
+[Unit]
+Description=Snapcast client (User)
+Documentation=man:snapclient(1)
+Wants=avahi-daemon.service
+After=network-online.target time-sync.target sound.target avahi-daemon.service pipewire.service pulseaudio.service
+
+[Service]
+
+# desktop config
+#Environment=SNAPCLIENT_OPTS="--host 192.168.0.101 --soundcard pulse"
+
+# headset only
+#Environment=SNAPCLIENT_OPTS="--host 192.168.0.101 --soundcard plughw:CARD=A7,DEV=0"
+
+# speakers only
+Environment=SNAPCLIENT_OPTS="--host 192.168.0.101 --soundcard plughw:CARD=Device,DEV=0"
+
+ExecStart=/usr/bin/snapclient --logsink=system $SNAPCLIENT_OPTS
+Restart=always
+
+[Install]
+WantedBy=default.target
