@@ -3,11 +3,14 @@
 set -eu
 
 tzdate() {
-    printf "%s\t${1}\n" "$(TZ="${1}" date "+%H:%M:%S %Z")"
+  printf "%s  %s  %s\n" "$(TZ="$1" date "+%Z")" "$(TZ="$1" date "+%H:%M:%S")" "$1"
 }
 
-tzdate "Europe/Berlin"
-tzdate "Europe/London"
-tzdate "America/New_York"
+tzdate "America/Los_Angeles"
+tzdate "America/Phoenix"
 tzdate "America/Chicago"
-tzdate "America/El_Salvador"
+tzdate "America/New_York"
+tzdate "Europe/London"
+tzdate "Europe/Berlin"
+tzdate "Asia/Jerusalem"
+tzdate "Europe/Moscow"
