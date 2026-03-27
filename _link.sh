@@ -10,6 +10,7 @@ set -eu
     --ignore \
     ".git" \
     ".gitattributes" \
+    ".gitignore" \
     ".idea" \
     ".vscode" \
     "_fmt.sh" \
