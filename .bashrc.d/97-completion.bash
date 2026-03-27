@@ -32,7 +32,7 @@ if should_add nerdctl; then
 fi
 
 if should_add kubectl; then
-    if kubectl api-resources --request-timeout=1s 1> /dev/null 2> /dev/null; then
+    if timeout 1 kubectl api-resources --request-timeout=1s 1> /dev/null 2> /dev/null; then
         source <(kubectl completion bash)
     fi
 fi
