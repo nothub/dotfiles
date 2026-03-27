@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck source=/dev/null
 
 # colors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'

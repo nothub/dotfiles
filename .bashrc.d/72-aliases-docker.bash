@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck source=/dev/null
 
 alias docker-jupyter="docker run -it --rm \
     --name=jupyter \

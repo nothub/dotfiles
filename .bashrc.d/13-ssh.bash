@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck source=/dev/null
 
 if test -n "${SSH_AUTH_SOCK}"; then
     # load all private keys in ~/.ssh

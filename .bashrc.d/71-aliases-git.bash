@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck source=/dev/null
 
 alias git-submodules-update="git pull --recurse-submodules && git submodule update --remote --recursive"
 

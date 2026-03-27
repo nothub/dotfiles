@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck source=/dev/null
 
 if test -r "${HOME}/.bash_aliases"; then
     # shellcheck disable=SC1090,SC1091

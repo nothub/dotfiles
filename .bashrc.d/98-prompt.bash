@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck source=/dev/null
 
 if test -f /usr/share/git/git-prompt.sh; then
     # shellcheck disable=SC1091
