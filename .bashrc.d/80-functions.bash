@@ -75,6 +75,10 @@ function forgejo_version() {
     dig +short -t TXT release.forgejo.org | tr -d '"' | cut -d'=' -f2
 }
 
+function go-bump() {
+    sed -i -E "s/^go [0-9]+\.[0-9]+\.[0-9]+/go $(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n 1 | sed -e 's/^go//')/" go.mod
+}
+
 function lan_cidrs() {
     ip a | grep -F '    inet ' | awk '{print $2}'
 }
