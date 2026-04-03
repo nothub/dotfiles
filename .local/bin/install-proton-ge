@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+REPO_URL="https://github.com/GloriousEggroll/proton-ge-custom.git"
+TARGET_DIR="${HOME}/.steam/steam/compatibilitytools.d"
+
+latest="$(
+git ls-remote --tags --sort="v:refname" "${REPO_URL}" \
+  | grep -P '\S+\s+refs\/tags\/GE-Proton\d+-\d+$' \
+  | awk -F'refs/tags/' '{print $2}' \
+  | tail -n1
+)"
+
+echo >&2 "Installing ${latest} from \"${REPO_URL}\" to \"${TARGET_DIR}\""
+
+file_tar_url="${REPO_URL%.git}/releases/download/${latest}/${latest}.tar.gz"
+file_tar="$(basename "${file_tar_url}")"
+
+file_sha_url="${REPO_URL%.git}/releases/download/${latest}/${latest}.sha512sum"
+file_sha="$(basename "${file_sha_url}")"
+
+mkdir -p "${TARGET_DIR}/tmp"
+cd "${TARGET_DIR}/tmp"
+
+curl -fLo "${file_tar}" "${file_tar_url}"
+curl -fsSLo "${file_sha}" "${file_sha_url}"
+
+sha512sum -c "${file_sha}"
+
+tar -xzf "${file_tar}" -C ..
+
+rm -f "${file_tar}" "${file_sha}"
