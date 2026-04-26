@@ -8,11 +8,16 @@ REPO_URL="https://github.com/GloriousEggroll/proton-ge-custom.git"
 TARGET_DIR="${HOME}/.steam/steam/compatibilitytools.d"
 
 latest="$(
-git ls-remote --tags --sort="v:refname" "${REPO_URL}" \
-  | grep -P '\S+\s+refs\/tags\/GE-Proton\d+-\d+$' \
-  | awk -F'refs/tags/' '{print $2}' \
-  | tail -n1
+    git ls-remote --tags --sort="v:refname" "${REPO_URL}" \
+        | grep -P '\S+\s+refs\/tags\/GE-Proton\d+-\d+$' \
+        | awk -F'refs/tags/' '{print $2}' \
+        | tail -n1
 )"
+
+if test -e "${TARGET_DIR}/${latest}"; then
+    echo >&2 "Latest version (${latest}) is already installed 🎉"
+    exit 0
+fi
 
 echo >&2 "Installing ${latest} from \"${REPO_URL}\" to \"${TARGET_DIR}\""
 
