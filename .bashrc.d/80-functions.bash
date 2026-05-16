@@ -41,12 +41,21 @@ function semver_next_patch() {
     git describe --abbrev=0 | awk -F '.' '{$3+=1; OFS="."; print}' | tr ' ' '.'
 }
 
-function video_conv_mp4() {
-    ffmpeg -i "${1}" -c copy "${1%.*}.mp4"
+function ffmpeg_cut_front() {
+    ffmpeg -i "${1}" -ss "${2}" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
 }
 
-function video_conv_mp4_to_mp3() {
-    ffmpeg -i "$1" -vn -acodec libmp3lame -q:a 2 "${1%.*}.mp3"
+ffmpeg_cut_end () {
+    duration=$(ffprobe -v error -show_entries format=duration \
+        -of default=noprint_wrappers=1:nokey=1 "$1")
+
+    cut_duration=$(awk "BEGIN {print $duration - $2}")
+
+    ffmpeg -i "$1" -t "$cut_duration" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
+}
+
+function ffmpeg_conv_mp4_mp3() {
+    ffmpeg -i "${1}" -vn -acodec libmp3lame -q:a 2 "${1%.*}.mp3"
 }
 
 function video_cut4() {
