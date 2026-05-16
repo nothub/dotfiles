@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage:
+#   GITHUB_TOKEN=... ./list-human-prs.sh my-namespace
+
+if ! command -v curl > /dev/null 2>&1; then
+    echo "error: curl is required" >&2
+    exit 1
+fi
+
+if ! command -v jq > /dev/null 2>&1; then
+    echo "error: jq is required" >&2
+    exit 1
+fi
+
+if test "$#" -ne 1; then
+    echo "usage: $0 <namespace>" >&2
+    exit 1
+fi
+
+NAMESPACE="$1"
+BASE_URL="https://api.github.com"
+
+if test -z "${GITHUB_TOKEN:-}"; then
+    echo "error: export GITHUB_TOKEN" >&2
+    exit 1
+fi
+
+auth_headers=(
+    -H "Accept: application/vnd.github+json"
+    -H "Authorization: Bearer ${GITHUB_TOKEN}"
+    -H "X-GitHub-Api-Version: 2022-11-28"
+)
+
+tmpdir="$(mktemp -d)"
+trap 'rm -rf "${tmpdir}"' EXIT
+
+fetch_page() {
+    url="$1"
+    headers_file="$2"
+    body_file="$3"
+
+    curl -fsSL \
+        -D "${headers_file}" \
+        "${auth_headers[@]}" \
+        "${url}" \
+        -o "${body_file}"
+}
+
+fetch_json() {
+    url="$1"
+
+    curl -fsSL \
+        "${auth_headers[@]}" \
+        "${url}"
+}
+
+next_link_from_headers() {
+    headers_file="$1"
+
+    tr -d '\r' < "${headers_file}" \
+        | grep -i '^link:' \
+        | sed -n 's/.*<\([^>]*\)>; rel="next".*/\1/p' \
+        | head -n 1
+}
+
+paginate_items() {
+    url="$1"
+    page=1
+
+    while test -n "${url}"; do
+        headers_file="${tmpdir}/headers_${page}.txt"
+        body_file="${tmpdir}/body_${page}.json"
+
+        fetch_page "${url}" "${headers_file}" "${body_file}"
+
+        jq -c '.[]' "${body_file}"
+
+        url="$(next_link_from_headers "${headers_file}" || true)"
+        page=$((page + 1))
+    done
+}
+
+detect_scope_type() {
+    account_json="$(fetch_json "${BASE_URL}/users/${NAMESPACE}")"
+    account_type="$(printf '%s\n' "${account_json}" | jq -r '.type')"
+
+    if test "${account_type}" = "Organization"; then
+        printf '%s\n' "org"
+        return
+    fi
+
+    if test "${account_type}" = "User"; then
+        printf '%s\n' "user"
+        return
+    fi
+
+    echo "error: could not determine whether '${NAMESPACE}' is a user or organization" >&2
+    exit 1
+}
+
+list_repos() {
+    scope_type="$(detect_scope_type)"
+
+    if test "${scope_type}" = "org"; then
+        url="${BASE_URL}/orgs/${NAMESPACE}/repos?per_page=100&type=all"
+    else
+        url="${BASE_URL}/users/${NAMESPACE}/repos?per_page=100&type=owner"
+    fi
+
+    paginate_items "${url}" | jq -r '.name'
+}
+
+list_prs_for_repo() {
+    repo="$1"
+    url="${BASE_URL}/repos/${NAMESPACE}/${repo}/pulls?state=open&per_page=100"
+
+    paginate_items "${url}" | jq -r '
+    select(
+      (.user.login | ascii_downcase) != "dependabot[bot]" and
+      (.user.login | ascii_downcase) != "renovate[bot]" and
+      (.user.login | ascii_downcase) != "renovate-bot" and
+      ((.user.login | ascii_downcase | startswith("dependabot")) | not) and
+      ((.user.login | ascii_downcase | startswith("renovate")) | not)
+    )
+    | [
+        "'"${repo}"'",
+        (.number | tostring),
+        .user.login,
+        (.title | gsub("[\t\r\n]"; " ")),
+        .html_url
+      ]
+    | @tsv
+  '
+}
+
+list_repos | while IFS= read -r repo; do
+    list_prs_for_repo "${repo}"
+done
