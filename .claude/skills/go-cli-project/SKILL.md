@@ -21,6 +21,12 @@ We roughly adhere to the following standards:
 - Write logs to stderr.
 - Read data from stdin.
 
+## Commands
+
+These CLI commands must be implemented in every Go CLI application:
+- `doctor` Check the application for common problems.
+- `config [get|set]` Show the application configuration.
+
 ### Configuration
 
 ### Order

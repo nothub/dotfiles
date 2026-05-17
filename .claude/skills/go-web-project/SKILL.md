@@ -15,13 +15,20 @@ We roughly adhere to the following standards:
 - XDG
 - SemVer
 
-### CLI Behavior
+## CLI Behavior
 
 - Write data to stdout.
 - Write logs to stderr.
 - Read data from stdin.
 
-### Configuration
+## Commands
+
+These CLI commands must be implemented in every Go web application:
+- `serve` Start server and serve web content.
+- `doctor` Check the application for common problems.
+- `config [get|set]` Show the application configuration.
+
+## Configuration
 
 ### Order
 
@@ -50,9 +57,6 @@ Make sure these flags are always implemented:
 - Plain text output, scriptable.
 - Every command exits with a non-zero code on failure.
 - Extensively check errors for their types to handle errors gracefully.
-
-Before commiting, always format the project with `go fmt ./...` to format all Go code and
-`~/.local/bin/shellfmt {{path}}` to format a bash script.
 
 ## Web Design
 
