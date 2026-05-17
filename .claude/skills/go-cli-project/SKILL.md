@@ -21,11 +21,17 @@ We roughly adhere to the following standards:
 - Write logs to stderr.
 - Read data from stdin.
 
+The CLI interface is defined in `USAGE.txt`, all commands, flags, options are documented there, keep it in sync.
+It will be embedded in the binary using the stdlib `embed` package and is used for any usage help.
+
 ### Commands
 
 These CLI commands must be implemented in every Go CLI application:
+
+- `help` (default) Show the application usage.
 - `doctor` Check the application for common problems.
 - `config [get|set]` Show the application configuration.
+- `version` Show the application version.
 
 ## Configuration
 
@@ -44,10 +50,8 @@ The config will be loaded from these sources in order:
 
 Make sure these flags are always implemented:
 
-- `--help`
-- `--version`
-- `--verbose`
 - `--config {{path}}`
+- `--verbose`
 
 ## Signals
 
