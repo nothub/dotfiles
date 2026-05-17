@@ -45,10 +45,11 @@ The config will be loaded from these sources in order:
 
 Make sure these flags are always implemented:
 
+- `--listen {{addr}}`
+- `--config {{path}}`
+- `--verbose`
 - `--help`
 - `--version`
-- `--verbose`
-- `--config {{path}}`
 
 ## Code Style
 
