@@ -15,6 +15,6 @@ Always use `Debian`.
 
 Configure servers via `cloud-init` and declarative `systemd` config files.
 
-Run containers via `Podman` configured as `Quadlets`.
+Run containers via `Podman` configured as [`Quadlets`](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html).
 
 Use `nginx` as the reverse proxy, LetsEncrypt certs via `certbot` for HTTPS.
