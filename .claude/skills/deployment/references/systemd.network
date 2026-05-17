@@ -1,0 +1,3 @@
+# /etc/containers/systemd/forgejo.network
+[Network]
+NetworkName={{app-name}}
