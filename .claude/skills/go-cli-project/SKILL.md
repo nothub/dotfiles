@@ -3,20 +3,58 @@ name: go-cli-project
 description: Create or modify Go CLI applications with a short-lived process runtime.
 ---
 
-Start new projects as Go Modules with path: `codeberg.org/fhuebner/{{project-name}}`
+Project is a Go Module with path: `codeberg.org/fhuebner/{{project-name}}`
 
-This project will:
+This project will provide a CLI application with a short-lived process runtime.
 
-- create a CLI application with a short-lived process runtime
-- persist data either in JSON or CSV files or SQLite or PostgreSQL
+## Specs
 
-Roughly follow these specs:
+We roughly adhere to the following standards:
 
 - POSIX
 - XDG
 - SemVer
 
-## Layout
+### CLI Behavior
+
+- Write data to stdout.
+- Write logs to stderr.
+- Read data from stdin.
+
+### Configuration
+
+### Order
+
+The config will be loaded from these sources in order:
+
+1. Hardcoded defaults
+2. YAML files
+    - `/etc/{{project-name}}/config.yaml`
+    - `~/.config/{{project-name}}/config.yaml`
+3. Environment variables
+4. Flags
+
+### Flags
+
+Make sure these flags are always implemented:
+
+- `--help`
+- `--version`
+- `--verbose`
+- `--config {{path}}`
+
+## Code Style
+
+- Return errors; do not panic in normal operation.
+- Small functions with explicit names. No unexported global mutable state.
+- Plain text output, scriptable.
+- Every command exits with a non-zero code on failure.
+- Extensively check errors for their types to handle errors gracefully.
+
+Before commiting, always format the project with `go fmt ./...` to format all Go code and
+`~/.local/bin/shellfmt {{path}}` to format a bash script.
+
+## Project Layout
 
 - `references/.gitignore`
 - `references/README.md`
@@ -33,17 +71,10 @@ Run: `go run .`
 
 Always prefer these libraries:
 
-- `github.com/goccy/go-json` for JSON handling
-- `github.com/goccy/go-yaml` for YAML handling
-- `google/uuid` to generate UUIDs
-- `modernc.org/sqlite` for SQLite
-- `github.com/AmpyFin/yfinance-go` to fetch finance data
-- `github.com/nothub/semver` to handle SemVer
-- `github.com/yuin/goldmark` to handle Markdown
-- `github.com/hajimehoshi/ebiten` for game related GUI development
-- `github.com/gen2brain/raylib-go/raylib` for non-game related GUI development
-
-Use standard library and built-in tooling whenever possible for other stuff.
+- JSON: `github.com/goccy/go-json`
+- YAML: `github.com/goccy/go-yaml`
+- UUID: `google/uuid`
+- SQLite: `modernc.org/sqlite`
 
 Use the latest stable release of a library when pulling it into the project.
 
@@ -51,9 +82,4 @@ Use the latest stable release of a library when pulling it into the project.
 
 Add tests when they provide useful confidence.
 
-## Configuration
-
-Configuration should be done with:
-
-- flags
-- YAML files
+Before commiting, `go test -vet=all ./...` must pass clean.

@@ -3,22 +3,64 @@ name: go-web-project
 description: Create or modify Go web applications using server-side rendering and Go HTML templates.
 ---
 
-Start new projects as Go Modules with path: `codeberg.org/fhuebner/{{project-name}}`
+Project is a Go Module with path: `codeberg.org/fhuebner/{{project-name}}`
 
-This project will:
+This project will provide a daemonized application serving web content.
 
-- serve server-side rendered HTML content with stdlib go HTML templates
-- make use of semantic HTML whenever feasible
-- use classless css for styling
-- do not use custom fonts, let the browser choose the font
-- use minimalistic plain JavaScript if frontend logic is really required
-- persist data either in JSON or CSV files or SQLite or PostgreSQL
+## Specs
 
-Roughly follow these specs:
+We roughly adhere to the following standards:
 
 - POSIX
 - XDG
 - SemVer
+
+### CLI Behavior
+
+- Write data to stdout.
+- Write logs to stderr.
+- Read data from stdin.
+
+### Configuration
+
+### Order
+
+The config will be loaded from these sources in order:
+
+1. Hardcoded defaults
+2. YAML files
+    - `/etc/{{project-name}}/config.yaml`
+    - `~/.config/{{project-name}}/config.yaml`
+3. Environment variables
+4. Flags
+
+### Flags
+
+Make sure these flags are always implemented:
+
+- `--help`
+- `--version`
+- `--verbose`
+- `--config {{path}}`
+
+## Code Style
+
+- Return errors; do not panic in normal operation.
+- Small functions with explicit names. No unexported global mutable state.
+- Plain text output, scriptable.
+- Every command exits with a non-zero code on failure.
+- Extensively check errors for their types to handle errors gracefully.
+
+Before commiting, always format the project with `go fmt ./...` to format all Go code and
+`~/.local/bin/shellfmt {{path}}` to format a bash script.
+
+## Web Design
+
+- Prioritize server-side rendered HTML content with stdlib go HTML templates.
+- Make use of semantic HTML whenever feasible.
+- Use classless css for styling.
+- Do not use custom fonts, let the browser choose the font.
+- Use minimalistic plain JavaScript if frontend logic is really required.
 
 ## Project Layout
 
@@ -39,17 +81,11 @@ Run: `go run .`
 
 Always prefer these libraries:
 
-- `github.com/goccy/go-json` for JSON handling
-- `github.com/goccy/go-yaml` for YAML handling
-- `http.ServeMux` for serving HTTP
-- `github.com/elnormous/contenttype` to negotiate HTTP content-type
-- `google/uuid` to generate UUIDs
-- `modernc.org/sqlite` for SQLite
-- `github.com/AmpyFin/yfinance-go` to fetch finance data
-- `github.com/nothub/semver` to handle SemVer
-- `github.com/yuin/goldmark` to handle Markdown
-
-Use standard library and built-in tooling whenever possible for other stuff.
+- HTTP: `http.ServeMux`
+- JSON: `github.com/goccy/go-json`
+- YAML: `github.com/goccy/go-yaml`
+- UUID: `google/uuid`
+- SQLite: `modernc.org/sqlite`
 
 Use the latest stable release of a library when pulling it into the project.
 
@@ -57,12 +93,12 @@ Use the latest stable release of a library when pulling it into the project.
 
 Add tests when they provide useful confidence.
 
-## Configuration
+Before commiting, `go test -vet=all ./...` must pass clean.
 
-Configuration should be done with:
+## Data storage
 
-- env vars
-- YAML files
+Persist data either in JSON or CSV files or use SQLite (or PostgreSQL in extreme cases) if the additional complexity is
+justified.
 
 ## Containerize
 
