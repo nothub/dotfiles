@@ -1,11 +1,12 @@
 # General preferences
 
 Prefer simple, boring, maintainable solutions.
+Apply an idiomatic and practical style.
 
 Prioritize:
 - readability
-- correctness
 - maintainability
+- correctness
 - idiomatic language usage
 
 Avoid:
