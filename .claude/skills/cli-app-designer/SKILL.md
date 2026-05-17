@@ -31,7 +31,7 @@ These CLI commands should be implemented unless there is a clear reason not to:
 - `help`: Show app usage. Default command unless the app has a clear default action.
 - `doctor`: Check the app for common problems.
 - `config get [key]`: Show the full effective configuration, or one value when `key` is provided.
-- `config set <key> <value>`: Persist a configuration value to the user config file.
+- `config set <key> <value>`: Persist a configuration value to the user config file when writable user configuration is supported.
 - `version`: Show the app version.
 
 ## Configuration
