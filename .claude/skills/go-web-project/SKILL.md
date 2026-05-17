@@ -51,23 +51,27 @@ Use this skill (`go-web-project`) for the Go- and domain-specific implementation
 
 ## Project Layout
 
-All projects should have these mandatory files:
+When creating a new project, copy required files from `templates/` into the project root.
+Preserve relative paths. Replace `{{project-name}}` placeholders before writing files.
+Do not leave unresolved placeholders in generated project files.
 
-- `references/.gitignore`
-- `references/README.md`
+Required template files:
+
 - `templates/.forgejo/workflows/check.yaml`
+- `templates/.gitattributes`
+- `templates/.gitignore`
 - `templates/Dockerfile`
 - `templates/LICENSE.txt`
-- `references/renovate.json`
+- `templates/README.md`
+- `templates/renovate.json`
 
 ## Project Commands
 
-Build Go: `go build -o {{project-name}} .`  
-Build Container: `docker build -t {{project-name}} .`  
-Test Go: `go test -vet=all ./...`  
-Run Go: `go run .`
-Format Go: `go fmt ./...`
-Dependency cleanup Go: `go mod tidy`
+Build: `go build -o {{project-name}} .`  
+Test: `go test -vet=all ./...`  
+Run: `go run .`
+Format: `go fmt ./...`
+Dependency cleanup: `go mod tidy`
 
 ## Pre-Commit
 
