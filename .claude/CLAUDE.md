@@ -70,3 +70,10 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+## 5. Commit Rules
+
+Before commiting, all tests must pass clean.
+
+Before commiting, always format the changed code files.
+Use `~/.local/bin/shellfmt {{path}}` to format bash scripts.

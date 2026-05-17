@@ -80,6 +80,4 @@ Use the latest stable release of a library when pulling it into the project.
 
 ## Testing
 
-Add tests when they provide useful confidence.
-
-Before commiting, `go test -vet=all ./...` must pass clean.
+Add unit tests when they provide useful confidence.
