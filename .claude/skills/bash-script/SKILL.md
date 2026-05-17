@@ -1,6 +1,6 @@
 ---
 name: bash-script
-description: Write or edit Bash scripts following safe-mode conventions for this project
+description: Write or edit Bash scripts to automate project tasks like setup, testing, building, running, using curl, jq, ffmpeg.
 ---
 
 ## Bash

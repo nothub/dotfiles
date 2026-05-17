@@ -1,6 +1,6 @@
 ---
 name: renovate
-description: Configure Renovate for dependency update automation in any project
+description: Add or update Renovate dependency automation for a project by creating renovate.json from the standard template, adjusting it only when project-specific needs require changes.
 ---
 
 Every project should have a `renovate.json` for automated dependency updates in the project root.

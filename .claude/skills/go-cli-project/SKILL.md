@@ -1,6 +1,6 @@
 ---
 name: go-cli-project
-description: Scaffold and develop a new Go CLI application with POSIX/XDG conventions and Forgejo CI
+description: Create or modify Go CLI applications with a short-lived process runtime.
 ---
 
 Start new projects as Go Modules with path: `codeberg.org/fhuebner/{{project-name}}`

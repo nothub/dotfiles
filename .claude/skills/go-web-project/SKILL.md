@@ -1,6 +1,6 @@
 ---
 name: go-web-project
-description: Scaffold and develop a new Go web application with SSR, SQLite/PostgreSQL, and Forgejo CI
+description: Create or modify Go web applications using server-side rendering and Go HTML templates.
 ---
 
 Start new projects as Go Modules with path: `codeberg.org/fhuebner/{{project-name}}`

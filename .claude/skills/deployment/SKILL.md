@@ -1,6 +1,6 @@
 ---
 name: deployment
-description: Configure Renovate for dependency update automation in any project
+description: Design or deploy infrastructure for small service deployments on Hetzner Cloud using OpenTofu or hcloud, Debian, cloud-init, Containers, Docker, Podman, Quadlets, systemd, nginx, and certbot-managed HTTPS.
 ---
 
 Hetzner Cloud is the provider of choice.
