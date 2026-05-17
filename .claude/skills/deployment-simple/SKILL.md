@@ -1,6 +1,6 @@
 ---
 name: deployment-simple
-description: Design or deploy infrastructure for small service deployments on Hetzner Cloud using hcloud, Debian, cloud-init, Containers, Docker, Podman, Quadlets, systemd, nginx, and certbot-managed HTTPS.
+description: Design, create, review, or modify simple production deployments for small services on Hetzner Cloud. Use for hcloud-based provisioning, Debian servers, cloud-init, systemd networking, Podman containers, Quadlets, nginx reverse proxy setup, certbot-managed HTTPS, firewall basics, deployment files, and lightweight operational runbooks.
 ---
 
 Hetzner Cloud is the provider of choice.

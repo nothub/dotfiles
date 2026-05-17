@@ -1,64 +1,37 @@
 ---
 name: go-web-project
-description: Create or modify Go web applications using server-side rendering and Go HTML templates.
+description: Create, scaffold, review, or modify Go web applications that use server-side rendering. Use for daemon-style Go services, net/http applications, html/template rendering, embedded templates and static assets, CLI configuration, XDG-compatible paths, Dockerfile generation, CI workflows, and simple maintainable web project structure.
 ---
 
 Project is a Go Module with path: `codeberg.org/fhuebner/{{project-name}}`
 
-This project will provide a daemonized application serving web content.
+This project will provide a daemonized app serving web content.
 
-## Specs
+## CLI behavior
 
-We roughly adhere to the following standards:
+When the web app exposes command-line behavior, follow the `cli-app-designer` skill for:
 
-- POSIX
-- XDG
-- SemVer
+- commands and subcommands
+- flags and options
+- stdin/stdout/stderr behavior
+- configuration loading
+- environment variables
+- usage/help output
+- process signals
+- exit codes
 
-## CLI
+Use this skill (`go-web-project`) for the Go- and domain-specific implementation:
 
-- Write data to stdout.
-- Write logs to stderr.
-- Read data from stdin.
-
-The CLI interface is defined in `USAGE.txt`, all commands, flags, options are documented there, keep it in sync.
-It will be embedded in the binary using the stdlib `embed` package and is used for any usage help.
-
-### Commands
-
-These CLI commands must be implemented in every Go web application:
-
-- `help` (default) Show the application usage.
-- `serve` Start server and serve web content.
-- `doctor` Check the application for common problems.
-- `config [get|set]` Show the application configuration.
-- `version` Show the application version.
-
-## Configuration
-
-### Order
-
-The config will be loaded from these sources in order:
-
-1. Hardcoded defaults
-2. YAML files
-    - `/etc/{{project-name}}/config.yaml`
-    - `~/.config/{{project-name}}/config.yaml`
-3. Environment variables
-4. Flags
-
-### Flags
-
-Make sure these flags are always implemented:
-
-- `--listen {{addr}}`
-- `--config {{path}}`
-- `--verbose`
-
-## Signals
-
-Do a graceful shutdown on `SIGINT` or `SIGTERM` signals.
-Reload config on `SIGHUP`.
+- project layout
+- `net/http`
+- `html/template`
+- embedded assets
+- configuration structs
+- server startup
+- graceful shutdown
+- Tests
+- Dockerfile
+- CI workflows
 
 ## Code Style
 
@@ -94,18 +67,17 @@ Build Container: `docker build -t {{project-name}} .`
 Test Go: `go test -vet=all ./...`  
 Run Go: `go run .`
 Format Go: `go fmt ./...`
-Format Bash: `~/.local/bin/shellfmt {{path}}`
 Dependency cleanup Go: `go mod tidy`
 
 ## Pre-Commit
 
 Run these commands before committing:
 
-1. Format Go
-2. Format Bash
-3. Dependency cleanup Go
-4. Test Go
-5. Report any command that could not be run and why
+1. Format code
+2. Dependency cleanup
+3. Run tests
+
+Report any command that could not be run and the reason for it.
 
 ## Third-party dependencies
 
