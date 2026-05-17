@@ -15,13 +15,13 @@ We roughly adhere to the following standards:
 - XDG
 - SemVer
 
-## CLI Behavior
+## CLI
 
 - Write data to stdout.
 - Write logs to stderr.
 - Read data from stdin.
 
-## Commands
+### Commands
 
 These CLI commands must be implemented in every Go web application:
 
@@ -81,12 +81,17 @@ Reload config on `SIGHUP`.
 - `templates/Dockerfile`
 - `templates/LICENSE.txt`
 
-## Commands
+## Project Commands
 
-Build: `go build -o {{project-name}} .`  
-Build-Container: `docker build -t {{project-name}} .`  
+Build Go: `go build -o {{project-name}} .`  
+Build Container: `docker build -t {{project-name}} .`  
 Test: `go test -vet=all ./...`  
 Run: `go run .`
+Format Go: `go fmt ./...`
+Format Bash: `~/.local/bin/shellfmt {{path}}`
+Dependency cleanup: `go mod tidy`
+
+Before commiting, always test, format changed Go and Bash files, and do dependency cleanup.
 
 ## Third-party dependencies
 

@@ -27,11 +27,7 @@ package_reboot_if_required: true
 packages:
   - ca-certificates
   - cloud-utils
-  - curl
   - findutils
-  - git
-  - git-lfs
-  - jq
   - nginx
   - podman
   - python3-certbot-nginx

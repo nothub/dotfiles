@@ -15,19 +15,19 @@ We roughly adhere to the following standards:
 - XDG
 - SemVer
 
-### CLI Behavior
+## CLI
 
 - Write data to stdout.
 - Write logs to stderr.
 - Read data from stdin.
 
-## Commands
+### Commands
 
 These CLI commands must be implemented in every Go CLI application:
 - `doctor` Check the application for common problems.
 - `config [get|set]` Show the application configuration.
 
-### Configuration
+## Configuration
 
 ### Order
 
@@ -62,9 +62,6 @@ Reload config on `SIGHUP`.
 - Every command exits with a non-zero code on failure.
 - Extensively check errors for their types to handle errors gracefully.
 
-Before commiting, always format the project with `go fmt ./...` to format all Go code and
-`~/.local/bin/shellfmt {{path}}` to format a bash script.
-
 ## Project Layout
 
 - `references/.gitignore`
@@ -72,11 +69,16 @@ Before commiting, always format the project with `go fmt ./...` to format all Go
 - `templates/.forgejo/workflows/check.yaml`
 - `templates/LICENSE.txt`
 
-## Commands
+## Project Commands
 
-Build: `go build -o {{project-name}} .`  
+Build Go: `go build -o {{project-name}} .`  
 Test: `go test -vet=all ./...`  
 Run: `go run .`
+Format Go: `go fmt ./...`
+Format Bash: `~/.local/bin/shellfmt {{path}}`
+Dependency cleanup: `go mod tidy`
+
+Before commiting, always test, format changed Go and Bash files, and do dependency cleanup.
 
 ## Third-party dependencies
 
