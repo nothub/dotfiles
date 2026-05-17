@@ -62,7 +62,7 @@ Add tests when they provide useful confidence.
 Configuration should be done with:
 
 - env vars
-- YAML config files
+- YAML files
 
 ## Containerize
 

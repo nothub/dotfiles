@@ -11,6 +11,7 @@ This project will:
 - persist data either in JSON or CSV files or SQLite or PostgreSQL
 
 Roughly follow these specs:
+
 - POSIX
 - XDG
 - SemVer
@@ -22,13 +23,11 @@ Roughly follow these specs:
 - `templates/.forgejo/workflows/check.yaml`
 - `templates/LICENSE.txt`
 
-
 ## Commands
 
 Build: `go build -o {{project-name}} .`  
 Test: `go test -vet=all ./...`  
 Run: `go run .`
-
 
 ## Third-party dependencies
 
@@ -57,4 +56,4 @@ Add tests when they provide useful confidence.
 Configuration should be done with:
 
 - flags
-- YAML config files
+- YAML files
