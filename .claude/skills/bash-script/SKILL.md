@@ -27,4 +27,3 @@ Write log output with echo or printf if arguments need rendering. Write to stder
 
 For processing JSON, use:`jq`.
 For processing videos, use `ffmpeg`.
-For other stuff, prioritize coreutils.
