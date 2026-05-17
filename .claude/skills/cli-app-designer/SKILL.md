@@ -1,6 +1,6 @@
 ---
 name: cli-app-designer
-description: Design, review, or modify cli app behavior in any language. Use for commands and subcommands, flags and options, stdin/stdout/stderr behavior, exit codes, process signals, usage text, help output, XDG-compatible configuration, env vars, and documenting the interface in USAGE.txt and keep it in sync with implementation.
+description: Design, review, or modify command-line application behavior in any language. Use for commands and subcommands, flags and options, stdin/stdout/stderr behavior, exit codes, process signals, usage text, help output, XDG-compatible configuration, environment variables, SemVer-compatible version output, and documenting the interface in USAGE.txt while keeping it in sync with the implementation.
 ---
 
 ## Specs
