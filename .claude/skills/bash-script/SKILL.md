@@ -13,12 +13,7 @@ set -o nounset
 set -o pipefail
 ```
 
-If the script is operating on any relative path, make sure to cd to the relevant directory:
-
-```
-# go to project root
-cd "$(realpath "$(dirname "$(readlink -f "$0")")")/.."
-```
+If the script operates on project-relative paths, resolve the project root explicitly and `cd` there before performing file operations. Prefer a simple, readable project-root detection method appropriate for the repository.
 
 Write log output to stderr:
 

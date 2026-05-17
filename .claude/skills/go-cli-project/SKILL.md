@@ -68,21 +68,32 @@ Reload config on `SIGHUP`.
 
 ## Project Layout
 
+All projects should have these mandatory files:
+
 - `references/.gitignore`
 - `references/README.md`
 - `templates/.forgejo/workflows/check.yaml`
 - `templates/LICENSE.txt`
+- `references/renovate.json`
 
 ## Project Commands
 
 Build Go: `go build -o {{project-name}} .`  
-Test: `go test -vet=all ./...`  
-Run: `go run .`
+Test Go: `go test -vet=all ./...`  
+Run Go: `go run .`
 Format Go: `go fmt ./...`
 Format Bash: `~/.local/bin/shellfmt {{path}}`
-Dependency cleanup: `go mod tidy`
+Dependency cleanup Go: `go mod tidy`
 
-Before commiting, always test, format changed Go and Bash files, and do dependency cleanup.
+## Pre-Commit
+
+Run these commands before committing:
+
+1. Format Go
+2. Format Bash
+3. Dependency cleanup Go
+4. Test Go
+5. Report any command that could not be run and why
 
 ## Third-party dependencies
 
