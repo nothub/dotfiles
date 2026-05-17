@@ -49,6 +49,11 @@ Make sure these flags are always implemented:
 - `--verbose`
 - `--config {{path}}`
 
+## Signals
+
+Do a graceful shutdown on `SIGINT` or `SIGTERM` signals.
+Reload config on `SIGHUP`.
+
 ## Code Style
 
 - Return errors; do not panic in normal operation.

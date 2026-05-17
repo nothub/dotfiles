@@ -24,6 +24,7 @@ We roughly adhere to the following standards:
 ## Commands
 
 These CLI commands must be implemented in every Go web application:
+
 - `serve` Start server and serve web content.
 - `doctor` Check the application for common problems.
 - `config [get|set]` Show the application configuration.
@@ -50,6 +51,11 @@ Make sure these flags are always implemented:
 - `--verbose`
 - `--help`
 - `--version`
+
+## Signals
+
+Do a graceful shutdown on `SIGINT` or `SIGTERM` signals.
+Reload config on `SIGHUP`.
 
 ## Code Style
 
