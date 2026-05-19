@@ -6,7 +6,7 @@
 [core]
 	editor = hx
 	autocrlf = input
-	excludesfile = ~/.config/git/ignores
+	excludesfile = ~/.config/git/ignore
 
 [diff]
 	submodule = log
