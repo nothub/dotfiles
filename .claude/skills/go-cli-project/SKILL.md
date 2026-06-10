@@ -7,7 +7,6 @@ Project is a Go Module. Set the module path to match the Git platform:
 
 - Codeberg: `codeberg.org/fhuebner/{{project-name}}`
 - GitHub: `github.com/nothub/{{project-name}}`
-- Self-hosted Forgejo: `{{forgejo-host}}/fhuebner/{{project-name}}`
 
 ## Interface design
 
