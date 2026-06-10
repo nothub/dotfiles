@@ -6,7 +6,7 @@ description: Create, scaffold, review, or modify Go web applications that use se
 Project is a Go Module. Set the module path to match the Git platform:
 
 - Codeberg: `codeberg.org/fhuebner/{{project-name}}`
-- GitHub: `github.com/fhuebner/{{project-name}}`
+- GitHub: `github.com/nothub/{{project-name}}`
 - Self-hosted Forgejo: `{{forgejo-host}}/fhuebner/{{project-name}}`
 
 This project will provide a daemonized app serving web content.
@@ -78,16 +78,26 @@ Do not leave unresolved placeholders in generated project files.
 
 Required template files:
 
-- `templates/.forgejo/workflows/check.yaml` — Forgejo/Codeberg CI (runner: `codeberg-tiny`)
-- `templates/.github/workflows/check.yaml` — GitHub Actions CI (runner: `ubuntu-latest`)
+- `templates/.forgejo/workflows/check.yaml` — Forgejo/Codeberg CI (runner: `codeberg-small`)
+- `templates/.github/workflows/check.yaml` — GitHub Actions CI (runner: `ubuntu-24.04`)
 - `templates/.gitattributes`
 - `templates/.gitignore`
+- `templates/.goreleaser.yaml` — release automation (linux only)
 - `templates/Dockerfile`
 - `templates/LICENSE.txt`
 - `templates/README.md`
 - `templates/renovate.json`
 
 Copy only the CI template that matches the project's hosting platform. Adapt the runner label if using self-hosted Forgejo.
+
+The CI template includes a `release` job (goreleaser) that triggers on `v*` tags. Before using it, resolve these placeholders in `.goreleaser.yaml`:
+
+- `{{project-name}}` — binary name
+- `{{module-path}}` — Go module path (e.g. `github.com/nothub/{{project-name}}`); adjust the `buildinfo` package path to match your actual version vars, or remove the ldflags if you don't embed build info
+- `{{git-host}}` / `{{git-owner}}` — e.g. `github.com` / `nothub` or `codeberg.org` / `fhuebner`
+
+For Codeberg: add a `GITEA_TOKEN` secret with `write:repository` scope.
+For GitHub: `GITHUB_TOKEN` is automatic.
 
 ## Project Commands
 

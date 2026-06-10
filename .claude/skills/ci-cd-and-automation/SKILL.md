@@ -64,13 +64,14 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4         # Forgejo: gitea/checkout@v3
+      - uses: actions/checkout@v6         # Forgejo: gitea/checkout@v3
 
-      - uses: actions/setup-go@v5         # Forgejo: https://github.com/actions/setup-go or local mirror
+      - uses: actions/setup-go@v6         # Forgejo: https://github.com/actions/setup-go or local mirror
         with:
           go-version-file: go.mod
+          check-latest: true
           cache: true
 
       - run: go vet ./...
@@ -87,9 +88,9 @@ jobs:
 
 ```yaml
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: shellcheck
         run: find . -name '*.sh' -exec shellcheck {} +
 ```
@@ -106,31 +107,25 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
-          fetch-depth: 0             # needed for changelog generation
+          fetch-depth: 0
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
+          check-latest: true
+          cache: true
 
-      - name: Build
-        run: |
-          GOOS=linux GOARCH=amd64 go build -o dist/app-linux-amd64 ./cmd/app
-          GOOS=darwin GOARCH=arm64 go build -o dist/app-darwin-arm64 ./cmd/app
-
-      - name: Changelog
-        run: |
-          go install github.com/git-cliff/git-cliff@latest  # or use local binary
-          git-cliff --current --strip header > CHANGES.md
-
-      - name: Create release
-        uses: softprops/action-gh-release@v2   # Forgejo: use Forgejo API or gitea/release action
+      - uses: goreleaser/goreleaser-action@v7
         with:
-          body_path: CHANGES.md
-          files: dist/*
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Forgejo-specific notes
@@ -252,10 +247,10 @@ Deploy by building a container image in CI, pushing to a registry, then pulling 
 ```yaml
   deploy:
     needs: [check]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build and push image
         run: |
           docker build -t registry.example.com/app:${{ github.sha }} .
