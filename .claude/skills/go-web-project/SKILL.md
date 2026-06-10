@@ -74,7 +74,13 @@ Required template files:
 
 Copy only the CI template that matches the project's hosting platform. Adapt the runner label if using self-hosted Forgejo.
 
-The CI template includes a `release` job (goreleaser) that triggers on `v*` tags. Before using it, resolve these placeholders in `.goreleaser.yaml`:
+Package goreleaser as a Go tool so it is version-pinned in `go.mod` and available in CI without a separate download step:
+
+```sh
+go get -tool github.com/goreleaser/goreleaser/v2@latest
+```
+
+The CI template includes a `release` job that runs `go tool goreleaser release --clean` on `v*` tags. Before using it, resolve these placeholders in `.goreleaser.yaml`:
 
 - `{{project-name}}` — binary name
 - `{{module-path}}` — Go module path (e.g. `github.com/nothub/{{project-name}}`); adjust the `buildinfo` package path to match your actual version vars, or remove the ldflags if you don't embed build info
