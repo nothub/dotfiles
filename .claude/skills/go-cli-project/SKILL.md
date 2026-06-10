@@ -1,6 +1,6 @@
 ---
 name: go-cli-project
-description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, goreleaser releases, devbox dev environments, USAGE.txt embedding, and CI workflows.
+description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, goreleaser releases, USAGE.txt embedding, and CI workflows.
 ---
 
 Project is a Go Module. Set the module path to match the Git platform:
@@ -64,20 +64,19 @@ Resolve these placeholders in `.goreleaser.yaml` before committing:
 For Codeberg: add a `GITEA_TOKEN` secret with `write:repository` scope.
 For GitHub: `GITHUB_TOKEN` is automatic.
 
-## Dev Environment
+## Goreleaser
 
-Create a `devbox.json` at the project root. Minimum packages: `go` and `upx` (needed by goreleaser). Pin all versions — run `devbox search <pkg> --show-all` to find the latest stable. Define `test` and `build` scripts:
+Package goreleaser as a Go tool so it is version-pinned in `go.mod` and available in CI without a separate download step:
 
-```json
-{
-  "packages": ["go@<pin>", "upx@<pin>"],
-  "shell": {
-    "scripts": {
-      "test": ["go test -v -vet=all ./..."],
-      "build": ["go build -o {{project-name}} ."]
-    }
-  }
-}
+```sh
+go get -tool github.com/goreleaser/goreleaser/v2@latest
+```
+
+Run locally and in CI with:
+
+```sh
+go tool goreleaser release --clean
+go tool goreleaser build --clean --snapshot --single-target  # local snapshot
 ```
 
 
