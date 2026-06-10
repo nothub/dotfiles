@@ -50,7 +50,6 @@ Required template files (no Dockerfile — CLI tools ship as binaries, not conta
 - `templates/.gitignore`
 - `templates/.goreleaser.yaml`
 - `templates/LICENSE.txt`
-- `templates/README.md`
 - `templates/renovate.json`
 
 Copy only the CI template that matches the project's hosting platform.

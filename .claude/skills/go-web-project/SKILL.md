@@ -69,7 +69,6 @@ Required template files:
 - `templates/.goreleaser.yaml` — release automation (linux only)
 - `templates/Dockerfile`
 - `templates/LICENSE.txt`
-- `templates/README.md`
 - `templates/renovate.json`
 
 Copy only the CI template that matches the project's hosting platform. Adapt the runner label if using self-hosted Forgejo.
