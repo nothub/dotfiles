@@ -29,18 +29,6 @@ archives:
     files:
       - LICENSE.txt
 
-nfpms:
-  - file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-    maintainer: Florian Hübner <fhuebner@posteo.de>
-    homepage: https://{{git-host}}/{{git-owner}}/{{project-name}}
-    license: MIT
-    formats:
-      - apk
-      - deb
-      - rpm
-      - archlinux
-    bindir: /usr/local/bin
-
 checksum:
   name_template: "checksums.txt"
   algorithm: sha256

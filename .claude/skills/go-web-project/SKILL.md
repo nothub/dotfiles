@@ -84,7 +84,6 @@ The CI template includes a `release` job that runs `go tool goreleaser release -
 
 - `{{project-name}}` — binary name
 - `{{module-path}}` — Go module path (e.g. `github.com/nothub/{{project-name}}`); adjust the `buildinfo` package path to match your actual version vars, or remove the ldflags if you don't embed build info
-- `{{git-host}}` / `{{git-owner}}` — e.g. `github.com` / `nothub` or `codeberg.org` / `fhuebner`
 
 For Codeberg: add a `GITEA_TOKEN` secret with `write:repository` scope.
 For GitHub: `GITHUB_TOKEN` is automatic.
