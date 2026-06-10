@@ -1,14 +1,21 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "language": "english",
-  "theme": "dark-ansi",
-  "editorMode": "normal",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
   },
+  "outputStyle": "Grug-Brained",
+  "language": "english",
+  "feedbackSurveyRate": 0,
+  "effortLevel": "high",
+  "theme": "dark-ansi",
+  "editorMode": "normal",
   "preferredNotifChannel": "kitty",
-  "outputStyle": "Grug-brained",
-  "feedbackSurveyRate": 0
+  "autoCompact": true
 }

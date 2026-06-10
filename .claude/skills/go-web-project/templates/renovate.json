@@ -1,4 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "minimumReleaseAge": "3 days"
+  "configMigration": true,
+  "minimumReleaseAge": "3 days",
+  "semanticCommits": "enabled",
+  "timezone": "Europe/Berlin"
 }

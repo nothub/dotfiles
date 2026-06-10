@@ -1,6 +1,6 @@
 ---
-name: deployment-simple
-description: Design, create, review, or modify simple production deployments for small services on Hetzner Cloud. Use for hcloud-based provisioning, Debian servers, cloud-init, systemd networking, Podman containers, Quadlets, nginx reverse proxy setup, certbot-managed HTTPS, firewall basics, deployment files, and lightweight operational runbooks.
+name: deployment-hetzner-quadlets
+description: Design, create, review, or modify production deployments on Hetzner Cloud. Use for hcloud-based provisioning, Debian servers, cloud-init, Podman Quadlets, nginx reverse proxy, certbot HTTPS, firewall setup, and lightweight operational runbooks.
 ---
 
 Hetzner Cloud is the provider of choice.
