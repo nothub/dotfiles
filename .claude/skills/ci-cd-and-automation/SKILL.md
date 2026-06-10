@@ -263,11 +263,11 @@ Deploy by building a container image in CI, pushing to a registry, then pulling 
           "
 ```
 
-See `deployment-hetzner-quadlets` skill for Quadlet and nginx templates.
+For Podman Quadlet deployments, use Quadlet unit files and an nginx reverse proxy with certbot for HTTPS.
 
 ### Kubernetes
 
-Tag-triggered deploy: update the image tag in the manifest and apply. See `kubernetes` skill.
+Tag-triggered deploy: update the image tag in the manifest and apply.
 
 ## Branch Strategy
 

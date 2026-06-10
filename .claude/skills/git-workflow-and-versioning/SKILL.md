@@ -181,7 +181,7 @@ git tag -s "$VERSION" -m "$VERSION"
 git push origin "$VERSION"
 ```
 
-The signed tag triggers the CI release job (see `ci-cd-and-automation` skill).
+The signed tag triggers the CI release job.
 
 ### git-cliff config
 
@@ -291,7 +291,7 @@ git diff --staged | grep -iE "password|secret|api_key|token"
 # 3. Run language-specific checks before committing
 #    Go:    go fmt ./... && go test -vet=all ./...
 #    Shell: shellcheck <changed files>
-#    Any:   whatever the project's pre-commit sequence is (see go-web-project skill)
+#    Any:   whatever the project's pre-commit sequence is
 ```
 
 Automate with a git pre-commit hook in `.git/hooks/pre-commit`:

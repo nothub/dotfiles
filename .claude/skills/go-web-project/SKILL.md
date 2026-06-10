@@ -13,29 +13,14 @@ This project will provide a daemonized app serving web content.
 
 ## CLI behavior
 
-When the web app exposes command-line behavior, follow the `cli-app-designer` skill for:
+When the app exposes command-line behavior:
 
-- commands and subcommands
-- flags and options
-- stdin/stdout/stderr behavior
-- configuration loading
-- environment variables
-- usage/help output
-- process signals
-- exit codes
-
-Use this skill (`go-web-project`) for the Go- and domain-specific implementation:
-
-- project layout
-- `net/http`
-- `html/template`
-- embedded assets
-- configuration structs
-- server startup
-- graceful shutdown
-- Tests
-- Dockerfile
-- CI workflows
+- POSIX-style flags: long form required, short form optional
+- Always implement `--config <path>` and `--verbose`
+- Write primary output to stdout; logs, warnings, and errors to stderr
+- Exit `0` on success, `1` on runtime error, `2` on invalid usage/flags, `130` on SIGINT
+- Graceful shutdown on SIGINT and SIGTERM
+- Load config in order: hardcoded defaults → `/etc/{{project-name}}/config.yaml` → `~/.config/{{project-name}}/config.yaml` → env vars → flags
 
 ## Code Style
 

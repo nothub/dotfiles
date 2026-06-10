@@ -1,0 +1,34 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "baseBranchPatterns": [
+    "main"
+  ],
+  "configMigration": true,
+  "minimumReleaseAge": "7 days",
+  "timezone": "Europe/Berlin",
+  "packageRules": [
+    {
+      "description": "No minimumReleaseAge delay",
+      "matchDatasources": [
+        "github-tags"
+      ],
+      "matchDepNames": [
+        "nothub/**"
+      ],
+      "minimumReleaseAge": "0 days"
+    },
+    {
+      "description": "No minimumReleaseAge delay",
+      "matchDatasources": [
+        "forgejo-tags"
+      ],
+      "registryUrls": [
+        "https://codeberg.org"
+      ],
+      "matchDepNames": [
+        "fhuebner/**"
+      ],
+      "minimumReleaseAge": "0 days"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ Task arrives
     ├── Don't know what you want yet? ──────→ interview-me
     ├── Have a rough concept, need variants? → idea-refine
     ├── New project/feature/change? ──→ spec-driven-development
-    ├── Scaffolding a project type? ───→ cli-app-designer / go-web-project
+    ├── Scaffolding a project type? ───→ cli-app-designer / go-web-project / go-cli-project
     ├── Have a spec, need tasks? ──────→ planning-and-task-breakdown
     ├── Implementing code? ────────────→ incremental-implementation
     │   ├── UI work? ─────────────────→ frontend-ui-engineering
@@ -144,7 +144,7 @@ For a complete feature, the typical skill sequence is:
 1.  interview-me                    → Extract what the user actually wants
 2.  idea-refine                     → Refine vague ideas
 3.  spec-driven-development         → Define what we're building
-4.  cli-app-designer / go-web-project → Scaffold the project type (optional)
+4.  cli-app-designer / go-web-project / go-cli-project → Scaffold the project type (optional)
 5.  planning-and-task-breakdown     → Break into verifiable chunks
 6.  context-engineering             → Load the right context
 7.  source-driven-development       → Verify against official docs
@@ -172,6 +172,7 @@ Not every task needs every skill. A bug fix might only need: `debugging-and-erro
 | Define | spec-driven-development | Requirements and acceptance criteria before code |
 | Scaffold | cli-app-designer | Design CLI commands, flags, exit codes, and help output |
 | Scaffold | go-web-project | Scaffold Go web services: net/http, html/template, XDG paths, Dockerfile |
+| Scaffold | go-cli-project | Scaffold Go CLI binaries: goreleaser, devbox, USAGE.txt, CI workflows |
 | Plan | planning-and-task-breakdown | Decompose into small, verifiable tasks |
 | Build | incremental-implementation | Thin vertical slices, test each before expanding |
 | Build | source-driven-development | Verify against official docs before implementing |
