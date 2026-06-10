@@ -10,7 +10,7 @@
 
 **Context:**  context-engineering
 **Define:**   interview-me, idea-refine, spec-driven-development
-**Scaffold:** cli-app-designer, go-web-project
+**Scaffold:** cli-app-designer, go-web-project, go-cli-project
 **Plan:**     planning-and-task-breakdown
 **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
 **Verify:**   debugging-and-error-recovery
