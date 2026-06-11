@@ -13,7 +13,7 @@
   "outputStyle": "Grug-Brained",
   "language": "english",
   "feedbackSurveyRate": 0,
-  "effortLevel": "high",
+  "effortLevel": "auto",
   "theme": "dark-ansi",
   "editorMode": "normal",
   "preferredNotifChannel": "kitty",
