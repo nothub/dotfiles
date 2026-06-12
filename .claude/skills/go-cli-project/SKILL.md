@@ -12,6 +12,7 @@ Project is a Go Module. Set the module path to match the Git platform:
 
 - POSIX-style flags: long form required, short form optional
 - Always implement `--config <path>` and `--verbose`
+- `help` and `version` are subcommands, not flags — never define `--help`/`-h` or `--version`/`-V`
 - Write primary output to stdout; logs, warnings, and errors to stderr
 - Keep stdout pipe- and parse-friendly — no progress noise mixed in
 - Exit `0` on success, `1` on runtime error, `2` on invalid usage/flags, `130` on SIGINT
@@ -29,7 +30,7 @@ Project is a Go Module. Set the module path to match the Git platform:
 
 ## USAGE.txt
 
-Embed `USAGE.txt` in the binary and use it as the source for `--help` output:
+Embed `USAGE.txt` in the binary and use it as the source for `help` command output:
 
 ```go
 //go:embed USAGE.txt
@@ -98,6 +99,7 @@ Report any command that could not be run and the reason for it.
 ## Third-party dependencies
 
 - Flags/CLI: stdlib `flag` for simple tools; `github.com/urfave/cli/v3` when subcommands are needed
+  - When using urfave/cli/v3: set `HideHelp: true` and `HideVersion: true` on the `cli.App` to suppress the built-in `--help`/`-h` and `--version`/`-V` flags; implement `help` and `version` as explicit `cli.Command` entries instead
 - JSON: `github.com/goccy/go-json`
 - YAML: `github.com/goccy/go-yaml`
 - UUID: `github.com/google/uuid`
