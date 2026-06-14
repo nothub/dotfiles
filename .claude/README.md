@@ -2,7 +2,9 @@
 
 Personal Claude Code config: skills, commands, agent personas, and references.
 
-Skills are engineering workflow processes loaded on demand. Commands are slash-command entry points. Personas (`agents/`) run as subagents via the Agent tool.
+- [Skills](./skills) are engineering workflow processes loaded on demand.  
+- [Commands](./commands) are slash-command entry points.  
+- [Personas](./agents) run as subagents via the Agent tool.
 
 ## Commands
 
@@ -21,19 +23,6 @@ Skills are engineering workflow processes loaded on demand. Commands are slash-c
 
 These commands orchestrate multiple skills or personas. They are the only entry points for multi-step automated work.
 
-### `/build` — sequential chain
-
-Implements a full spec in one autonomous pass. One human checkpoint (plan approval), then runs to completion.
-
-```
-/build
-  ├── Phase 1: verify spec exists, check git baseline
-  ├── Phase 2: generate plan (if needed) → human approval checkpoint
-  └── Phase 3: for each task → RED test → GREEN impl → regression → build → commit
-```
-
-Use when: you have a spec and want the full implementation done without stepping between tasks.
-
 ### `/plan` — sequential chain with adversarial stress-test
 
 Generates a task breakdown, then applies `doubt-driven-development` to find gaps before the user ever sees it.
@@ -46,6 +35,19 @@ Generates a task breakdown, then applies `doubt-driven-development` to find gaps
 ```
 
 Use when: you have a spec and want a plan that has been adversarially reviewed before you approve it.
+
+### `/build` — sequential chain
+
+Implements a full spec in one autonomous pass. One human checkpoint (plan approval), then runs to completion.
+
+```
+/build
+  ├── Phase 1: verify spec exists, check git baseline
+  ├── Phase 2: generate plan (if needed) → human approval checkpoint
+  └── Phase 3: for each task → RED test → GREEN impl → regression → build → commit
+```
+
+Use when: you have a spec and want the full implementation done without stepping between tasks.
 
 ### `/code-simplify` — sequential chain with verification loop
 

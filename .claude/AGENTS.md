@@ -46,7 +46,7 @@ Task arrives
     ├── Deploying to Hetzner? ───────────────→ deployment-hetzner-quadlets
     ├── Deprecating / migrating? ────────────→ deprecation-and-migration
     ├── Writing docs / ADRs? ────────────────→ documentation-and-adrs
-    └── Maintaining this .claude/ config? ───→ claude-dir-maintenance
+    └── Maintaining this .claude/ config? ───→ claude-janitor
 ```
 
 ### Lifecycle Sequence

@@ -1,11 +1,11 @@
 ---
-name: claude-dir-maintenance
-description: Maintains the global .claude/ directory. Use to audit skill descriptions, check Handoffs wording, sync AGENTS.md decision tree and lifecycle, sync CLAUDE.md skills table, and regenerate README.md. Triggers on "maintain claude config", "audit skills", "update skill descriptions", or "clean up .claude".
+name: claude-janitor
+description: Maintains the global .claude/ directory. Audits skill descriptions, checks Handoffs sections are clean navigation docs, syncs AGENTS.md decision tree, syncs CLAUDE.md skills table, and regenerates README.md. Triggers on "maintain claude config", "audit skills", "update skill descriptions", or "clean up .claude".
 ---
 
-# .claude Directory Maintenance
+# .claude Janitor
 
-Keeps the global `~/.claude/` config directory correct, minimal, and idiomatic.
+Keeps the global `.claude/` config directory correct, minimal, and idiomatic.
 
 ## Steps
 
@@ -24,9 +24,9 @@ Fix any descriptions that fail this check.
 
 For each `skills/*/SKILL.md` that contains `## Handoffs`:
 
-- Verify the section opens with: "Handoffs are suggestions — tell the user what comes next, do not invoke automatically."
-- If that line is missing or different, add or correct it
-- Verify downstream references describe what to suggest, not what to execute
+- Verify the section contains only navigation labels: `**Upstream:**`, `**Downstream:**`, and/or `**Pair:**`
+- Each label should describe what skills relate and why — not instruct the model to invoke them
+- If any label contains imperative language ("invoke X", "run X next"), rewrite it as descriptive ("X continues from here")
 
 ### 3. Sync AGENTS.md
 
@@ -48,8 +48,8 @@ For each `skills/*/SKILL.md` that contains `## Handoffs`:
 Rewrite `.claude/README.md` with current state:
 
 1. One-paragraph description of the `.claude/` directory
-2. Commands table: name + one-liner from each command's `description:` frontmatter
-3. Command chains: for each command, what skills/agents it invokes and in what pattern (direct, fan-out, etc.)
+2. Commands table: name + one-liner from each command's `description:` frontmatter, ordered by real-world usage sequence
+3. Command chains: for each orchestration command, what skills/agents it invokes and in what pattern (sequential, fan-out, etc.)
 
 Keep it minimal — this is a human reference, not instructions for the model.
 
@@ -58,7 +58,7 @@ Keep it minimal — this is a human reference, not instructions for the model.
 - `ls skills/` entries match AGENTS.md decision tree exactly (no gaps, no ghosts)
 - `ls skills/` entries match CLAUDE.md skills table exactly
 - `ls commands/` entries all appear in README.md
-- Every `## Handoffs` section opens with the anti-auto-chain line
+- Every `## Handoffs` section contains only Upstream/Downstream/Pair labels (no imperative language)
 - All skill descriptions are action-verb led and ≤200 chars
 - README.md reflects the current on-disk state
 
