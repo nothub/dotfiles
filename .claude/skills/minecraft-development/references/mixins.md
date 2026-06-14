@@ -68,6 +68,47 @@ Object form — restrict when the entire config is loaded, independent of the `c
 | `@Invoker` | Generate a public caller interface for a private method |
 | `@Overwrite` | Replace a method entirely — avoid, breaks mod compatibility |
 
+## @Inject: CallbackInfo vs CallbackInfoReturnable
+
+For void methods, use `CallbackInfo`. For methods that return a value, use `CallbackInfoReturnable<T>`.
+
+```java
+// void method — cancel to skip the rest of the original method body:
+@Inject(at = @At("HEAD"), method = "play", cancellable = true)
+private void onPlay(SoundInstance sound, CallbackInfo ci) {
+    if (shouldBlock(sound)) ci.cancel();
+}
+
+// method returning SoundSystem.PlayResult — cancel and override the return value:
+@Inject(at = @At("HEAD"), method = "play", cancellable = true)
+private void onPlayDirect(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> ci) {
+    if (shouldBlock(sound)) {
+        ci.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
+        ci.cancel();
+    }
+}
+```
+
+`ci.cancel()` alone on a CIR returns `null`/`0`/`false`. Always call `setReturnValue` first.
+
+## Disambiguating overloaded methods
+
+When the target class has multiple methods with the same name, the `method` string in `@Inject` must include the full JVM descriptor to pick the right one:
+
+```java
+// selects the overload that takes SoundInstance and returns PlayResult:
+@Inject(
+    at = @At("HEAD"),
+    method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;",
+    cancellable = true
+)
+private void injectPlay(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> ci) { ... }
+```
+
+Descriptor format: `methodName(Lpkg/ClassName;I[B)Lreturn/Type;` — `L...;` for objects, `I` int, `B` byte, `V` void. Nested classes use `$`, not `.`.
+
+Use a tool like [Mixin Extras](https://github.com/LlamaLad7/MixinExtras) or read the decompiled class to find the exact signature.
+
 ## Accessor example
 
 When you need to read or write a private field, define an accessor interface instead of using `@Shadow`:

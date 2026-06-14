@@ -175,6 +175,21 @@ UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 
 Common event classes live in `net.fabricmc.fabric.api.event.*`.
 
+Client-side tick events — subscribe in a `ClientModInitializer`:
+
+```java
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.gui.screen.TitleScreen;
+
+// in onInitialize (ClientModInitializer):
+ClientTickEvents.END_CLIENT_TICK.register(client -> {
+    if (!(client.currentScreen instanceof TitleScreen)) return;
+    // runs after every client tick while on the title screen
+});
+```
+
+`END_CLIENT_TICK` fires after the client has ticked. `START_CLIENT_TICK` fires before.
+
 ## Registries
 
 Register blocks, items, etc. in `onInitialize` using `Registry.register`:

@@ -287,7 +287,49 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         // client-only setup
+        // enqueueWork defers to the main thread — needed for anything touching Minecraft.getInstance():
+        event.enqueueWork(() -> {
+            var mc = Minecraft.getInstance();
+            // safe to call here
+        });
     }
+}
+```
+
+For a mod that runs on the client only (no server support at all), restrict at the `@Mod` level:
+
+```java
+@Mod(value = "mymod", dist = {Dist.CLIENT})
+public class Main {
+    public Main(IEventBus modEventBus) { ... }
+}
+```
+
+## Key bindings
+
+```java
+import net.minecraft.client.KeyMapping;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import org.lwjgl.glfw.GLFW;
+
+private static final KeyMapping MY_KEY = new KeyMapping(
+    "key.mymod.action",       // translation key
+    GLFW.GLFW_KEY_R,          // default key (GLFW constant)
+    KeyMapping.Category.MISC  // category shown in controls screen
+);
+
+// on the mod event bus:
+@SubscribeEvent
+public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+    event.register(MY_KEY);
+}
+```
+
+Check if the key was pressed in a tick event (`PlayerTickEvent.Post` on `NeoForge.EVENT_BUS`):
+
+```java
+if (MY_KEY.consumeClick()) {
+    // fires once per key press; consumeClick() clears the buffered state
 }
 ```
 

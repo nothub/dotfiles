@@ -133,6 +133,8 @@ public class Plugin extends JavaPlugin {
 
 ## Event listeners
 
+Separate listener class:
+
 ```java
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -145,14 +147,48 @@ public class JoinListener implements Listener {
         event.getPlayer().sendMessage("Welcome!");
     }
 }
-```
 
-```java
 // in onEnable:
 getServer().getPluginManager().registerEvents(new JoinListener(), this);
 ```
 
+Self-registration — the plugin class itself is the listener:
+
+```java
+public final class Plugin extends JavaPlugin implements Listener {
+
+    @Override
+    public void onEnable() {
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        // ignoreCancelled = true skips events already cancelled by another plugin
+    }
+}
+```
+
+`PlayerInteractEvent` fires twice — once per hand. Guard with:
+```java
+if (ev.getHand() != EquipmentSlot.HAND) return;
+```
+
 Use `@EventHandler(priority = EventPriority.HIGH)` when ordering relative to other plugins matters.
+
+## Adventure text API
+
+Paper uses [Adventure](https://docs.advntr.dev/) for all player-facing text:
+
+```java
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+
+player.sendMessage(text("Status: ").append(text("active").color(GREEN)));
+```
+
+Never use legacy color codes (`§a`, `ChatColor`). `Component` is the only correct type for messages.
 
 ## Commands (Paper Command API)
 
@@ -174,6 +210,45 @@ getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             .build()
     );
 });
+```
+
+Programmatic wiring with a lambda (alternative to Brigadier — works for simple commands):
+
+```java
+// in onEnable:
+PluginCommand cmd = getCommand("mycommand"); // must also be declared in plugin.yml
+cmd.setExecutor((sender, command, label, args) -> {
+    if (!(sender instanceof Player player)) {
+        sender.sendMessage("Players only.");
+        return true;
+    }
+    // ...
+    return true;
+});
+cmd.setTabCompleter((sender, command, label, args) -> Collections.emptyList());
+```
+
+## Block API
+
+Navigate relative blocks:
+```java
+Block above = block.getRelative(BlockFace.UP);
+Block neighbor = block.getRelative(1, 0, -1); // x, y, z offset
+```
+
+Block state predicates:
+```java
+block.isSolid()                 // solid, opaque block
+block.isEmpty()                 // air or void
+block.canPlace(blockData)       // blockData is valid to place here (respects shape constraints)
+(int) block.getLightFromBlocks() // block light level 0–15 (from torches etc., not sky)
+```
+
+Compute loot drops respecting tool enchantments:
+```java
+for (ItemStack stack : block.getDrops(tool)) {
+    block.getWorld().dropItemNaturally(block.getLocation(), stack);
+}
 ```
 
 ## Scheduler
