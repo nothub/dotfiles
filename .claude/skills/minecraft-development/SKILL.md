@@ -37,6 +37,7 @@ Then read the relevant reference file before proceeding:
 - Paper → `references/paper.md`
 - Fabric → `references/fabric.md`
 - NeoForge → `references/neoforge.md`
+- Any framework → `references/common.md` for asset/data file paths, JSON formats, identifiers, lang, models, recipes, loot tables, tags
 
 ## Common conventions across all three
 
