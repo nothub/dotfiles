@@ -9,11 +9,11 @@ Keeps the global `.claude/` config directory correct, minimal, and idiomatic.
 
 ## Steps
 
-### 0. Preparation
+### 1. Preparation
 
 List all personas from `agents/`, commands from `commands/`, files from `references/`, and skills from `skills/`.
 
-### 1. Audit skill descriptions
+### 2. Audit skill descriptions
 
 For each `skills/*/SKILL.md`:
 
@@ -25,7 +25,7 @@ For each `skills/*/SKILL.md`:
 
 Fix any descriptions that fail this check.
 
-### 2. Audit personas
+### 3. Audit personas
 
 For each `agents/*.md` (excluding `README.md`):
 
@@ -35,7 +35,7 @@ For each `agents/*.md` (excluding `README.md`):
 
 Verify `agents/README.md` table lists exactly the personas on disk — add missing rows, remove orphaned ones.
 
-### 3. Audit Handoffs sections
+### 4. Audit Handoffs sections
 
 For each `skills/*/SKILL.md` that contains `## Handoffs`:
 
@@ -44,7 +44,7 @@ For each `skills/*/SKILL.md` that contains `## Handoffs`:
 - If any label contains imperative language ("invoke X", "run X next"), rewrite it as descriptive ("X continues from here")
 - Verify any skill name cited in a label (`` `skill-name` `` pattern) has a corresponding `skills/<name>/` directory on disk; flag broken references for manual review
 
-### 4. Audit commands
+### 5. Audit commands
 
 For each `commands/*.md`:
 
@@ -54,34 +54,41 @@ For each `commands/*.md`:
 
 Fix missing frontmatter; flag broken skill or persona references for manual review.
 
-### 5. Audit references
+### 6. Audit references
 
 - List all files under `references/`
-- Verify each one is linked from at least one `skills/*/SKILL.md` or `commands/*.md`
-- List all `references/X` links in skill files and command files; verify each file exists on disk
+- Verify each one is linked from at least one of: `skills/*/SKILL.md`, `commands/*.md`, `AGENTS.md`, `CLAUDE.md`, or `README.md`
+- List all `references/X` links in those files; verify each file exists on disk
 
-Remove orphaned reference files; flag broken links for manual review.
+Flag orphaned reference files and broken links for manual review — do not delete files automatically.
 
-### 6. Sync AGENTS.md
+### 7. Sync AGENTS.md
 
 **Decision tree:**
+
+The tree is structured as a series of nested branches grouped by phase (Define, Scaffold, Plan, Build, Verify, Review, Ship, Meta). Each leaf has the form:
+```
+    ├── <task description>? ──────→ <skill-name>
+```
+Sub-branches indent one level further with `│   ├──`. New skills belong under the phase that matches their purpose; if none fits, add a new branch at the top level.
+
 - List all directories under `skills/`
 - Verify every skill appears in the Intent → Skill Mapping tree
 - Verify every tree entry has a corresponding `skills/<name>/` directory
-- Add missing entries; remove orphaned ones
+- Add missing leaves in the correct branch; remove orphaned leaves
 
 **Lifecycle sequence:**
 - Verify every skill listed in the Lifecycle Sequence exists as `skills/<name>/` on disk
 - Remove any sequence entry whose skill directory is missing
 
-### 7. Sync CLAUDE.md skills table
+### 8. Sync CLAUDE.md skills table
 
 - List all directories under `skills/`
 - Verify the table has exactly one row per skill
 - Verify each one-liner matches the skill's actual purpose
 - Add missing rows; remove orphaned rows
 
-### 8. Regenerate README.md
+### 9. Regenerate README.md
 
 Rewrite `.claude/README.md` with current state:
 
@@ -97,7 +104,7 @@ Keep it minimal — this is a human reference, not instructions for the model.
 - Every skill in the AGENTS.md lifecycle sequence exists on disk
 - `ls skills/` entries match CLAUDE.md skills table exactly
 - `ls commands/` entries all appear in README.md with non-empty `description:` frontmatter
-- Every `references/` file is linked from at least one skill or command; every reference link in skills and commands resolves to a file on disk
+- Every `references/` file is linked from at least one of: `skills/*/SKILL.md`, `commands/*.md`, `AGENTS.md`, `CLAUDE.md`, or `README.md`; every reference link in those files resolves to a file on disk
 - Every `## Handoffs` section contains only Upstream/Downstream/Pair labels (no imperative language)
 - Every skill name cited in a Handoffs label resolves to a skill on disk
 - All skill descriptions are action-verb led, ≤200 chars, and have `name:` matching the directory name
@@ -109,7 +116,3 @@ Keep it minimal — this is a human reference, not instructions for the model.
 ## Reference
 
 See `references/orchestration-patterns.md` for the pattern catalog covering parallel fan-out, sequential chains, and other orchestration patterns used in this config.
-
-## Handoffs
-
-This skill has no upstream or downstream.
