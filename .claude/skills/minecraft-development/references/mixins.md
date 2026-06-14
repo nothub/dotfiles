@@ -15,7 +15,7 @@ Place at `src/main/resources/<modid>.mixins.json`.
   "required": true,
   "minVersion": "0.8",
   "package": "com.example.mymod.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [],
   "client": ["TitleScreenMixin"],
   "server": [],
@@ -25,15 +25,15 @@ Place at `src/main/resources/<modid>.mixins.json`.
 }
 ```
 
-| Field | Notes |
-|-------|-------|
-| `required` | Crash the game if the mixin set fails to apply |
-| `minVersion` | Minimum Mixin library version. Use `"0.8"`. |
-| `package` | Parent package. All class names in the arrays are relative to this. |
-| `compatibilityLevel` | Java version string. Match your build target (`"JAVA_21"`). |
-| `mixins` | Apply on both physical client and dedicated server |
-| `client` | Apply on physical client only |
-| `server` | Apply on dedicated server only |
+| Field                      | Notes                                                                           |
+|----------------------------|---------------------------------------------------------------------------------|
+| `required`                 | Crash the game if the mixin set fails to apply                                  |
+| `minVersion`               | Minimum Mixin library version. Use `"0.8"`.                                     |
+| `package`                  | Parent package. All class names in the arrays are relative to this.             |
+| `compatibilityLevel`       | Java version string. Match your build target (`"JAVA_25"`).                     |
+| `mixins`                   | Apply on both physical client and dedicated server                              |
+| `client`                   | Apply on physical client only                                                   |
+| `server`                   | Apply on dedicated server only                                                  |
 | `injectors.defaultRequire` | Targets each injector must match. `1` = fail loudly if no match, `0` = optional |
 
 ## Register in fabric.mod.json

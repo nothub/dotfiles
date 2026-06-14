@@ -23,7 +23,7 @@ pluginManagement {
 # gradle.properties
 
 # Java
-java_version=21
+java_version=25
 
 # Gradle
 org.gradle.jvmargs=-Xmx2G
@@ -125,7 +125,7 @@ Entrypoints listed under `"main"` initialize on both sides; `"client"` runs on c
 **Optional fields** (omit if unused):
 - `"icon": "icon.png"` — path to the mod icon; can also be a map of pixel widths to paths
 - `"contact": {"homepage": "https://...", "issues": "https://..."}` — standard keys: `email`, `homepage`, `irc`, `issues`, `sources`
-- `"java": ">=21"` in `depends` — explicit Java version constraint; useful if you use newer Java features
+- `"java": ">=25"` in `depends` — explicit Java version constraint; useful if you use newer Java features
 - `"provides": ["alias-id"]` — mod IDs this mod satisfies as a dependency
 
 For the `mixins` field format and the mixins.json schema, see `references/mixins.md`.

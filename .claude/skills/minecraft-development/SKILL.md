@@ -36,8 +36,8 @@ Then read the relevant reference file before proceeding:
 
 - Paper plugin → `references/paper.md`
 - Paper server config → `references/paper-configuration.md`
-- Fabric → `references/fabric.md`
-- NeoForge → `references/neoforge.md`
+- Fabric mod → `references/fabric.md`
+- NeoForge mod → `references/neoforge.md`
 - Any framework → `references/common.md` for asset/data file paths, JSON formats, identifiers, lang, models, recipes, loot tables, tags
 - Mixins (Fabric or NeoForge) → `references/mixins.md` for mixins.json schema, annotation reference, and accessor pattern
 
@@ -45,7 +45,7 @@ Then read the relevant reference file before proceeding:
 
 **Gradle is the build tool.** All three frameworks ship Gradle plugins that handle Minecraft-specific setup (source remapping, deobfuscation, run tasks). Never reach for Maven.
 
-**Java version**: Minecraft 26.x targets Java 21+. Use `toolchain { languageVersion = JavaLanguageVersion.of(21) }` in Gradle unless a newer version is required.
+**Java version**: Minecraft 26.x targets Java 25+. Use `toolchain { languageVersion = JavaLanguageVersion.of(25) }` in Gradle unless a newer version is required.
 
 **Always verify API versions against the actual MC version being targeted.** Paper API, Fabric API, and NeoForge API all have their own versioning that tracks MC versions. Do not guess version numbers — derive them from official sources or ask the user to confirm.
 
@@ -71,5 +71,4 @@ Do not generate boilerplate beyond these steps. If the user wants events, comman
 ## Handoffs
 
 - **Upstream:** `spec-driven-development` — if the project needs a design pass before scaffolding; `planning-and-task-breakdown` — for multi-feature plugins/mods
-- **Pair:** `devbox-tool` — reproducible dev environment for the Gradle toolchain; `source-driven-development` — verify API usage against official docs before implementing
 - **Downstream:** `test-driven-development` — unit tests for plugin/mod logic; `git-workflow-and-versioning` — commit scaffolding before adding features
