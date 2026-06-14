@@ -172,9 +172,11 @@ Not every task needs every skill. A bug fix might only need: `debugging-and-erro
 | Define | spec-driven-development | Requirements and acceptance criteria before code |
 | Scaffold | cli-app-designer | Design CLI commands, flags, exit codes, and help output |
 | Scaffold | go-web-project | Scaffold Go web services: net/http, html/template, XDG paths, Dockerfile |
-| Scaffold | go-cli-project | Scaffold Go CLI binaries: goreleaser, devbox, USAGE.txt, CI workflows |
+| Scaffold | go-cli-project | Scaffold Go CLI binaries: goreleaser, USAGE.txt, nfpms, CI workflows |
+| Scaffold | devbox-tool | Isolated, reproducible Nix-based dev environments via devbox.json |
 | Plan | planning-and-task-breakdown | Decompose into small, verifiable tasks |
 | Build | incremental-implementation | Thin vertical slices, test each before expanding |
+| Build | bash-script | Safe, pipe-friendly shell scripts with shellcheck and shfmt |
 | Build | source-driven-development | Verify against official docs before implementing |
 | Build | doubt-driven-development | Adversarial fresh-context review of every non-trivial decision |
 | Build | frontend-ui-engineering | Semantic HTML, plain CSS, vanilla JS — no framework, no build step |

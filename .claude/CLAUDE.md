@@ -10,9 +10,9 @@
 
 - **Context:**  context-engineering
 - **Define:**   interview-me, idea-refine, spec-driven-development
-- **Scaffold:** cli-app-designer, go-web-project, go-cli-project
+- **Scaffold:** cli-app-designer, go-web-project, go-cli-project, devbox-tool
 - **Plan:**     planning-and-task-breakdown
-- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
+- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design, bash-script, source-driven-development
 - **Verify:**   debugging-and-error-recovery
 - **Review:**   code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
 - **Ship:**     git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, deployment-hetzner-quadlets
