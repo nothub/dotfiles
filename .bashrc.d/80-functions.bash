@@ -45,7 +45,7 @@ function ffmpeg_cut_front() {
     ffmpeg -i "${1}" -ss "${2}" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
 }
 
-ffmpeg_cut_end () {
+ffmpeg_cut_end() {
     duration=$(ffprobe -v error -show_entries format=duration \
         -of default=noprint_wrappers=1:nokey=1 "$1")
 
