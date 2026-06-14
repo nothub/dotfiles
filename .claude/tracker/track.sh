@@ -1,29 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-input=$(cat)
+file_path=$(jq -r '.tool_input.file_path // empty')
 
-file_path=$(sed -n 's/.*"file_path" *: *"\([^"]*\)".*/\1/p' <<< "$input")
+test -n "$file_path" || exit 0
 
-if [[ "$file_path" =~ .*/.claude/skills/([^/]+)/SKILL\.md$ ]]; then
-    name="${BASH_REMATCH[1]}"
-    kind="skill"
-elif [[ "$file_path" =~ .*/.claude/commands/([^/]+)\.md$ ]]; then
-    name="${BASH_REMATCH[1]}"
-    kind="command"
-else
-    exit 0
-fi
+case "$file_path" in
+    */.claude/skills/*/SKILL.md)
+        name="${file_path#*/.claude/skills/}"
+        name="${name%/SKILL.md}"
+        kind="skill"
+        ;;
+    */.claude/commands/*.md)
+        name="${file_path#*/.claude/commands/}"
+        name="${name%.md}"
+        kind="command"
+        ;;
+    *)
+        exit 0
+        ;;
+esac
 
 csv="$HOME/.claude/tracker/usage.csv"
 
-if [ ! -f "$csv" ]; then
-    mkdir -p "$(dirname "$csv")"
+if test ! -f "$csv"; then
+    mkdir -p "${csv%/*}"
     printf 'type,name,count\n' > "$csv"
 fi
 
-if grep -q "^$kind,$name," "$csv"; then
-    count=$(grep "^$kind,$name," "$csv" | cut -d, -f3)
+if line=$(grep -m1 "^$kind,$name," "$csv"); then
+    count=${line##*,}
     sed -i "s/^$kind,$name,.*/$kind,$name,$((count + 1))/" "$csv"
 else
     printf '%s,%s,1\n' "$kind" "$name" >> "$csv"
