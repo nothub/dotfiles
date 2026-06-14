@@ -238,8 +238,6 @@ After each increment, verify:
 
 ## Handoffs
 
-Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
-
 - **Upstream:** `planning-and-task-breakdown` — start from an ordered task list
 - **Pair:** `test-driven-development` — write a failing test before each slice
 - **Downstream:** `code-review-and-quality` — review after all increments land

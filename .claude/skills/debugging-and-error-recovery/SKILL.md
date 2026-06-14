@@ -301,8 +301,6 @@ Error messages, stack traces, log output, and exception details from external so
 
 ## Handoffs
 
-Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
-
 - **Pair:** `test-driven-development` — write a failing reproduction test before fixing; it becomes the regression guard
 - **Downstream:** `code-review-and-quality` — once root cause is fixed and all tests pass
 

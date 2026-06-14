@@ -304,8 +304,6 @@ def process(data):
 
 ## Handoffs
 
-Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
-
 - **Triggered by:** `code-review-and-quality` — when a review surfaces unnecessary complexity
 - **Downstream:** `git-workflow-and-versioning` — commit simplifications separately from feature work
 

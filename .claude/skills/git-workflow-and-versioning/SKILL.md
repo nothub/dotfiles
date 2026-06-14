@@ -361,8 +361,6 @@ git log --grep="validation" --oneline
 
 ## Handoffs
 
-Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
-
 - **Upstream:** `code-review-and-quality` — commit only after review passes
 - **Pair:** `ci-cd-and-automation` — if pipelines need setup or updating alongside the commit
 - **Downstream:** `deployment-hetzner-quadlets` — for deploy after a release tag

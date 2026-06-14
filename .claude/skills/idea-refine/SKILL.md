@@ -162,8 +162,6 @@ Read `examples.md` in this skill directory for examples of what great ideation s
 
 ## Handoffs
 
-Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
-
 - **Upstream:** `interview-me` — if the user's actual goal is unclear, clarify intent first
 - **Downstream:** `spec-driven-development` — once the direction is confirmed, write it as a spec
 

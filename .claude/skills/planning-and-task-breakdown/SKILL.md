@@ -213,8 +213,6 @@ When multiple agents or sessions are available:
 
 ## Handoffs
 
-Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
-
 - **Upstream:** `spec-driven-development` — tasks are derived from an approved spec
 - **Downstream:** `incremental-implementation` + `test-driven-development` — run together, slice by slice
 
