@@ -10,4 +10,4 @@ Shell configuration lives in [`.bashrc.d/`](.bashrc.d/) and [`.profile.d/`](.pro
 
 [`.local/bin/reclink`](.local/bin/reclink) handles installation and synchronization (see [`_link.sh`](_link.sh)).
 
-[`.claude/`](.claude/) has the configuration for the AI overlords.
+[`.claude/`](.claude/) provides the global configuration for the AI overlords.
