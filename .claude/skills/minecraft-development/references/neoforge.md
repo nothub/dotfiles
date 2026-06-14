@@ -65,6 +65,10 @@ tasks.named('wrapper', Wrapper).configure {
 version = mod_version
 group = mod_group_id
 
+repositories {
+    // add extra mod repositories here if needed
+}
+
 base {
     archivesName = mod_id
 }
@@ -161,12 +165,20 @@ The metadata file lives at `src/main/templates/META-INF/neoforge.mods.toml`. The
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
+#issueTrackerURL="https://..."  #optional
 
 [[mods]]
     modId="${mod_id}"
     version="${mod_version}"
     displayName="${mod_name}"
+    authors="${mod_authors}"
+    logoFile="logo.png"           #optional — filename relative to jar root
+    #displayURL="https://..."     #optional
+    #updateJSONURL="https://..."  #optional
     description='''${mod_description}'''
+
+#[[mixins]]
+#    config="${mod_id}.mixins.json"
 
 [[dependencies.${mod_id}]]
     modId="neoforge"
@@ -182,6 +194,10 @@ license="${mod_license}"
     ordering="AFTER"
     side="BOTH"
 ```
+
+`side`: `"BOTH"`, `"CLIENT"`, or `"SERVER"` — use `"CLIENT"` for client-only mods.
+
+`type`: `"required"`, `"optional"`, `"incompatible"`, or `"discouraged"`.
 
 ## Entry point
 
