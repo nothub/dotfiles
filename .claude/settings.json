@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/tracker/track.sh"
+            "command": "bash ~/.claude/tracker/track-usage.sh"
           }
         ]
       },
@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/tracker/postedit.sh"
+            "command": "bash ~/.claude/tracker/post-edit.sh"
           }
         ]
       }
