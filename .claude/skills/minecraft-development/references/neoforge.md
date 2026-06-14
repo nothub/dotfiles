@@ -6,17 +6,78 @@ Docs: https://docs.neoforged.net/
 
 ## Gradle setup
 
-Use ModDevGradle (MDG) — the current recommended build plugin:
+```groovy
+// settings.gradle
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+```
+
+```properties
+# gradle.properties
+
+# Gradle
+org.gradle.jvmargs=-Xmx1G
+org.gradle.daemon=true
+org.gradle.parallel=true
+org.gradle.caching=true
+org.gradle.configuration-cache=true
+
+# Parchment mappings (better parameter names for vanilla methods)
+parchment_minecraft_version=1.21.11
+parchment_mappings_version=2025.12.20
+
+# Minecraft / NeoForge
+minecraft_version=1.21.11
+minecraft_version_range=[1.21.11]
+neo_version=21.11.36-beta
+neo_version_range=[21.4.0,)
+loader_version_range=[4,)
+
+# Mod
+mod_id=mymod
+mod_name=My Mod
+mod_license=MIT
+mod_version=1.0.0
+mod_group_id=com.example.mymod
+mod_authors=YourName
+mod_description=What the mod does
+```
 
 ```groovy
 // build.gradle
 plugins {
-    id 'java'
+    id 'java-library'
     id 'net.neoforged.moddev' version '<latest>'
+    id 'idea'
 }
 
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
 neoForge {
-    version = '<neoforge-version>'
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
 
     runs {
         client { client() }
@@ -24,60 +85,102 @@ neoForge {
             server()
             programArgument '--nogui'
         }
+        data {
+            clientData()
+            programArguments.addAll '--mod', project.mod_id, '--all',
+                '--output', file('src/generated/resources/').getAbsolutePath(),
+                '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        configureEach {
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
     }
 
     mods {
-        mymod {
-            sourceSet sourceSets.main
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
         }
     }
 }
+
+// Include data-gen output in the final jar
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+// localRuntime: optional runtime deps that don't become transitive dependencies
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
+// Expand gradle.properties values into the mods.toml template
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+        minecraft_version      : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        neo_version            : neo_version,
+        neo_version_range      : neo_version_range,
+        loader_version_range   : loader_version_range,
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_license            : mod_license,
+        mod_version            : mod_version,
+        mod_authors            : mod_authors,
+        mod_description        : mod_description
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+jar.archiveFileName.set("${project.name.toLowerCase()}-${project.version}+${project.minecraft_version}-neoforge.jar")
+jar.destinationDirectory.set(layout.buildDirectory.dir('dist'))
 ```
 
 Find the latest MDG version at: https://projects.neoforged.net/neoforged/moddevgradle
 
 Find the NeoForge version for your MC version at: https://projects.neoforged.net/neoforged/neoforge
 
-NeoForge uses its own version number (not the MC version directly). The NeoForge version for MC 26.1.2 follows the pattern `26.1.x` — check the project page for the latest.
-
 ## Mod metadata: neoforge.mods.toml
 
-Place at `src/main/resources/META-INF/neoforge.mods.toml`:
+The metadata file lives at `src/main/templates/META-INF/neoforge.mods.toml`. The `generateModMetadata` task expands `${variable}` placeholders using values from `gradle.properties`.
 
 ```toml
-modLoader = "javafml"
-loaderVersion = "[4,)"
-license = "MIT"
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 
 [[mods]]
-    modId = "mymod"
-    version = "${file.jarVersion}"
-    displayName = "My Mod"
-    description = "What the mod does"
+    modId="${mod_id}"
+    version="${mod_version}"
+    displayName="${mod_name}"
+    description='''${mod_description}'''
 
-[[dependencies.mymod]]
-    modId = "neoforge"
-    type = "required"
-    versionRange = "[21.5,)"
-    ordering = "NONE"
-    side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_version_range}"
+    ordering="AFTER"
+    side="BOTH"
 
-[[dependencies.mymod]]
-    modId = "minecraft"
-    type = "required"
-    versionRange = "[26.1.2,)"
-    ordering = "NONE"
-    side = "BOTH"
-```
-
-The `${file.jarVersion}` placeholder reads from the jar's `MANIFEST.MF`, populated by Gradle. Also add `Implementation-Version` to your jar manifest in `build.gradle`:
-
-```groovy
-jar {
-    manifest {
-        attributes 'Implementation-Version': project.version
-    }
-}
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="AFTER"
+    side="BOTH"
 ```
 
 ## Entry point
@@ -89,16 +192,15 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
 @Mod("mymod")
-public class MyMod {
+public class Mod {
 
     public static final String MOD_ID = "mymod";
 
-    public MyMod(IEventBus modEventBus) {
-        // register deferred registers, event subscribers, etc.
+    public Mod(IEventBus modEventBus) {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
 
-        // for game events (not mod lifecycle), register on NeoForge event bus:
+        // for game events (not mod lifecycle), register on the NeoForge event bus:
         NeoForge.EVENT_BUS.register(this);
     }
 }
@@ -117,15 +219,13 @@ NeoForge has two buses — pick the right one:
 // on the NeoForge bus — subscribe with @SubscribeEvent:
 @SubscribeEvent
 public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-    event.getEntity().sendSystemMessage(
-        Component.literal("Welcome!")
-    );
+    event.getEntity().sendSystemMessage(Component.literal("Welcome!"));
 }
 ```
 
 Or use the static annotation approach:
 ```java
-@Mod.EventBusSubscriber(modid = MyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.GAME)
+@Mod.EventBusSubscriber(modid = Mod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.GAME)
 public class GameEvents {
 
     @SubscribeEvent
@@ -148,7 +248,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 public class ModBlocks {
 
     public static final DeferredRegister<Block> BLOCKS =
-        DeferredRegister.create(BuiltInRegistries.BLOCK, MyMod.MOD_ID);
+        DeferredRegister.create(BuiltInRegistries.BLOCK, Mod.MOD_ID);
 
     public static final Supplier<Block> MY_BLOCK = BLOCKS.register(
         "my_block",
@@ -164,10 +264,8 @@ ModBlocks.BLOCKS.register(modEventBus);
 
 ## Sided code
 
-Use `@EventBusSubscriber(Dist.CLIENT)` or check `FMLEnvironment.dist` at runtime to gate client-only code:
-
 ```java
-@Mod.EventBusSubscriber(modid = MyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Mod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEvents {
 
     @SubscribeEvent
@@ -186,13 +284,7 @@ When you need to access a private/protected field or method in vanilla, add an A
 public net.minecraft.world.entity.LivingEntity f_20942_ # lastHurt
 ```
 
-Declare the AT file in `neoforge.mods.toml`:
-```toml
-[[accessTransformers]]
-    file = "META-INF/accesstransformer.cfg"
-```
-
-Or in `build.gradle` via MDG:
+Declare in `build.gradle` via MDG:
 ```groovy
 neoForge {
     accessTransformers.add 'src/main/resources/META-INF/accesstransformer.cfg'
@@ -234,6 +326,5 @@ player.getCapability(MyCapability.class).ifPresent(cap -> {
 ## Tips
 
 - Forgetting which bus to use is the #1 NeoForge mistake. Mod lifecycle events → mod bus. Game events → NeoForge bus.
-- `DeferredRegister` suppliers are lazy — don't call `.get()` during mod constructor; wait until after registry events fire.
-- Use `toRun*` task variants (`./gradlew runServer`) for testing; the MDG sets up the necessary run directories automatically.
-- SRG/official mappings: NeoForge uses official Mojang mappings by default. Field names in AT files use SRG names (e.g., `f_12345_`). Check them at https://mcsr.rs/ or with the `./gradlew createMcpToSrg` task.
+- `DeferredRegister` suppliers are lazy — don't call `.get()` during the mod constructor; wait until after registry events fire.
+- SRG/official mappings: NeoForge uses official Mojang mappings by default. Field names in AT files use SRG names (e.g., `f_12345_`). Check them at https://mcsr.rs/.

@@ -15,6 +15,11 @@ This skill covers three Minecraft development targets:
 
 Dev environment is always Linux. The runtime can be anything Minecraft supports.
 
+**Language and build constraints (non-negotiable):**
+- Build files: Gradle Groovy DSL only (`build.gradle`, never `build.gradle.kts`)
+- Source language: Java only (no Kotlin, no Groovy source files)
+- Preference order: Java > Groovy > Kotlin, Gradle > Maven
+
 ## First step: establish context
 
 Before writing any code or config, determine:

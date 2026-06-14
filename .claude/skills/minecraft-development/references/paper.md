@@ -7,58 +7,102 @@ Docs: https://docs.papermc.io/paper/dev
 ## Gradle setup
 
 ```groovy
+// settings.gradle
+rootProject.name = 'MyPlugin'
+```
+
+```properties
+# gradle.properties
+java_version=25
+plugin_version=1.0.0
+minecraft_version=26.1.2
+```
+
+```groovy
 // build.gradle
 plugins {
-    id 'java'
-    id 'io.papermc.paperweight.userdev' version '<latest>'
+    id 'java-library'
+    id 'xyz.jpenilla.run-paper' version '<latest>'
 }
 
+group = 'com.example'
+version = project.plugin_version
+
 repositories {
-    maven { url 'https://repo.papermc.io/repository/maven-public/' }
+    mavenCentral()
+    maven {
+        url = 'https://repo.papermc.io/repository/maven-public/'
+        content {
+            includeGroup 'com.mojang'
+            includeGroup 'io.papermc.paper'
+            includeGroup 'net.kyori'
+            includeGroup 'net.md-5'
+        }
+    }
 }
 
 dependencies {
-    paperweight.paperDevBundle('<mc-version>-R0.1-SNAPSHOT')
+    compileOnly group: 'io.papermc.paper', name: 'paper-api', version: "${project.minecraft_version}.build.+"
 }
 
-assemble.dependsOn reobfJar
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(project.java_version)
+}
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = Integer.parseInt(project.java_version)
+    it.options.encoding = 'UTF-8'
+}
+
+tasks {
+    runServer {
+        minecraftVersion("${project.minecraft_version}")
+        jvmArgs('-Dcom.mojang.eula.agree=true', '-DPaper.skipServerPropertiesComments=true')
+    }
+}
+
+processResources {
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        filter { line -> line.replace('@mod_version@', project.version) }
+        filter { line -> line.replace('@minecraft_version@', minecraft_version) }
+    }
+}
+
+jar.archiveFileName.set("${project.name.toLowerCase()}-${project.version}+${project.minecraft_version}-paper.jar")
+jar.destinationDirectory.set(layout.buildDirectory.dir('dist'))
 ```
 
-The `paperDevBundle` version is `<mc-version>-R0.1-SNAPSHOT`. For MC 26.1.2, use `26.1.2-R0.1-SNAPSHOT`.
+The `paper-api` version format is `${minecraft_version}.build.+` for MC 26.x. For older MC (1.x series), the format was `${minecraft_version}-R0.1-SNAPSHOT`.
 
-Find the latest Paperweight version at: https://plugins.gradle.org/plugin/io.papermc.paperweight.userdev
+Find the latest `run-paper` version at: https://plugins.gradle.org/plugin/xyz.jpenilla.run-paper
 
-## Plugin metadata: paper-plugin.yml
+## Plugin metadata: plugin.yml
 
-`paper-plugin.yml` is the modern format (prefer it over `plugin.yml` for new projects).
+Place at `src/main/resources/plugin.yml`. The `@placeholder@` tokens are substituted by `processResources` at build time.
 
 ```yaml
-name: MyPlugin
-version: "1.0.0"
-main: com.example.myplugin.MyPlugin
-api-version: "1.21"
-description: "What the plugin does"
-authors:
-  - YourName
-dependencies:
-  server:
-    # example optional dep
-    LuckPerms:
-      load: BEFORE
-      required: false
-      join-classpath: false
+name: 'MyPlugin'
+version: '@mod_version@'
+api-version: '@minecraft_version@'
+main: 'com.example.myplugin.Plugin'
+description: 'What the plugin does'
+website: 'https://github.com/example/myplugin'
+authors: [ 'YourName' ]
+contributors: [ ]
 ```
 
-`api-version` should match the major MC version (e.g. `"1.21"` for 26.x).
+`paper-plugin.yml` is experimental — use `plugin.yml` for now.
 
 ## Entry point
+
+The main class is conventionally named `Plugin`:
 
 ```java
 package com.example.myplugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class MyPlugin extends JavaPlugin {
+public class Plugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -73,8 +117,6 @@ public class MyPlugin extends JavaPlugin {
 ```
 
 ## Event listeners
-
-Register a listener in `onEnable`, then annotate handlers with `@EventHandler`:
 
 ```java
 import org.bukkit.event.EventHandler;
@@ -99,7 +141,7 @@ Use `@EventHandler(priority = EventPriority.HIGH)` when ordering relative to oth
 
 ## Commands (Paper Command API)
 
-Paper's modern command API uses `LifecycleEventManager` and `Commands`:
+Paper's modern command API uses `LifecycleEventManager` and Brigadier:
 
 ```java
 import io.papermc.paper.command.brigadier.Commands;
@@ -119,8 +161,6 @@ getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
 });
 ```
 
-Declare commands in `paper-plugin.yml` under `commands:` for tab-completion registration (optional with the new API but still useful for documentation).
-
 ## Scheduler
 
 ```java
@@ -135,7 +175,7 @@ getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 }, 0L, 200L); // start immediately, repeat every 10s
 ```
 
-Paper also exposes the Folia-compatible `RegionScheduler` / `AsyncScheduler` on newer versions.
+Paper also exposes a Folia-compatible `RegionScheduler` / `AsyncScheduler` on newer versions.
 
 ## Persistent Data Container (PDC)
 
@@ -161,8 +201,28 @@ int val = entity.getPersistentDataContainer()
 | `io.papermc.paper.*` | Paper extensions (Component API, command brigadier, …) |
 | `net.kyori.adventure.*` | Text components and messaging |
 
+## NMS access
+
+When the plugin needs internal server classes (NMS), replace `paper-api` with `paperweight.userdev`:
+
+```groovy
+plugins {
+    id 'io.papermc.paperweight.userdev' version '<latest>'
+}
+
+dependencies {
+    paperweight.paperDevBundle("${project.minecraft_version}-R0.1-SNAPSHOT")
+}
+
+assemble.dependsOn reobfJar
+```
+
+This downloads the deobfuscated server jar and remaps the output back to production-obfuscated names on build. Do not use this unless NMS access is actually required — it significantly increases build complexity and breaks more often across MC updates.
+
+Find the latest paperweight version at: https://plugins.gradle.org/plugin/io.papermc.paperweight.userdev
+
 ## Tips
 
 - Use `net.kyori.adventure.text.Component` for all player-facing text, not legacy color codes.
-- Plugin data files go in `getDataFolder()` — it's already created for you.
+- Plugin data files go in `getDataFolder()` — it is already created for you.
 - `getConfig()` auto-loads `config.yml` from the jar's resources. Call `saveDefaultConfig()` in `onEnable` to extract it on first run.
