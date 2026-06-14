@@ -8,9 +8,19 @@ test -f "$file_path" || exit 0
 
 case "$file_path" in
     *.sh)
-        shellcheck "$file_path"
+        # format
+        if command -v shellfmt &> /dev/null; then
+            shellfmt "$file_path"
+        fi
+        # lint
+        if command -v shellcheck &> /dev/null; then
+            shellcheck "$file_path"
+        fi
         ;;
     *.go)
-        gofmt -w "$file_path"
+        # format
+        if command -v gofmt &> /dev/null; then
+            gofmt -w "$file_path"
+        fi
         ;;
 esac

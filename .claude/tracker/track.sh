@@ -21,7 +21,7 @@ case "$file_path" in
         name="${name%.md}"
         kind="agent"
         ;;
-    */.claude/references/*.md|*/.claude/skills/*/references/*.md|*/.claude/skills/*/*.md)
+    */.claude/references/*.md | */.claude/skills/*/references/*.md | */.claude/skills/*/*.md)
         name="${file_path##*/}"
         name="${name%.md}"
         kind="reference"
