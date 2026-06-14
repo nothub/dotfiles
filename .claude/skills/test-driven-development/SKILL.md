@@ -364,6 +364,10 @@ go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 - Skipping or disabling tests to make the suite pass
 - Running the same test command twice without an intervening code change
 
+## Reference
+
+See `references/testing-patterns.md` for Go-specific patterns: table-driven tests, test helpers, HTTP handler testing, fakes vs mocks, testcontainers, CLI output testing, fuzz testing, and benchmarks.
+
 ## Verification
 
 After completing any implementation:

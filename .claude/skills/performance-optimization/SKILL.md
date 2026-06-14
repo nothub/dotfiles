@@ -155,6 +155,10 @@ w.Header().Set("Cache-Control", "private, no-store")
 - Goroutines started without a cancellation path
 - Allocations inside hot loops (check with `-benchmem`)
 
+## Reference
+
+See `references/performance-checklist.md` for a quick-scan checklist covering database, API, and common anti-patterns.
+
 ## Verification
 
 - [ ] Before/after benchmark numbers exist (not just "feels faster")

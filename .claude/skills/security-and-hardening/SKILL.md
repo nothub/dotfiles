@@ -440,6 +440,10 @@ OWASP LLM Top 10 risks in scope:
 - LLM output passed into a query, template, or shell command
 - Stack traces or internal errors returned to the client
 
+## Reference
+
+See `references/security-checklist.md` for a full OWASP Top 10 + LLM security checklist to use during review.
+
 ## Verification
 
 - [ ] `govulncheck ./...` — no known vulnerabilities

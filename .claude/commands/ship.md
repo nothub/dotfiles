@@ -31,7 +31,7 @@ Once all three reports are back, the main agent (not a sub-persona) synthesizes 
 1. **Code Quality** — Aggregate Critical/Important findings from `code-reviewer` and any failing tests, lint, or build output. Resolve duplicates between reviewers.
 2. **Security** — Promote any Critical/High `security-auditor` findings to launch blockers. Cross-reference with `code-reviewer`'s security axis.
 3. **Performance** — Pull from `code-reviewer`'s performance axis; cross-check Core Web Vitals if applicable.
-4. **CLI Usability** — For CLI tools: verify exit codes, stdout/stderr separation, signal handling, `--help` output, and error message quality (not covered by the three personas — check directly using the CLI usability checklist).
+4. **CLI Usability** — For CLI tools: verify exit codes, stdout/stderr separation, signal handling, `--help` output, and error message quality (not covered by the three personas — check directly using `references/cli-usability-checklist.md`).
 5. **Infrastructure** — Env vars, migrations, monitoring, feature flags. Verify directly.
 6. **Documentation** — README, ADRs, changelog. Verify directly.
 

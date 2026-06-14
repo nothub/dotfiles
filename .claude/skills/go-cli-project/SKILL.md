@@ -106,6 +106,11 @@ Report any command that could not be run and the reason for it.
 
 Use the latest stable release of a library when pulling it into the project.
 
+## References
+
+- `references/cli-usability-checklist.md` — exit codes, output streams, signal handling, --json, scriptability
+- `references/testing-patterns.md` — table-driven tests, CLI output testing, fuzz testing, benchmarks
+
 ## Testing
 
 Add unit tests when they provide useful confidence.
