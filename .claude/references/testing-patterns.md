@@ -305,6 +305,125 @@ go test -coverprofile=c.out ./... && go tool cover -html=c.out  # coverage repor
 go test -v ./...                       # verbose output
 ```
 
+## CLI Output Testing
+
+Test CLI output by building the binary once in `TestMain` and invoking it via `exec.Command`.
+
+```go
+var cliPath string
+
+func TestMain(m *testing.M) {
+    tmp, err := os.MkdirTemp("", "cli-test-*")
+    if err != nil {
+        log.Fatal(err)
+    }
+    cliPath = filepath.Join(tmp, "cli")
+    if err := exec.Command("go", "build", "-o", cliPath, ".").Run(); err != nil {
+        log.Fatal(err)
+    }
+    code := m.Run()
+    os.RemoveAll(tmp)
+    os.Exit(code)
+}
+
+func TestCLI_InvalidFlag_ExitsTwo(t *testing.T) {
+    cmd := exec.Command(cliPath, "--no-such-flag")
+    var stderr bytes.Buffer
+    cmd.Stderr = &stderr
+    err := cmd.Run()
+    var exitErr *exec.ExitError
+    if !errors.As(err, &exitErr) {
+        t.Fatal("expected non-zero exit")
+    }
+    if exitErr.ExitCode() != 2 {
+        t.Errorf("exit code = %d, want 2", exitErr.ExitCode())
+    }
+    if !strings.Contains(stderr.String(), "flag") {
+        t.Errorf("stderr = %q, want flag error", stderr.String())
+    }
+}
+
+func TestCLI_Version_PrintsSemver(t *testing.T) {
+    out, err := exec.Command(cliPath, "version").Output()
+    if err != nil {
+        t.Fatal(err)
+    }
+    if !strings.HasPrefix(strings.TrimSpace(string(out)), "v") {
+        t.Errorf("version = %q, want semver", out)
+    }
+}
+```
+
+Rules:
+- Capture stdout and stderr separately — they must not mix
+- Always check the exit code, not just the error value
+- Test the `help` and `version` subcommands exit 0 and write to stdout
+
+## Fuzz Testing
+
+Use Go's built-in fuzzer (`go test -fuzz`) for parsers, decoders, and any code that processes untrusted input.
+
+```go
+func FuzzParseConfig(f *testing.F) {
+    // seed corpus — valid inputs the fuzzer mutates from
+    f.Add([]byte("name: foo\nvalue: 42\n"))
+    f.Add([]byte(""))
+    f.Fuzz(func(t *testing.T, data []byte) {
+        // must not panic for any input
+        cfg, err := parseConfig(data)
+        if err != nil {
+            return // error is fine; panic is not
+        }
+        // optional: round-trip invariant
+        out, err := cfg.Marshal()
+        if err != nil {
+            t.Errorf("marshal after parse failed: %v", err)
+        }
+        cfg2, err := parseConfig(out)
+        if err != nil {
+            t.Errorf("re-parse after marshal failed: %v", err)
+        }
+        _ = cfg2
+    })
+}
+```
+
+```bash
+go test -fuzz FuzzParseConfig -fuzztime 60s ./...
+go test -fuzz FuzzParseConfig -fuzztime 60s -parallel 4 ./...  # parallel corpus generation
+```
+
+Fuzz corpus entries that cause failures are saved to `testdata/fuzz/<FuncName>/`. Commit them — they become permanent regression tests.
+
+## Benchmarks
+
+```go
+func BenchmarkParseConfig(b *testing.B) {
+    data := []byte("name: foo\nvalue: 42\n")
+    b.ResetTimer()
+    for range b.N {
+        _, _ = parseConfig(data)
+    }
+}
+
+func BenchmarkParseConfig_Large(b *testing.B) {
+    data, _ := os.ReadFile("testdata/large.yaml")
+    b.SetBytes(int64(len(data)))
+    b.ResetTimer()
+    for range b.N {
+        _, _ = parseConfig(data)
+    }
+}
+```
+
+```bash
+go test -bench=. -benchmem ./...               # run all benchmarks, show allocs
+go test -bench=BenchmarkParse -count=5 ./...   # multiple runs for stable numbers
+go test -bench=. -benchtime=5s ./...           # longer run time per benchmark
+```
+
+Use `b.SetBytes(n)` when the operation is data-throughput-bound — it gives you MB/s in the output. Use `-count=5` and `benchstat` when comparing before/after a change.
+
 ## Test Anti-Patterns
 
 | Anti-Pattern | Problem | Fix |
@@ -316,3 +435,5 @@ go test -v ./...                       # verbose output
 | `t.Parallel()` with shared state | Race conditions, flaky tests | Isolate state or remove `t.Parallel()` |
 | Re-running tests without code changes | Adds nothing after a clean run | Run again only after edits |
 | Skipping tests to pass CI | Hides real bugs | Fix or delete the test |
+| Mixing stdout and stderr in CLI tests | Can't verify output separation | Capture each stream independently |
+| No fuzz seeds for parsers | Fuzzer starts blind, misses edge cases | Add representative inputs to seed corpus |

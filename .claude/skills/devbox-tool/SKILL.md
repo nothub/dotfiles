@@ -79,6 +79,6 @@ When asked to review or fix a `devbox.json`:
 
 ## Reference
 
-A representative `devbox.json` lives at `references/example-devbox.json` — read it when the user wants to see a typical setup or you need to remember the structure (packages array, shell.scripts as named entries pointing to shell scripts in `./scripts/`).
+A representative `devbox.json` lives at `references/devbox.json` — read it when the user wants to see a typical setup or you need to remember the structure (packages array, shell.scripts as named entries pointing to shell scripts in `./scripts/`).
 
 The full schema lives at `https://raw.githubusercontent.com/jetify-com/devbox/<version>/.schema/devbox.schema.json` and supports these top-level keys: `$schema`, `packages` (list or map), `env` (string-valued map), `env_from` (path to .env or `jetify-cloud`), `shell.init_hook`, `shell.scripts`, `include`. The official reference page is at https://www.jetify.com/docs/devbox/configuration.

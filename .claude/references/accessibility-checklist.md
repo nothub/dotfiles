@@ -1,96 +1,72 @@
-# Accessibility Checklist
+# CLI Usability Checklist
 
-Quick reference for accessible web interfaces. Use alongside the `frontend-ui-engineering` skill.
+Quick reference for usable, scriptable CLI tools. Use alongside the `go-cli-project` and `cli-app-designer` skills.
 
-**Prefer semantic HTML over ARIA.** Native elements (`<button>`, `<nav>`, `<label>`, `<input>`, `<dialog>`) come with built-in roles, keyboard behavior, and screen reader support for free. Reach for ARIA only when no native element can express the semantics.
+## Exit Codes
+- [ ] `0` on success
+- [ ] `1` on runtime error (I/O failure, parse error, unexpected state)
+- [ ] `2` on invalid usage (bad flags, missing required args)
+- [ ] `130` on SIGINT (Ctrl+C)
+- [ ] Non-zero exit for every failure path — never exit 0 on error
 
-## Keyboard Navigation
-- [ ] All interactive elements focusable via Tab key
-- [ ] Focus order follows visual/logical order
-- [ ] Focus is visible — style the outline, never remove it
-- [ ] Custom widgets support keyboard (Enter to activate, Escape to close)
-- [ ] No keyboard traps
-- [ ] Skip-to-content link visible on keyboard focus
-- [ ] Modals trap focus while open, return focus on close
+## Output Streams
+- [ ] Primary output goes to stdout only
+- [ ] Errors, warnings, and log lines go to stderr only
+- [ ] No progress noise or decorative output mixed into stdout
+- [ ] stdout is pipe-safe: plain text or machine-readable JSON, nothing else
+- [ ] Color and formatting use stderr or TTY detection (`os.Stdout.Fd()`)
 
-## Screen Reader Basics
-- [ ] All images have `alt` text (`alt=""` for decorative images)
-- [ ] Every form input has an associated `<label>` or `aria-label`
-- [ ] Heading hierarchy is logical (one `<h1>`, no skipped levels)
-- [ ] Dynamic content changes announced via `aria-live` regions
-- [ ] Buttons and links have descriptive text (not "click here")
+## Help Output
+- [ ] `help` subcommand (not `--help`) prints usage to stdout and exits 0
+- [ ] Usage line shows all flags and their defaults
+- [ ] Every flag, env var, and config key documented in `--help` / USAGE.txt
+- [ ] Examples included for non-obvious workflows
+- [ ] `help <subcommand>` works when subcommands exist
 
-## Visual
-- [ ] Text contrast ≥ 4.5:1 (normal text) or ≥ 3:1 (large text ≥ 18px)
-- [ ] UI component contrast ≥ 3:1 against background
-- [ ] Color is not the only way to convey information
-- [ ] Text resizable to 200% without breaking layout
+## Error Messages
+- [ ] Message says what failed and includes the problematic value
+- [ ] Message is on stderr, not stdout
+- [ ] Message suggests a fix when the cause is a bad argument or config
+- [ ] No stack traces in user-facing errors (log them at debug level)
 
-## Forms
-- [ ] Every input has a visible label
-- [ ] Required fields indicated (not by color alone)
-- [ ] Error messages are specific and associated with the field
-- [ ] Error state visible beyond color (icon, text, or border)
-- [ ] Known fields use `autocomplete` (e.g. `type="email" autocomplete="email"`)
+## Machine-Readable Output
+- [ ] `--json` flag produces valid JSON on stdout, nothing else
+- [ ] JSON output is stable: same input always produces same keys
+- [ ] Structured errors (`{"error": "..."}`) when `--json` is active
+- [ ] No extra fields added without bumping a version marker
 
-## Common HTML Patterns
+## Scriptability
+- [ ] No interactive prompts unless explicitly invoked (e.g. `--interactive`)
+- [ ] stdin readable when input is piped (`-` as explicit stdin arg, or auto-detect)
+- [ ] Deterministic output order — no random map iteration in output
+- [ ] No output line wider than 120 chars by default (or configurable)
 
-### Buttons vs Links
+## Signal Handling
+- [ ] SIGINT (Ctrl+C) → clean exit, exit code 130
+- [ ] SIGTERM → clean exit, exit code 1
+- [ ] In-progress work is flushed or rolled back before exit
+- [ ] No zombie goroutines left after signal
 
-```html
-<!-- Actions → <button> -->
-<button type="button">Delete Task</button>
+## Configuration
+- [ ] Config loaded in order: defaults → `/etc/<tool>/config.yaml` → `~/.config/<tool>/config.yaml` → env vars → flags
+- [ ] `--config <path>` overrides all config file locations
+- [ ] `--verbose` enables debug output to stderr
+- [ ] Unknown config keys warn rather than silently ignore
 
-<!-- Navigation → <a> -->
-<a href="/tasks/123">View Task</a>
-
-<!-- Never use div/span for interactive elements -->
-<div onclick="...">Delete</div>  <!-- not focusable, no keyboard support -->
-```
-
-### Form Labels
-
-```html
-<!-- Explicit association -->
-<label for="email">Email address</label>
-<input id="email" type="email" required autocomplete="email" />
-
-<!-- Wrapping (implicit) -->
-<label>
-  Email address
-  <input type="email" required />
-</label>
-
-<!-- When no visible label is possible -->
-<input type="search" aria-label="Search tasks" />
-```
-
-### Landmark Regions
-
-```html
-<header>...</header>
-<nav aria-label="Main navigation">...</nav>
-<main>...</main>
-<footer>...</footer>
-
-<!-- Status and error messages -->
-<div role="status" aria-live="polite">Task saved</div>
-<div role="alert">Error: Title is required</div>
-
-<!-- Modal dialogs — prefer native <dialog> -->
-<dialog aria-labelledby="dialog-title">
-  <h2 id="dialog-title">Confirm Delete</h2>
-</dialog>
-```
+## Version Output
+- [ ] `version` subcommand prints semver to stdout and exits 0
+- [ ] Version string is machine-parseable (`v1.2.3`, not `Tool v1.2.3 (built on ...)`)
+- [ ] Build metadata (commit, date) printed only with `--verbose`
 
 ## Anti-Patterns
 
 | Anti-Pattern | Problem | Fix |
 |---|---|---|
-| `div` or `span` as button | Not focusable, no keyboard support | Use `<button>` |
-| Missing `alt` text | Images invisible to screen readers | Add descriptive `alt` or `alt=""` for decorative |
-| Color-only states | Invisible to color-blind users | Add icons, text, or border changes |
-| Removing focus outlines | Keyboard users can't see where they are | Style the outline, never `outline: none` |
-| Empty links or buttons | Announced with no description | Add visible text or `aria-label` |
-| `tabindex > 0` | Breaks natural tab order | Use only `tabindex="0"` or `tabindex="-1"` |
-| Autoplaying media | Disorienting, can't be stopped | Add controls, never autoplay |
+| Printing errors to stdout | Breaks pipe consumers and scripts | Use stderr for all errors |
+| Exit 0 on failure | Scripts can't detect failure | Always exit non-zero on error |
+| Hardcoded color codes on stdout | Corrupts piped output | Only colorize stderr or when TTY detected |
+| Interactive prompt with no opt-out | Blocks automation | Add `--yes` / `--non-interactive` flag |
+| Mixing log lines into stdout | Pollutes machine-readable output | Send logs to stderr |
+| No `--json` flag for structured output | Forces brittle text parsing | Add `--json` for any tool consumed by scripts |
+| Progress bar on stdout | Breaks pipe consumers | Progress to stderr only |
+| Fatal on missing optional config | Breaks users who omit it | Apply defaults, warn on stderr |
