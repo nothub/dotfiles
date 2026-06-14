@@ -3,12 +3,9 @@ name: go-cli-project
 description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, goreleaser releases, USAGE.txt embedding, and CI workflows.
 ---
 
-Project is a Go Module. Set the module path to match the Git platform:
+Project is a Go CLI binary. See `references/go.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
 
-- Codeberg: `codeberg.org/fhuebner/{{project-name}}`
-- GitHub: `github.com/nothub/{{project-name}}`
-
-## Interface design
+## Interface Design
 
 - POSIX-style flags: long form required, short form optional
 - Always implement `--config <path>` and `--verbose`
@@ -19,14 +16,6 @@ Project is a Go Module. Set the module path to match the Git platform:
 - Graceful shutdown on SIGINT and SIGTERM
 - Load config in order: hardcoded defaults → `/etc/{{project-name}}/config.yaml` → `~/.config/{{project-name}}/config.yaml` → env vars → flags
 - Define the full interface in `USAGE.txt`; keep it in sync with every command, flag, and env var
-
-## Code Style
-
-- Return errors; do not panic in normal operation.
-- Small functions with explicit names. No unexported global mutable state.
-- Plain text output, scriptable.
-- Every command exits with a non-zero code on failure.
-- Extensively check errors for their types to handle errors gracefully.
 
 ## USAGE.txt
 
@@ -61,56 +50,15 @@ Resolve these placeholders in `.goreleaser.yaml` before committing:
 - `{{module-path}}` — Go module path; adjust the `buildinfo` package path or remove ldflags if not embedding build info
 - `{{git-host}}` / `{{git-owner}}` — e.g. `github.com` / `nothub` or `codeberg.org` / `fhuebner`
 
-For Codeberg: add a `GITEA_TOKEN` secret with `write:repository` scope.
-For GitHub: `GITHUB_TOKEN` is automatic.
-
-## Goreleaser
-
-Package goreleaser as a Go tool so it is version-pinned in `go.mod` and available in CI without a separate download step:
-
-```sh
-go get -tool github.com/goreleaser/goreleaser/v2@latest
-```
-
-Run locally and in CI with:
-
-```sh
-go tool goreleaser release --clean
-go tool goreleaser build --clean --snapshot --single-target  # local snapshot
-```
-
-
-## Project Commands
-
-Build: `go build -o {{project-name}} .`
-Test: `go test -vet=all ./...`
-Run: `go run .`
-Format: `go fmt ./...`
-Dependency cleanup: `go mod tidy`
-
-## Pre-Commit
-
-1. Format code
-2. Dependency cleanup
-3. Run tests
-
-Report any command that could not be run and the reason for it.
-
-## Third-party dependencies
+## Third-Party Dependencies
 
 - Flags/CLI: stdlib `flag` for simple tools; `github.com/urfave/cli/v3` when subcommands are needed
   - When using urfave/cli/v3: set `HideHelp: true` and `HideVersion: true` on the `cli.App` to suppress the built-in `--help`/`-h` and `--version`/`-V` flags; implement `help` and `version` as explicit `cli.Command` entries instead
-- JSON: `github.com/goccy/go-json`
-- YAML: `github.com/goccy/go-yaml`
-- UUID: `github.com/google/uuid`
 
-Use the latest stable release of a library when pulling it into the project.
+See `references/go.md` for common dependencies (JSON, YAML, UUID).
 
 ## References
 
+- `references/go.md` — module path, code style, commands, goreleaser, common deps
 - `references/cli-usability-checklist.md` — exit codes, output streams, signal handling, --json, scriptability
 - `references/testing-patterns.md` — table-driven tests, CLI output testing, fuzz testing, benchmarks
-
-## Testing
-
-Add unit tests when they provide useful confidence.

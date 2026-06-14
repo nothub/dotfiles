@@ -3,14 +3,9 @@ name: go-web-project
 description: Create, scaffold, review, or modify Go web applications that use server-side rendering. Use for daemon-style Go services, net/http applications, html/template rendering, embedded templates and static assets, CLI configuration, XDG-compatible paths, Dockerfile generation, CI workflows, and simple maintainable web project structure.
 ---
 
-Project is a Go Module. Set the module path to match the Git platform:
+Project is a Go web service. See `references/go.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
 
-- Codeberg: `codeberg.org/fhuebner/{{project-name}}`
-- GitHub: `github.com/nothub/{{project-name}}`
-
-This project will provide a daemonized app serving web content.
-
-## CLI behavior
+## CLI Behavior
 
 When the app exposes command-line behavior:
 
@@ -20,14 +15,6 @@ When the app exposes command-line behavior:
 - Exit `0` on success, `1` on runtime error, `2` on invalid usage/flags, `130` on SIGINT
 - Graceful shutdown on SIGINT and SIGTERM
 - Load config in order: hardcoded defaults → `/etc/{{project-name}}/config.yaml` → `~/.config/{{project-name}}/config.yaml` → env vars → flags
-
-## Code Style
-
-- Return errors; do not panic in normal operation.
-- Small functions with explicit names. No unexported global mutable state.
-- Plain text output, scriptable.
-- Every command exits with a non-zero code on failure.
-- Extensively check errors for their types to handle errors gracefully.
 
 ## Web Design
 
@@ -73,58 +60,21 @@ Required template files:
 
 Copy only the CI template that matches the project's hosting platform. Adapt the runner label if using self-hosted Forgejo.
 
-Package goreleaser as a Go tool so it is version-pinned in `go.mod` and available in CI without a separate download step:
-
-```sh
-go get -tool github.com/goreleaser/goreleaser/v2@latest
-```
-
-The CI template includes a `release` job that runs `go tool goreleaser release --clean` on `v*` tags. Before using it, resolve these placeholders in `.goreleaser.yaml`:
+Resolve these placeholders in `.goreleaser.yaml` before committing:
 
 - `{{project-name}}` — binary name
 - `{{module-path}}` — Go module path (e.g. `github.com/nothub/{{project-name}}`); adjust the `buildinfo` package path to match your actual version vars, or remove the ldflags if you don't embed build info
 
-For Codeberg: add a `GITEA_TOKEN` secret with `write:repository` scope.
-For GitHub: `GITHUB_TOKEN` is automatic.
-
-## Project Commands
-
-Build: `go build -o {{project-name}} .`  
-Test: `go test -vet=all ./...`  
-Run: `go run .`
-Format: `go fmt ./...`
-Dependency cleanup: `go mod tidy`
-
-## Pre-Commit
-
-Run these commands before committing:
-
-1. Format code
-2. Dependency cleanup
-3. Run tests
-
-Report any command that could not be run and the reason for it.
-
-## Third-party dependencies
-
-Always prefer these libraries:
+## Third-Party Dependencies
 
 - HTTP: `http.ServeMux`
-- JSON: `github.com/goccy/go-json`
-- YAML: `github.com/goccy/go-yaml`
-- UUID: `google/uuid`
 - SQLite: `modernc.org/sqlite`
 
-Use the latest stable release of a library when pulling it into the project.
+See `references/go.md` for common dependencies (JSON, YAML, UUID).
 
-## Testing
+## Data Storage
 
-Add unit tests when they provide useful confidence.
-
-## Data storage
-
-Persist data either in JSON or CSV files or use SQLite (or PostgreSQL in extreme cases) if the additional complexity is
-justified.
+Persist data either in JSON or CSV files or use SQLite (or PostgreSQL in extreme cases) if the additional complexity is justified.
 
 ## Containerize
 
@@ -135,3 +85,7 @@ The template Dockerfile uses a multi-stage build and copies ca certs to the runt
 Extend the build (first) stage if additional build logic is required.
 
 Extend the runtime (second) stage if changes to the `scratch` environment are needed.
+
+## References
+
+- `references/go.md` — module path, code style, commands, goreleaser, common deps
