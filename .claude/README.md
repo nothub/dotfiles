@@ -1,4 +1,4 @@
-# .claude
+# ~/.claude
 
 Personal Claude Code config: skills, commands, agent personas, and references.
 
@@ -9,17 +9,17 @@ Skills are engineering workflow processes loaded on demand. Commands are slash-c
 | Command | What it does |
 |---------|-------------|
 | `/spec` | Write a structured specification before writing any code |
-| `/plan` | Break work into small verifiable tasks with acceptance criteria |
+| `/plan` | Sequential chain: planning → doubt-driven stress-test → human approval |
 | `/build` | Sequential chain: spec → plan → full TDD implementation, one commit per task |
 | `/test` | TDD workflow: write failing tests, implement, verify |
 | `/review` | Five-axis code review: correctness, readability, architecture, security, performance |
-| `/code-simplify` | Simplify code for clarity without changing behavior |
+| `/code-simplify` | Sequential chain: simplify → review loop (max 3 cycles) until clean |
 | `/preflight` | Parallel fan-out: three specialist personas → go/no-go → local artifact |
 | `/maintain` | Audit and maintain this `.claude/` directory |
 
 ## Orchestration commands
 
-Two commands orchestrate multiple skills or personas. They are the only entry points for multi-step automated work.
+These commands orchestrate multiple skills or personas. They are the only entry points for multi-step automated work.
 
 ### `/build` — sequential chain
 
@@ -33,6 +33,32 @@ Implements a full spec in one autonomous pass. One human checkpoint (plan approv
 ```
 
 Use when: you have a spec and want the full implementation done without stepping between tasks.
+
+### `/plan` — sequential chain with adversarial stress-test
+
+Generates a task breakdown, then applies `doubt-driven-development` to find gaps before the user ever sees it.
+
+```
+/plan
+  ├── Phase 1: planning-and-task-breakdown → tasks/plan.md
+  ├── Phase 2: doubt-driven-development (max 3 cycles) → revise on findings
+  └── Phase 3: present clean plan → human approval checkpoint
+```
+
+Use when: you have a spec and want a plan that has been adversarially reviewed before you approve it.
+
+### `/code-simplify` — sequential chain with verification loop
+
+Simplifies code, then reviews the result. Fixes issues and re-reviews until clean or the loop limit is hit.
+
+```
+/code-simplify
+  ├── Phase 1: code-simplification (once)
+  └── Phase 2: code-review-and-quality → fix → review → (max 3 cycles)
+                └── clean: done  |  3 cycles unresolved: cancel + report
+```
+
+Use when: code works but has accumulated complexity — you want it simplified and verified clean in one pass.
 
 ### `/preflight` — parallel fan-out
 
