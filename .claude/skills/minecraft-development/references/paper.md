@@ -89,7 +89,22 @@ description: 'What the plugin does'
 website: 'https://github.com/example/myplugin'
 authors: [ 'YourName' ]
 contributors: [ ]
+
+commands:
+  myplugin:
+    description: 'Does the thing'
+    usage: '/myplugin'
+    aliases: [ 'mp' ]
+    permission: myplugin.use
+
+permissions:
+  myplugin.use:
+    default: true
 ```
+
+`commands` and `permissions` are optional — omit both if the plugin has no commands.
+
+`permissions.default`: `true` = all players, `false` = nobody, `op` = ops only.
 
 `paper-plugin.yml` is experimental — use `plugin.yml` for now.
 
