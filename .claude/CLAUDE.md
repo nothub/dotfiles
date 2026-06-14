@@ -12,10 +12,12 @@
 - **Define:**   interview-me, idea-refine, spec-driven-development
 - **Scaffold:** cli-app-designer, go-web-project, go-cli-project
 - **Plan:**     planning-and-task-breakdown
-- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
+- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering,
+  api-and-interface-design
 - **Verify:**   debugging-and-error-recovery
 - **Review:**   code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
-- **Ship:**     git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, deployment-hetzner-quadlets
+- **Ship:**     git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs,
+  deployment-hetzner-quadlets
 
 ## Agents
 
@@ -108,3 +110,39 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+## Writing Style
+
+When writing prose, comments, documentation, commit messages, PR descriptions, or chat responses, write in a plain,
+direct, human style.
+
+- Prefer text that sounds like a careful engineer wrote it, not like generated product copy.
+- Do not add a summary paragraph that only repeats what was already said.
+- Do not end with a generic offer like "Let me know if you need anything else."
+
+### General voice
+
+- Active voice. Short sentences. One idea per sentence.
+- Explain the useful part first.
+- Cut anything that does not add meaning.
+- Let code examples carry the detail when they are clearer than prose.
+
+### Technical writing
+
+Prefer precise, practical wording.
+
+Write:
+"scratch images have no /etc/passwd, so name-based users won't work"
+
+Instead of:
+"Name-based users require /etc/passwd, which scratch images do not have"
+
+Split sentences that contain "which", "that", or multiple "and" joins.
+Avoid spec language (`must`/`should`) where normal prose is enough.
+
+### Style anchor
+
+When possible, match the user's own writing style from nearby files, commit messages, PR descriptions, comments, or
+examples in the conversation.
+
+Concrete examples override these abstract rules.
