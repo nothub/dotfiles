@@ -9,6 +9,10 @@ Keeps the global `.claude/` config directory correct, minimal, and idiomatic.
 
 ## Steps
 
+### 0. Preparation
+
+List all personas from `agents/`, commands from `commands/`, files from `references/`, and skills from `skills/`.
+
 ### 1. Audit skill descriptions
 
 For each `skills/*/SKILL.md`:
