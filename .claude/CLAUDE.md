@@ -12,12 +12,10 @@
 - **Define:**   interview-me, idea-refine, spec-driven-development
 - **Scaffold:** cli-app-designer, go-web-project, go-cli-project
 - **Plan:**     planning-and-task-breakdown
-- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering,
-  api-and-interface-design
+- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
 - **Verify:**   debugging-and-error-recovery
 - **Review:**   code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
-- **Ship:**     git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs,
-  deployment-hetzner-quadlets
+- **Ship:**     git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, deployment-hetzner-quadlets
 
 ## Agents
 
@@ -32,7 +30,6 @@
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 Before implementing:
-
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them — don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
@@ -51,7 +48,6 @@ Before implementing:
 Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
 Prioritize:
-
 - Readability
 - Correctness
 - Maintainability
@@ -62,14 +58,12 @@ Prioritize:
 **Touch only what you must. Clean up only your own mess.**
 
 When editing existing code:
-
 - Don't "improve" adjacent code, comments, or formatting.
 - Don't refactor things that aren't broken.
 - Match existing style, even if you'd do it differently.
 - If you notice unrelated dead code, mention it — don't delete it.
 
 When your changes create orphans:
-
 - Remove imports/variables/functions that YOUR changes made unused.
 - Don't remove pre-existing dead code unless asked.
 
@@ -80,14 +74,12 @@ The test: Every changed line should be traced directly to the user's request.
 **Reach for the stdlib first. Every dependency is a liability.**
 
 Before adding a third-party library:
-
 - Can the stdlib do it without a bunch of added complexity? Use it.
 - Is the library small, focused, and actively maintained? Maybe.
 - Is it a framework, a meta-library, or does it pull in a tree of transitive deps?
   Only use if stdlib or small libraries are not enough and require a lot of additional complexity.
 
-This applies to stack choices too: plain JS over React, Go `net/http` over a web framework, Raylib over a game engine,
-SQLite over Postgres unless scale demands otherwise.
+This applies to stack choices too: plain JS over React, Go `net/http` over a web framework, Raylib over a game engine, SQLite over Postgres unless scale demands otherwise.
 
 When a dependency is justified, prefer libraries that do one thing well over ones that try to do everything.
 
@@ -96,7 +88,6 @@ When a dependency is justified, prefer libraries that do one thing well over one
 **Define success criteria. Loop until verified.**
 
 Transform tasks into verifiable goals:
-
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
@@ -113,8 +104,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Writing Style
 
-When writing prose, comments, documentation, commit messages, PR descriptions, or chat responses, write in a plain,
-direct, human style.
+When writing prose, comments, documentation, commit messages, PR descriptions, or chat responses, write in a plain, direct, human style.
 
 - Prefer text that sounds like a careful engineer wrote it, not like generated product copy.
 - Do not add a summary paragraph that only repeats what was already said.
@@ -132,17 +122,16 @@ direct, human style.
 Prefer precise, practical wording.
 
 Write:
-"scratch images have no /etc/passwd, so name-based users won't work"
+"scratch images have no `/etc/passwd`, so name-based users won't work"
 
 Instead of:
-"Name-based users require /etc/passwd, which scratch images do not have"
+"Name-based users require `/etc/passwd`, which scratch images do not have"
 
 Split sentences that contain "which", "that", or multiple "and" joins.
 Avoid spec language (`must`/`should`) where normal prose is enough.
 
 ### Style anchor
 
-When possible, match the user's own writing style from nearby files, commit messages, PR descriptions, comments, or
-examples in the conversation.
+When possible, match the user's own writing style from nearby files, commit messages, PR descriptions, comments, or examples in the conversation.
 
 Concrete examples override these abstract rules.
