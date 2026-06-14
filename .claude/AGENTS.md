@@ -19,22 +19,60 @@ Use a **skill-driven execution model**: when a task matches a skill, invoke it.
 
 ### Intent → Skill Mapping
 
-- Feature / new functionality → `spec-driven-development`, then `incremental-implementation`, `test-driven-development`
-- Planning / breakdown → `planning-and-task-breakdown`
-- Bug / failure / unexpected behavior → `debugging-and-error-recovery`
-- Code review → `code-review-and-quality`
-- Refactoring / simplification → `code-simplification`
-- API or interface design → `api-and-interface-design`
-- UI work → `frontend-ui-engineering`
+```
+Task arrives
+    │
+    ├── Don't know what you want yet? ──────→ interview-me
+    ├── Have a rough concept, need variants? → idea-refine
+    ├── New project / feature / change? ────→ spec-driven-development
+    ├── Scaffolding a project type? ─────────→ cli-app-designer / go-web-project / go-cli-project
+    ├── Have a spec, need tasks? ────────────→ planning-and-task-breakdown
+    ├── Implementing code? ──────────────────→ incremental-implementation
+    │   ├── UI work? ───────────────────────→ frontend-ui-engineering
+    │   ├── API work? ──────────────────────→ api-and-interface-design
+    │   ├── Writing shell scripts? ──────────→ bash-script
+    │   ├── Devbox / env setup? ─────────────→ devbox-tool
+    │   ├── Need better context? ────────────→ context-engineering
+    │   ├── Need doc-verified code? ─────────→ source-driven-development
+    │   └── Stakes high / unfamiliar code? ──→ doubt-driven-development
+    ├── Writing / running tests? ────────────→ test-driven-development
+    ├── Something broke? ────────────────────→ debugging-and-error-recovery
+    ├── Reviewing code? ─────────────────────→ code-review-and-quality
+    │   ├── Too complex? ───────────────────→ code-simplification
+    │   ├── Security concerns? ──────────────→ security-and-hardening
+    │   └── Performance concerns? ────────────→ performance-optimization
+    ├── Committing / branching? ─────────────→ git-workflow-and-versioning
+    ├── CI/CD pipeline work? ────────────────→ ci-cd-and-automation
+    ├── Deploying to Hetzner? ───────────────→ deployment-hetzner-quadlets
+    ├── Deprecating / migrating? ────────────→ deprecation-and-migration
+    └── Writing docs / ADRs? ────────────────→ documentation-and-adrs
+```
 
-### Lifecycle Mapping
+### Lifecycle Sequence
 
-- DEFINE → `spec-driven-development`
-- PLAN → `planning-and-task-breakdown`
-- BUILD → `incremental-implementation` + `test-driven-development`
-- VERIFY → `debugging-and-error-recovery`
-- REVIEW → `code-review-and-quality`
-- SHIP → `/preflight` command
+Full feature path — not every task needs every step:
+
+```
+1.  interview-me                 → extract what the user actually wants
+2.  idea-refine                  → refine vague ideas into a concrete direction
+3.  spec-driven-development      → define what gets built and how to verify it
+4.  go-cli-project / go-web-project / cli-app-designer  → scaffold (if new project)
+5.  planning-and-task-breakdown  → break the spec into verifiable chunks
+6.  context-engineering          → load the right context for the build phase
+7.  source-driven-development    → verify approach against official docs
+8.  incremental-implementation   → build thin vertical slices
+9.  doubt-driven-development     → cross-examine non-trivial decisions
+10. test-driven-development      → prove each slice works
+11. code-review-and-quality      → review before merge
+12. code-simplification          → reduce unnecessary complexity
+13. git-workflow-and-versioning  → clean commit history
+14. ci-cd-and-automation         → automated quality gates
+15. deployment-hetzner-quadlets  → deploy to production
+16. documentation-and-adrs       → record the why
+17. deprecation-and-migration    → retire old systems
+```
+
+A bug fix only needs: `debugging-and-error-recovery` → `test-driven-development` → `code-review-and-quality`.
 
 ### Execution Model
 

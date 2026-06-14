@@ -8,14 +8,34 @@
 
 ## Skills
 
-- **Context:**  context-engineering
-- **Define:**   interview-me, idea-refine, spec-driven-development
-- **Scaffold:** cli-app-designer, go-web-project, go-cli-project, devbox-tool
-- **Plan:**     planning-and-task-breakdown
-- **Build:**    incremental-implementation, test-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design, bash-script, source-driven-development
-- **Verify:**   debugging-and-error-recovery
-- **Review:**   code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
-- **Ship:**     git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, deployment-hetzner-quadlets
+| Phase | Skill | Summary |
+|-------|-------|---------|
+| Context | context-engineering | Right context at the right time; recover when output quality drifts |
+| Define | interview-me | Surface what the user actually wants before any plan, spec, or code exists |
+| Define | idea-refine | Refine ideas through structured divergent and convergent thinking |
+| Define | spec-driven-development | Requirements and acceptance criteria before code |
+| Scaffold | cli-app-designer | Design CLI commands, flags, exit codes, and help output |
+| Scaffold | go-web-project | Scaffold Go web services: net/http, html/template, XDG paths, Dockerfile |
+| Scaffold | go-cli-project | Scaffold Go CLI binaries: goreleaser, USAGE.txt, nfpms, CI workflows |
+| Scaffold | devbox-tool | Isolated, reproducible Nix-based dev environments via devbox.json |
+| Plan | planning-and-task-breakdown | Decompose into small, verifiable tasks |
+| Build | incremental-implementation | Thin vertical slices, test each before expanding |
+| Build | bash-script | Safe, pipe-friendly shell scripts with shellcheck and shfmt |
+| Build | source-driven-development | Verify against official docs before implementing |
+| Build | doubt-driven-development | Adversarial fresh-context review of every non-trivial decision |
+| Build | frontend-ui-engineering | Semantic HTML, plain CSS, vanilla JS — no framework, no build step |
+| Build | api-and-interface-design | Stable interfaces with clear contracts |
+| Verify | test-driven-development | Failing test first, then make it pass |
+| Verify | debugging-and-error-recovery | Reproduce → localize → fix → guard |
+| Review | code-review-and-quality | Five-axis review with quality gates |
+| Review | code-simplification | Preserve behavior while reducing unnecessary complexity |
+| Review | security-and-hardening | OWASP prevention, input validation, least privilege |
+| Review | performance-optimization | Measure first, optimize only what matters |
+| Ship | git-workflow-and-versioning | Atomic commits, clean history |
+| Ship | ci-cd-and-automation | Automated quality gates on every change |
+| Ship | deployment-hetzner-quadlets | Provision Hetzner servers, Podman Quadlets, nginx, certbot |
+| Ship | deprecation-and-migration | Remove old systems and migrate users safely |
+| Ship | documentation-and-adrs | Document the why, not just the what |
 
 ## Agents
 
