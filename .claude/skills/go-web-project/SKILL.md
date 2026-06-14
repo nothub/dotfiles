@@ -3,7 +3,7 @@ name: go-web-project
 description: Create, scaffold, review, or modify Go web applications that use server-side rendering. Use for daemon-style Go services, net/http applications, html/template rendering, embedded templates and static assets, CLI configuration, XDG-compatible paths, Dockerfile generation, CI workflows, and simple maintainable web project structure.
 ---
 
-Project is a Go web service. See `references/go.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
+Project is a Go web service. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
 
 ## CLI Behavior
 
@@ -70,7 +70,7 @@ Resolve these placeholders in `.goreleaser.yaml` before committing:
 - HTTP: `http.ServeMux`
 - SQLite: `modernc.org/sqlite`
 
-See `references/go.md` for common dependencies (JSON, YAML, UUID).
+See `references/go-project-conventions.md` for common dependencies (JSON, YAML, UUID).
 
 ## Data Storage
 
@@ -88,4 +88,4 @@ Extend the runtime (second) stage if changes to the `scratch` environment are ne
 
 ## References
 
-- `references/go.md` — module path, code style, commands, goreleaser, common deps
+- `references/go-project-conventions.md` — module path, code style, commands, goreleaser, common deps

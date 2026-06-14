@@ -3,7 +3,7 @@ name: go-cli-project
 description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, goreleaser releases, USAGE.txt embedding, and CI workflows.
 ---
 
-Project is a Go CLI binary. See `references/go.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
+Project is a Go CLI binary. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
 
 ## Interface Design
 
@@ -55,10 +55,10 @@ Resolve these placeholders in `.goreleaser.yaml` before committing:
 - Flags/CLI: stdlib `flag` for simple tools; `github.com/urfave/cli/v3` when subcommands are needed
   - When using urfave/cli/v3: set `HideHelp: true` and `HideVersion: true` on the `cli.App` to suppress the built-in `--help`/`-h` and `--version`/`-V` flags; implement `help` and `version` as explicit `cli.Command` entries instead
 
-See `references/go.md` for common dependencies (JSON, YAML, UUID).
+See `references/go-project-conventions.md` for common dependencies (JSON, YAML, UUID).
 
 ## References
 
-- `references/go.md` — module path, code style, commands, goreleaser, common deps
+- `references/go-project-conventions.md` — module path, code style, commands, goreleaser, common deps
 - `references/cli-usability-checklist.md` — exit codes, output streams, signal handling, --json, scriptability
 - `references/testing-patterns.md` — table-driven tests, CLI output testing, fuzz testing, benchmarks
