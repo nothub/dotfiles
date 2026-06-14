@@ -1,6 +1,6 @@
 ---
 name: go-web-project
-description: Create, scaffold, review, or modify Go web applications that use server-side rendering. Use for daemon-style Go services, net/http applications, html/template rendering, embedded templates and static assets, CLI configuration, XDG-compatible paths, Dockerfile generation, CI workflows, and simple maintainable web project structure.
+description: Scaffold or modify Go web services. Use for net/http apps, html/template rendering, embedded assets, XDG paths, Dockerfile, and CI workflows.
 ---
 
 Project is a Go web service. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, and common dependencies.

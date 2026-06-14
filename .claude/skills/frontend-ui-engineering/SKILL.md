@@ -1,6 +1,6 @@
 ---
 name: frontend-ui-engineering
-description: Builds simple, functional web UIs. Use when building or modifying user-facing interfaces with semantic HTML, plain CSS, and vanilla JS. No frameworks, no build step unless there is a clear reason for one.
+description: Build web UIs with semantic HTML, plain CSS, and vanilla JS. Use when building or modifying user-facing interfaces. No frameworks, no build step.
 ---
 
 # Frontend UI Engineering

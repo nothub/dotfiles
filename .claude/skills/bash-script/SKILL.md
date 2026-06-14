@@ -1,6 +1,6 @@
 ---
 name: bash-script
-description: Write, review, or modify Bash scripts for automation, setup, testing, builds, local tooling, command wrappers, and data-processing pipelines. Use when working with shell scripts that should be safe, readable, pipe-friendly, POSIX-aware where practical, and may use tools such as curl, jq, ffmpeg, find, sed, awk on absolute or project-relative paths.
+description: Write or review Bash scripts. Use for automation, setup, builds, local tooling, and data pipelines. Safe, pipe-friendly, and POSIX-aware.
 ---
 
 All scripts start with a shebang and safe-mode:

@@ -1,6 +1,6 @@
 ---
 name: devbox-tool
-description: Work with Jetify Devbox (https://www.jetify.com/devbox) — isolated, reproducible Nix-based development environments configured via devbox.json. Use this skill whenever the user mentions devbox, devbox.json, `devbox` CLI commands (init, add, rm, run, search, list, shell), Jetify, or wants to create, modify, audit, or troubleshoot a Devbox project. Also use it when the user wants to add or pin a package version, define a project script, load secrets from a `.env` file into a build/deploy script, or generally set up a reproducible dev environment using Nix packages. If a file called `devbox.json` is present in the project or mentioned in the conversation, prefer this skill over general shell/Nix guidance.
+description: Set up Jetify Devbox environments. Use for devbox.json, devbox CLI (init, add, rm, run, shell), Nix package pinning, project scripts, and reproducible dev environments.
 ---
 
 # Devbox

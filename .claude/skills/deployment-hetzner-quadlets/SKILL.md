@@ -1,6 +1,6 @@
 ---
 name: deployment-hetzner-quadlets
-description: Design, create, review, or modify production deployments on Hetzner Cloud. Use for hcloud-based provisioning, Debian servers, cloud-init, Podman Quadlets, nginx reverse proxy, certbot HTTPS, firewall setup, and lightweight operational runbooks.
+description: Deploy to Hetzner Cloud. Use for hcloud provisioning, cloud-init, Podman Quadlets, nginx reverse proxy, certbot HTTPS, firewall rules, and operational runbooks.
 ---
 
 Hetzner Cloud is the provider of choice.

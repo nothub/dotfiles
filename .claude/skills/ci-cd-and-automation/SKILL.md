@@ -1,6 +1,6 @@
 ---
 name: ci-cd-and-automation
-description: Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines across Forgejo Actions or Jenkins. Use when configuring quality gates, release automation with conventional commits and semver, or deployment to VPS or Kubernetes.
+description: Set up or modify CI/CD pipelines. Use for Forgejo Actions, Jenkins, quality gates, semver release automation, and VPS or Kubernetes deployment.
 ---
 
 # CI/CD and Automation

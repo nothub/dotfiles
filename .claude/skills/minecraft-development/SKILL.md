@@ -1,6 +1,6 @@
 ---
 name: minecraft-development
-description: Assist with Minecraft plugin and mod development — Paper server plugins, Fabric mods, and NeoForged mods. Use this skill whenever the user is working on a Minecraft plugin or mod, asks about Paper, Fabric, Loom, NeoForge, NeoGradle, Bukkit, Spigot, plugin.yml, fabric.mod.json, mods.toml, event listeners, Mixin patches, DeferredRegister, JavaPlugin, or any Minecraft modding API. Also trigger when the user asks about scaffolding a new plugin/mod project, setting up Gradle for Minecraft, or questions about MC-specific APIs like BukkitScheduler, Fabric registries, or NeoForge capabilities.
+description: Develop Minecraft plugins and mods. Use for Paper plugins, Fabric mods, NeoForge mods, Gradle setup, plugin.yml, fabric.mod.json, mods.toml, Mixins, and MC-specific APIs.
 ---
 
 # Minecraft Development

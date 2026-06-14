@@ -1,6 +1,6 @@
 ---
 name: claude-janitor
-description: Maintains the global .claude/ directory. Audits skill descriptions, Handoffs sections, commands, and references; syncs AGENTS.md decision tree and lifecycle sequence; syncs CLAUDE.md skills table; regenerates README.md. Triggers on "maintain claude config", "audit skills", "update skill descriptions", or "clean up .claude".
+description: Maintain the global .claude/ directory. Audits skills, Handoffs, commands, references, AGENTS.md, and CLAUDE.md. Use when asked to audit, clean up, or sync the .claude/ config.
 ---
 
 # .claude Janitor
@@ -84,6 +84,10 @@ Keep it minimal — this is a human reference, not instructions for the model.
 - Every `## Handoffs` section contains only Upstream/Downstream/Pair labels (no imperative language)
 - All skill descriptions are action-verb led and ≤200 chars
 - README.md reflects the current on-disk state
+
+## Reference
+
+See `references/orchestration-patterns.md` for the pattern catalog covering parallel fan-out, sequential chains, and other orchestration patterns used in this config.
 
 ## Handoffs
 

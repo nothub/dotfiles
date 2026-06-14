@@ -1,6 +1,6 @@
 ---
 name: api-and-interface-design
-description: Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface. Use when creating REST endpoints, defining type contracts between modules, or establishing boundaries between services.
+description: Design stable APIs and interfaces. Use when creating REST endpoints, defining module boundaries, establishing service contracts, or designing any public-facing interface.
 ---
 
 # API and Interface Design

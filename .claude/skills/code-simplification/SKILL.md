@@ -1,6 +1,6 @@
 ---
 name: code-simplification
-description: Simplifies code for clarity. Use when refactoring code for clarity without changing behavior. Use when code works but is harder to read, maintain, or extend than it should be. Use when reviewing code that has accumulated unnecessary complexity.
+description: Simplify code without changing behavior. Use when code works but is harder to read, maintain, or extend than it should be, or has accumulated unnecessary complexity.
 ---
 
 # Code Simplification
@@ -304,7 +304,7 @@ def process(data):
 
 ## Handoffs
 
-- **Triggered by:** `code-review-and-quality` — when a review surfaces unnecessary complexity
+- **Upstream:** `code-review-and-quality` — when a review surfaces unnecessary complexity
 - **Downstream:** `git-workflow-and-versioning` — commit simplifications separately from feature work
 
 ## Verification
