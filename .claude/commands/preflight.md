@@ -53,9 +53,7 @@ Produce a single output:
 - [test-engineer report]
 ```
 
-On **GO**: build a local release artifact immediately after the decision output.
-- Go projects: `go tool goreleaser build --clean --snapshot --single-target`
-- Other: use the project's documented release build command
+On **GO**: build a local release artifact immediately after the decision output. Discover the build command from the project's documentation (`SPEC.md`, `CLAUDE.md`, `README.md`, `Makefile`, or equivalent) — do not assume a specific tool or command.
 
 On **NO-GO**: stop. Do not build. List blockers and wait for fixes.
 
