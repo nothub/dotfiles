@@ -38,6 +38,7 @@ Then read the relevant reference file before proceeding:
 - Fabric → `references/fabric.md`
 - NeoForge → `references/neoforge.md`
 - Any framework → `references/common.md` for asset/data file paths, JSON formats, identifiers, lang, models, recipes, loot tables, tags
+- Mixins (Fabric or NeoForge) → `references/mixins.md` for mixins.json schema, annotation reference, and accessor pattern
 
 ## Common conventions across all three
 

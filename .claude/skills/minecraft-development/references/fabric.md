@@ -109,7 +109,6 @@ Place at `src/main/resources/fabric.mod.json`. The `@placeholder@` tokens are su
   "depends": {
     "fabricloader": ">=@fabric_loader_version@",
     "minecraft": "@minecraft_version@",
-    "java": ">=21",
     "fabric": ">=@fabric_api_version@"
   }
 }
@@ -117,7 +116,15 @@ Place at `src/main/resources/fabric.mod.json`. The `@placeholder@` tokens are su
 
 `environment`: `"*"` = both sides, `"client"` = client only, `"server"` = server only.
 
-Entrypoints listed under `"main"` initialize on both sides; `"client"` runs on client only.
+Entrypoints listed under `"main"` initialize on both sides; `"client"` runs on client only. Declaring an entrypoint category with an empty array is valid.
+
+**Optional fields** (omit if unused):
+- `"icon": "icon.png"` — path to the mod icon; can also be a map of pixel widths to paths
+- `"contact": {"sources": "https://...", "issues": "https://..."}` — keys: `email`, `homepage`, `irc`, `issues`, `sources`
+- `"java": ">=21"` in `depends` — explicit Java version constraint; useful if you use newer Java features
+- `"provides": ["alias-id"]` — mod IDs this mod satisfies as a dependency
+
+For the `mixins` field format and the mixins.json schema, see `references/mixins.md`.
 
 ## Entry points
 
@@ -198,22 +205,10 @@ public class ModBlocks {
 
 ## Mixins
 
-Mixins patch vanilla classes at bytecode level. Use them when the Fabric API doesn't expose what you need.
+See `references/mixins.md` for the full mixins.json schema, annotation reference, and accessor pattern. The SpongePowered Mixin library works identically on Fabric and NeoForge.
 
-`mymod.mixins.json` (in `src/main/resources`):
-```json
-{
-  "required": true,
-  "package": "com.example.mymod.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": ["ExampleMixin"],
-  "injectors": {
-    "defaultRequire": 1
-  }
-}
-```
+Example `@Inject`:
 
-Example mixin:
 ```java
 package com.example.mymod.mixin;
 
@@ -232,8 +227,6 @@ public class ExampleMixin {
     }
 }
 ```
-
-Keep mixins minimal — prefer Fabric API events over mixins when possible. Mixins are harder to maintain across MC updates.
 
 ## Key packages
 
