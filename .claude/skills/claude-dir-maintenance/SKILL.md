@@ -5,7 +5,7 @@ description: Maintains the global .claude/ directory. Use to audit skill descrip
 
 # .claude Directory Maintenance
 
-Keeps the global `~/.claude/` config directory correct, minimal, and navigable.
+Keeps the global `~/.claude/` config directory correct, minimal, and idiomatic.
 
 ## Steps
 
