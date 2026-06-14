@@ -16,6 +16,16 @@ case "$file_path" in
         name="${name%.md}"
         kind="command"
         ;;
+    */.claude/agents/*.md)
+        name="${file_path#*/.claude/agents/}"
+        name="${name%.md}"
+        kind="agent"
+        ;;
+    */.claude/references/*.md|*/.claude/skills/*/references/*.md|*/.claude/skills/*/*.md)
+        name="${file_path##*/}"
+        name="${name%.md}"
+        kind="reference"
+        ;;
     *)
         exit 0
         ;;

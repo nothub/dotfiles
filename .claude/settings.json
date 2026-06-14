@@ -19,6 +19,17 @@
   "preferredNotifChannel": "kitty",
   "autoCompact": true,
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/tracker/lint-prewrite.sh"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Read",
@@ -26,6 +37,15 @@
           {
             "type": "command",
             "command": "bash ~/.claude/tracker/track.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/tracker/lint-postedit.sh"
           }
         ]
       }
