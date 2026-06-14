@@ -15,7 +15,7 @@ Skills are engineering workflow processes loaded on demand. Commands are slash-c
 | `/review` | Five-axis code review: correctness, readability, architecture, security, performance |
 | `/code-simplify` | Sequential chain: simplify → review loop (max 3 cycles) until clean |
 | `/preflight` | Parallel fan-out: three specialist personas → go/no-go → local artifact |
-| `/maintain` | Audit and maintain this `.claude/` directory |
+| `/claude-janitor` | Audit and maintain this `.claude/` directory |
 
 ## Orchestration commands
 
