@@ -30,14 +30,16 @@ org.gradle.caching=true
 org.gradle.configuration-cache=true
 
 # Parchment mappings (better parameter names for vanilla methods)
-parchment_minecraft_version=1.21.11
-parchment_mappings_version=2025.12.20
+# verify current versions at https://parchmentmc.org/
+parchment_minecraft_version=26.1.2
+parchment_mappings_version=2026.06.01
 
 # Minecraft / NeoForge
-minecraft_version=1.21.11
-minecraft_version_range=[1.21.11]
-neo_version=21.11.36-beta
-neo_version_range=[21.4.0,)
+# verify NeoForge version at https://projects.neoforged.net/neoforged/neoforge
+minecraft_version=26.1.2
+minecraft_version_range=[26.1.2]
+neo_version=26.1.0
+neo_version_range=[26.1.0,)
 loader_version_range=[4,)
 
 # Mod

@@ -236,8 +236,8 @@ Add your block to an existing vanilla tag by creating a file under `data/minecra
 `"replace": false` merges with the existing tag instead of replacing it.
 
 Common block tags:
-- `minecraft:tags/block/mineable/pickaxe` — breakable with pickaxe
-- `minecraft:tags/block/mineable/axe` — breakable with axe
-- `minecraft:tags/block/mineable/shovel` — breakable with shovel
-- `minecraft:tags/block/needs_stone_tool` — requires stone+ tool
-- `minecraft:tags/block/needs_iron_tool` — requires iron+ tool
+- `minecraft:block/mineable/pickaxe` — breakable with pickaxe
+- `minecraft:block/mineable/axe` — breakable with axe
+- `minecraft:block/mineable/shovel` — breakable with shovel
+- `minecraft:block/needs_stone_tool` — requires stone+ tool
+- `minecraft:block/needs_iron_tool` — requires iron+ tool

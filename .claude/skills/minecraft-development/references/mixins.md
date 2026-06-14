@@ -54,6 +54,17 @@ Object form — restrict when the entire config is loaded, independent of the `c
 ]
 ```
 
+## Register in neoforge.mods.toml
+
+Uncomment the `[[mixins]]` block in the mods.toml template and set `config` to the mixins.json filename:
+
+```toml
+[[mixins]]
+    config="mymod.mixins.json"
+```
+
+The file must be on the classpath (place it in `src/main/resources/`). Add one `[[mixins]]` block per config file if you have separate client and common configs.
+
 ## Common annotations
 
 | Annotation | Purpose |

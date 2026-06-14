@@ -34,10 +34,10 @@ maven_group=com.example
 archives_base_name=mymod
 
 # Fabric — check current versions at https://fabricmc.net/develop
-minecraft_version=1.21.11
-yarn_mappings_version=1.21.11+build.3
+minecraft_version=26.1.2
+yarn_mappings_version=26.1.2+build.1
 fabric_loader_version=0.18.3
-fabric_api_version=0.140.2+1.21.11
+fabric_api_version=0.140.2+26.1.2
 ```
 
 ```groovy

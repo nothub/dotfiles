@@ -301,7 +301,7 @@ plugins {
 }
 
 dependencies {
-    paperweight.paperDevBundle("${project.minecraft_version}-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("${project.minecraft_version}.build.+")
 }
 
 assemble.dependsOn reobfJar

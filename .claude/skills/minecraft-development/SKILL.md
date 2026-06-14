@@ -7,9 +7,9 @@ description: Develop Minecraft plugins and mods. Use for Paper plugins, Fabric m
 
 This skill covers three Minecraft development targets:
 
-| Target        | Type                | Build plugin    | Config file          |
+| Target        | Type                | Build plugin    | Plugin/mod metadata  |
 |---------------|---------------------|-----------------|----------------------|
-| **Paper**     | Server plugin only  | Paperweight     | `paper.yml`          |
+| **Paper**     | Server plugin only  | Paperweight     | `plugin.yml`         |
 | **Fabric**    | Client + server mod | Fabric Loom     | `fabric.mod.json`    |
 | **NeoForged** | Client + server mod | NeoGradle / MDG | `neoforge.mods.toml` |
 
@@ -34,7 +34,8 @@ Before writing any code or config, determine:
 
 Then read the relevant reference file before proceeding:
 
-- Paper → `references/paper.md`
+- Paper plugin → `references/paper.md`
+- Paper server config → `references/paper-configuration.md`
 - Fabric → `references/fabric.md`
 - NeoForge → `references/neoforge.md`
 - Any framework → `references/common.md` for asset/data file paths, JSON formats, identifiers, lang, models, recipes, loot tables, tags
@@ -61,8 +62,14 @@ Then read the relevant reference file before proceeding:
 Walk through in this order:
 1. Confirm framework and MC version.
 2. Set up `build.gradle` with the correct plugin and repositories (see reference file).
-3. Create the framework's metadata file (`paper-plugin.yml`, `fabric.mod.json`, or `neoforge.mods.toml`).
+3. Create the framework's metadata file (`plugin.yml`, `fabric.mod.json`, or `neoforge.mods.toml`).
 4. Write the main entry point class.
 5. Show how to run the dev environment.
 
 Do not generate boilerplate beyond these steps. If the user wants events, commands, etc., add them on request.
+
+## Handoffs
+
+- **Upstream:** `spec-driven-development` — if the project needs a design pass before scaffolding; `planning-and-task-breakdown` — for multi-feature plugins/mods
+- **Pair:** `devbox-tool` — reproducible dev environment for the Gradle toolchain; `source-driven-development` — verify API usage against official docs before implementing
+- **Downstream:** `test-driven-development` — unit tests for plugin/mod logic; `git-workflow-and-versioning` — commit scaffolding before adding features
