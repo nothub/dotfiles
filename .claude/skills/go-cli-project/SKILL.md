@@ -35,7 +35,6 @@ Do not leave unresolved placeholders in generated project files.
 Required template files (no Dockerfile — CLI tools ship as binaries, not containers):
 
 - `templates/.forgejo/workflows/check.yaml` — Forgejo/Codeberg CI
-- `templates/.github/workflows/check.yaml` — GitHub Actions CI
 - `templates/.gitattributes`
 - `templates/.gitignore`
 - `templates/LICENSE.txt`

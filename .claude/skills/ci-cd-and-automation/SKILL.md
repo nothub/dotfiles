@@ -1,6 +1,6 @@
 ---
 name: ci-cd-and-automation
-description: Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines across GitHub Actions, Forgejo Actions, or Jenkins. Use when configuring quality gates, release automation with conventional commits and semver, or deployment to VPS or Kubernetes.
+description: Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines across Forgejo Actions or Jenkins. Use when configuring quality gates, release automation with conventional commits and semver, or deployment to VPS or Kubernetes.
 ---
 
 # CI/CD and Automation
@@ -17,11 +17,10 @@ Automate quality gates so no change reaches production without passing build, ve
 
 | Context | Provider | SCM |
 |---|---|---|
-| Personal (GitHub) | GitHub Actions | GitHub |
 | Personal (self-hosted) | Forgejo Actions | Forgejo |
 | Work | Jenkins | SCM-Manager |
 
-Forgejo Actions syntax is nearly identical to GitHub Actions. Jenkins uses a `Jenkinsfile` (declarative pipeline). Differences are noted in each section.
+Jenkins uses a `Jenkinsfile` (declarative pipeline).
 
 ## Quality Gate Pipeline
 
@@ -47,14 +46,12 @@ PR / push
 
 No gate is skippable. Fix the code, not the check.
 
-## GitHub Actions / Forgejo Actions
-
-Syntax is identical. Swap `actions/` → `gitea/` for Forgejo when a native action exists.
+## Forgejo Actions
 
 ### Go project CI
 
 ```yaml
-# .github/workflows/ci.yml  (or .forgejo/workflows/ci.yml)
+# .forgejo/workflows/ci.yml
 name: CI
 
 on:
@@ -66,9 +63,9 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6         # Forgejo: gitea/checkout@v3
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-go@v6         # Forgejo: https://github.com/actions/setup-go or local mirror
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           check-latest: true
@@ -98,7 +95,7 @@ jobs:
 ### Release on tag (semver)
 
 ```yaml
-# .github/workflows/release.yml
+# .forgejo/workflows/release.yml
 name: Release
 
 on:
@@ -122,7 +119,7 @@ jobs:
       - run: CGO_ENABLED=0 go build -trimpath -o {{project-name}} .
 ```
 
-### Forgejo-specific notes
+### Notes
 
 - Not all GitHub marketplace actions are available on Forgejo. Prefer shell steps (`run:`) over third-party actions when possible.
 - For Forgejo package registry (container images): use `docker login ${{ vars.FORGEJO_URL }}` with a token stored in secrets.
@@ -291,7 +288,7 @@ Don't mix strategies within a project. Pick one at project start.
 ```
 .env.example     → committed (template, no real values)
 .env             → NOT committed (local dev)
-CI secrets       → stored in GitHub Secrets / Jenkins credentials / Forgejo secrets
+CI secrets       → stored in Jenkins credentials / Forgejo secrets
 Production       → stored in vault or deployment platform
 ```
 
@@ -299,7 +296,7 @@ Never put production secrets in CI. Use separate credentials per environment.
 
 ## Dependency Updates
 
-Use [Renovate](https://docs.renovatebot.com/) — works with GitHub, Forgejo, and SCM-Manager.
+Use [Renovate](https://docs.renovatebot.com/) — works with Forgejo and SCM-Manager.
 
 ```json
 // renovate.json

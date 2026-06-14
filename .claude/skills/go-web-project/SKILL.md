@@ -50,7 +50,6 @@ Do not leave unresolved placeholders in generated project files.
 Required template files:
 
 - `templates/.forgejo/workflows/check.yaml` — Forgejo/Codeberg CI (runner: `codeberg-small`)
-- `templates/.github/workflows/check.yaml` — GitHub Actions CI (runner: `ubuntu-24.04`)
 - `templates/.gitattributes`
 - `templates/.gitignore`
 - `templates/LICENSE.txt`
