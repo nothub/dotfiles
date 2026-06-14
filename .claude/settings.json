@@ -17,5 +17,18 @@
   "theme": "dark-ansi",
   "editorMode": "normal",
   "preferredNotifChannel": "kitty",
-  "autoCompact": true
+  "autoCompact": true,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/tracker/track.sh"
+          }
+        ]
+      }
+    ]
+  }
 }
