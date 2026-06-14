@@ -18,6 +18,7 @@
 | Scaffold | go-web-project | Scaffold Go web services: net/http, html/template, XDG paths, Dockerfile |
 | Scaffold | go-cli-project | Scaffold Go CLI binaries: goreleaser, USAGE.txt, nfpms, CI workflows |
 | Scaffold | devbox-tool | Isolated, reproducible Nix-based dev environments via devbox.json |
+| Scaffold | minecraft-development | Paper plugins, Fabric mods, and NeoForge mods — scaffolding, Gradle, and MC-version pinning |
 | Plan | planning-and-task-breakdown | Decompose into small, verifiable tasks |
 | Build | incremental-implementation | Thin vertical slices, test each before expanding |
 | Build | bash-script | Safe, pipe-friendly shell scripts with shellcheck and shfmt |

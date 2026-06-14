@@ -26,6 +26,7 @@ Task arrives
     ├── Have a rough concept, need variants? → idea-refine
     ├── New project / feature / change? ────→ spec-driven-development
     ├── Scaffolding a project type? ─────────→ cli-app-designer / go-web-project / go-cli-project
+    ├── Minecraft plugin/mod work? ──────────→ minecraft-development
     ├── Have a spec, need tasks? ────────────→ planning-and-task-breakdown
     ├── Implementing code? ──────────────────→ incremental-implementation
     │   ├── UI work? ───────────────────────→ frontend-ui-engineering
