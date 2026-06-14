@@ -45,7 +45,8 @@ Task arrives
     ├── CI/CD pipeline work? ────────────────→ ci-cd-and-automation
     ├── Deploying to Hetzner? ───────────────→ deployment-hetzner-quadlets
     ├── Deprecating / migrating? ────────────→ deprecation-and-migration
-    └── Writing docs / ADRs? ────────────────→ documentation-and-adrs
+    ├── Writing docs / ADRs? ────────────────→ documentation-and-adrs
+    └── Maintaining this .claude/ config? ───→ claude-dir-maintenance
 ```
 
 ### Lifecycle Sequence

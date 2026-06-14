@@ -189,6 +189,8 @@ The spec is a living document, not a one-time artifact:
 
 ## Handoffs
 
+Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
+
 - **Upstream:** `interview-me` — if intent is underspecified; `idea-refine` — if the idea needs sharpening before specifying
 - **Downstream:** `planning-and-task-breakdown` — once the spec is approved, break it into tasks
 

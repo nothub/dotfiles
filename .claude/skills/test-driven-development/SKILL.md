@@ -366,6 +366,8 @@ go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 
 ## Handoffs
 
+Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
+
 - **Pair:** `incremental-implementation` — run together for features; TDD drives each slice
 - **Upstream (bugs):** `debugging-and-error-recovery` — write the reproduction test, fix, then guard
 - **Downstream:** `code-review-and-quality` — review after tests pass and the slice is complete

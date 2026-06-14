@@ -338,6 +338,8 @@ Part of code review is dependency review:
 
 ## Handoffs
 
+Handoffs are suggestions — tell the user what comes next, do not invoke automatically.
+
 - **Upstream:** `incremental-implementation` + `test-driven-development` — review after a complete slice, not mid-work
 - **Optional:** `code-simplification` — if the review surfaces unnecessary complexity
 - **Downstream:** `git-workflow-and-versioning` — once all Critical and Important issues are resolved

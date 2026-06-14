@@ -36,6 +36,7 @@
 | Ship | deployment-hetzner-quadlets | Provision Hetzner servers, Podman Quadlets, nginx, certbot |
 | Ship | deprecation-and-migration | Remove old systems and migrate users safely |
 | Ship | documentation-and-adrs | Document the why, not just the what |
+| Meta | claude-dir-maintenance | Audit skill descriptions, Handoffs wording, AGENTS.md, CLAUDE.md, and README.md |
 
 ## Agents
 
