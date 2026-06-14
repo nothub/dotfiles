@@ -10,45 +10,46 @@ Skills are engineering workflow processes loaded on demand. Commands are slash-c
 |---------|-------------|
 | `/spec` | Write a structured specification before writing any code |
 | `/plan` | Break work into small verifiable tasks with acceptance criteria |
-| `/build` | Implement the next pending task — build, test, verify, commit |
-| `/build auto` | Run the full plan in one approved autonomous pass |
+| `/build` | Sequential chain: spec → plan → full TDD implementation, one commit per task |
 | `/test` | TDD workflow: write failing tests, implement, verify |
 | `/review` | Five-axis code review: correctness, readability, architecture, security, performance |
 | `/code-simplify` | Simplify code for clarity without changing behavior |
-| `/preflight` | Pre-release checklist — parallel fan-out → go/no-go → local artifact |
+| `/preflight` | Parallel fan-out: three specialist personas → go/no-go → local artifact |
 | `/maintain` | Audit and maintain this `.claude/` directory |
 
-## Command chains
+## Orchestration commands
 
-### User-driven lifecycle
+Two commands orchestrate multiple skills or personas. They are the only entry points for multi-step automated work.
 
-The user drives the sequence. Each skill suggests the next step — no auto-chaining.
+### `/build` — sequential chain
 
-```
-/spec → /plan → /build → /test → /review → /preflight
-```
-
-### /preflight (parallel fan-out)
+Implements a full spec in one autonomous pass. One human checkpoint (plan approval), then runs to completion.
 
 ```
-/preflight → code-reviewer   ─┐
-           → security-auditor ─┼─ parallel → merge → go/no-go → artifact build
-           → test-engineer   ──┘
+/build
+  ├── Phase 1: verify spec exists, check git baseline
+  ├── Phase 2: generate plan (if needed) → human approval checkpoint
+  └── Phase 3: for each task → RED test → GREEN impl → regression → build → commit
 ```
 
-### Direct invocations
+Use when: you have a spec and want the full implementation done without stepping between tasks.
 
-All other commands invoke a single skill with no fan-out:
+### `/preflight` — parallel fan-out
 
-| Command | Skill |
-|---------|-------|
-| `/spec` | spec-driven-development |
-| `/plan` | planning-and-task-breakdown |
-| `/build` | incremental-implementation + test-driven-development |
-| `/test` | test-driven-development |
-| `/review` | code-review-and-quality |
-| `/code-simplify` | code-simplification |
-| `/maintain` | claude-dir-maintenance |
+Pre-release quality gate. Three specialist personas run concurrently, then results are merged into a go/no-go decision.
+
+```
+/preflight
+  ├── (parallel) code-reviewer    → five-axis review report
+  ├── (parallel) security-auditor → vulnerability audit report
+  └── (parallel) test-engineer    → coverage analysis report
+                  ↓
+        merge (main agent)
+                  ↓
+        go/no-go decision → artifact build on GO
+```
+
+Use when: a change is ready to ship and needs a quality gate before building a release artifact.
 
 ## Skills
 

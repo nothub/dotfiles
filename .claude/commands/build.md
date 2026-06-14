@@ -1,44 +1,47 @@
 ---
-description: Implement tasks incrementally — build, test, verify, commit. Add "auto" to run the whole plan in one approved pass.
+description: Build from spec to working artifact — plan if needed, get one approval, then implement every task with TDD, one commit per task.
 ---
 
-Invoke the incremental-implementation skill alongside test-driven-development.
+`/build` is a **sequential chain**. It ensures a spec and a plan exist, gets one human checkpoint, then implements every task autonomously — each with a failing test, a passing implementation, and its own commit.
 
-## Modes
+## Phase 1 — Prerequisites
 
-- **`/build`** — implement the *next* pending task, then stop (careful, one slice at a time).
-- **`/build auto`** — generate the plan if needed, get a single approval, then implement *every* task without stopping between them.
+1. **Require a spec.** Look only at known paths: `SPEC.md` at repo root, `docs/SPEC.md`, or a file under `spec/`. A README or arbitrary doc does not count. If none exists, stop and tell the user to run `/spec` first.
+2. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`SPEC.md`, `docs/SPEC.md`, `spec/*`, `tasks/plan.md`, `tasks/todo.md`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
 
-`$ARGUMENTS` selects the mode. Treat `auto` (canonical) or `all` as autonomous mode; anything else (or empty) is the default single-task mode. Note: autonomous mode is not faster *per task* — it runs the same test-driven loop — it only removes the human stepping *between* tasks.
+## Phase 2 — Plan
 
-## Default: one task
+If no `tasks/plan.md` exists, invoke `planning-and-task-breakdown` to generate one.
 
-Pick the next pending task from the plan. Then:
+Present the full plan and wait for an unambiguous affirmative ("approve", "go", "yes"). Treat hedged responses ("looks reasonable", "I guess") as **not** approved. This is the only human gate.
 
-1. Read the task's acceptance criteria
-2. Load relevant context (existing code, patterns, types)
-3. Write a failing test for the expected behavior (RED)
-4. Implement the minimum code to pass the test (GREEN)
-5. Run the full test suite to check for regressions
-6. Run the build to verify compilation
-7. Commit with a descriptive message
-8. Mark the task complete and stop
+If the plan was just generated, commit it as a single preparatory commit now so it doesn't bleed into the first task's commit.
 
-## Autonomous: the whole plan (`/build auto`)
+## Phase 3 — Execute
 
-Use this once a spec exists and you want to collapse plan + build into one run. It removes the manual stepping between tasks — **not** the verification. Every task still earns a passing test and its own commit.
+For each task in dependency order:
 
-1. **Require a spec.** Look only for a spec at a known path: `SPEC.md` at the repo root, `docs/SPEC.md`, or a file under `spec/`. A README or arbitrary doc does **not** count. If none exists, stop and tell the user to run `/spec` first — do not invent requirements.
-2. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside the expected planning artifacts (`SPEC.md`, `docs/SPEC.md`, `spec/*`, `tasks/plan.md`, `tasks/todo.md`), stop and ask the user to commit, stash, or confirm how to handle them. Autonomous per-task commits must not absorb unrelated local work, or the clean-rollback guarantee breaks.
-3. **Plan if needed.** If there is no `tasks/plan.md`, invoke planning-and-task-breakdown to generate one.
-4. **Single checkpoint.** Present the full plan and wait for an unambiguous affirmative (e.g. "approve", "go", "yes"). Treat hedged responses ("looks reasonable", "I guess") as **not** approved. This is the only human gate — after approval, run autonomously. If you generated `tasks/plan.md`, commit it as a single preparatory commit now so it doesn't bleed into the first task's commit.
-5. **Execute every task in dependency order.** Use each task's declared dependencies; if they aren't explicit, execute in the order the plan lists them. For each task, run the full default loop above (RED → GREEN → regression → build → commit → mark complete). Stage only the files that task touched plus its task-status update — never `git add -A` blindly — and make one commit per task so any point is a clean rollback.
-6. **Stop and ask the user** (do not push through) when:
-   - a test can't be made to pass or the build breaks without an obvious fix → follow debugging-and-error-recovery
-   - the spec is ambiguous, or a task needs a decision the spec doesn't cover
-   - a task is high-risk or irreversible — auth/permission changes, destructive data migrations, payments, deletions, deploys, anything touching secrets, **or anything you can't undo with `git revert`** → follow doubt-driven-development and get explicit sign-off before continuing
+1. Write a failing test for the expected behavior (RED)
+2. Implement the minimum code to make it pass (GREEN)
+3. Run the full test suite for regressions
+4. Run the build to verify compilation
+5. Commit with a descriptive message — stage only files that task touched plus its task-status update, never `git add -A`
+6. Mark the task complete
 
-   After the user resolves a blocker, they re-invoke `/build auto` — it resumes from the next pending task.
-7. **Summarize at the end:** tasks completed, tests added, commits made, and anything skipped, flagged, or left for the user.
+Stop and ask (do not push through) when:
+- A test can't be made to pass or the build breaks without an obvious fix → follow `debugging-and-error-recovery`
+- The spec is ambiguous or a task needs a decision the spec doesn't cover
+- A task is high-risk or irreversible: auth/permission changes, destructive data migrations, payments, deletions, deploys, secrets, or anything not undoable with `git revert` → follow `doubt-driven-development` and get explicit sign-off
 
-If any step fails, follow the debugging-and-error-recovery skill.
+Re-invoke `/build` after resolving a blocker — it resumes from the next pending task.
+
+## Completion
+
+Summarize: tasks completed, tests added, commits made, anything skipped or flagged.
+
+## Rules
+
+1. One commit per task — every point in history is a clean rollback target
+2. Never `git add -A` — stage only what the task touched
+3. Autonomous between tasks after the plan checkpoint — no stepping between tasks
+4. Stop immediately on blockers; do not push through
