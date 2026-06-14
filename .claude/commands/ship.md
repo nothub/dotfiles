@@ -1,9 +1,8 @@
 ---
-description: Run the pre-launch checklist via parallel fan-out to specialist personas, then synthesize a go/no-go decision
+description: Run the pre-release checklist via parallel fan-out to specialist personas, synthesize a go/no-go decision, then build a local release artifact on GO.
 ---
 
-
-`/ship` is a **fan-out orchestrator**. It runs three specialist personas in parallel against the current change, then merges their reports into a single go/no-go decision with a rollback plan. The personas operate independently — no shared state, no ordering — which is what makes parallel execution safe and useful here.
+`/ship` is a **fan-out orchestrator**. It runs three specialist personas in parallel against the current change, merges their reports into a go/no-go decision, and on GO builds a local release artifact.
 
 ## Phase A — Parallel fan-out
 
@@ -22,20 +21,17 @@ Constraints (from Claude Code's subagent model):
 - Each subagent gets its own context window and returns only its report to this main session.
 - If you need teammates that talk to each other instead of just reporting back, use Claude Code Agent Teams and reference these personas as teammate types (see `references/orchestration-patterns.md`).
 
-**Persona resolution.** If you've defined your own `code-reviewer`, `security-auditor`, or `test-engineer` in `.claude/agents/` or `~/.claude/agents/`, those take precedence over this plugin's versions — `/ship` picks up your customizations automatically. This is intentional: plugin subagents sit at the bottom of Claude Code's scope priority table, so user-level definitions win by design.
-
 ## Phase B — Merge in main context
 
 Once all three reports are back, the main agent (not a sub-persona) synthesizes them:
 
 1. **Code Quality** — Aggregate Critical/Important findings from `code-reviewer` and any failing tests, lint, or build output. Resolve duplicates between reviewers.
 2. **Security** — Promote any Critical/High `security-auditor` findings to launch blockers. Cross-reference with `code-reviewer`'s security axis.
-3. **Performance** — Pull from `code-reviewer`'s performance axis; cross-check Core Web Vitals if applicable.
+3. **Performance** — Pull from `code-reviewer`'s performance axis.
 4. **CLI Usability** — For CLI tools: verify exit codes, stdout/stderr separation, signal handling, `--help` output, and error message quality (not covered by the three personas — check directly using `references/cli-usability-checklist.md`).
-5. **Infrastructure** — Env vars, migrations, monitoring, feature flags. Verify directly.
-6. **Documentation** — README, ADRs, changelog. Verify directly.
+5. **Documentation** — README, ADRs, changelog. Verify directly.
 
-## Phase C — Decision and rollback
+## Phase C — Decision and artifact
 
 Produce a single output:
 
@@ -51,21 +47,21 @@ Produce a single output:
 ### Acknowledged risks (shipping anyway)
 - [Risk + mitigation]
 
-### Rollback plan
-- Trigger conditions: [what signals would prompt rollback]
-- Rollback procedure: [exact steps]
-- Recovery time objective: [target]
-
 ### Specialist reports (full)
 - [code-reviewer report]
 - [security-auditor report]
 - [test-engineer report]
 ```
 
+On **GO**: build a local release artifact immediately after the decision output.
+- Go projects: `go tool goreleaser build --clean --snapshot --single-target`
+- Other: use the project's documented release build command
+
+On **NO-GO**: stop. Do not build. List blockers and wait for fixes.
+
 ## Rules
 
 1. The three Phase A personas run in parallel — never sequentially.
 2. Personas do not call each other. The main agent merges in Phase B.
-3. The rollback plan is mandatory before any GO decision.
-4. If any persona returns a Critical finding, the default verdict is NO-GO unless the user explicitly accepts the risk.
-5. **Skip the fan-out only if all of the following are true:** the change touches 2 files or fewer, the diff is under 50 lines, and it does not touch auth, payments, data access, or config/env. Otherwise, default to fan-out. `/ship` is designed for production-bound changes — when the blast radius is non-trivial, run the parallel review even if the diff looks small.
+3. If any persona returns a Critical finding, the default verdict is NO-GO unless the user explicitly accepts the risk.
+4. **Skip the fan-out only if all of the following are true:** the change touches 2 files or fewer, the diff is under 50 lines, and it does not touch auth, data access, or config/env. Otherwise, default to fan-out.
