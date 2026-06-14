@@ -1,6 +1,6 @@
 # ~/.claude
 
-Personal Claude Code config: skills, commands, agent personas, and references.
+Personal AI coding-agent config for Claude Code: skills, commands, agent personas, and references.
 
 - [Skills](./skills) are engineering workflow processes loaded on demand.  
 - [Commands](./commands) are slash-command entry points.  
@@ -81,4 +81,4 @@ Use when: a change is ready to ship and needs a quality gate before building a r
 
 ## Skills
 
-See [CLAUDE.md](CLAUDE.md) for the full skills table with one-liner descriptions.
+See [AGENTS.md](AGENTS.md) for the full skills table with one-liner descriptions.
