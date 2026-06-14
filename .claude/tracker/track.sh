@@ -1,17 +1,9 @@
 #!/usr/bin/env bash
-# PostToolUse hook: logs skill and command reads to ~/.claude/tracker/usage.csv
 set -euo pipefail
 
 input=$(cat)
 
-file_path=$(printf '%s' "$input" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    print(data.get('tool_input', {}).get('file_path', ''))
-except Exception:
-    print('')
-")
+file_path=$(sed -n 's/.*"file_path" *: *"\([^"]*\)".*/\1/p' <<< "$input")
 
 if [[ "$file_path" =~ .*/.claude/skills/([^/]+)/SKILL\.md$ ]]; then
     name="${BASH_REMATCH[1]}"
@@ -24,10 +16,15 @@ else
 fi
 
 csv="$HOME/.claude/tracker/usage.csv"
-mkdir -p "$(dirname "$csv")"
 
 if [ ! -f "$csv" ]; then
-    printf 'timestamp,type,name\n' > "$csv"
+    mkdir -p "$(dirname "$csv")"
+    printf 'type,name,count\n' > "$csv"
 fi
 
-printf '%s,%s,%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$kind" "$name" >> "$csv"
+if grep -q "^$kind,$name," "$csv"; then
+    count=$(grep "^$kind,$name," "$csv" | cut -d, -f3)
+    sed -i "s/^$kind,$name,.*/$kind,$name,$((count + 1))/" "$csv"
+else
+    printf '%s,%s,1\n' "$kind" "$name" >> "$csv"
+fi
