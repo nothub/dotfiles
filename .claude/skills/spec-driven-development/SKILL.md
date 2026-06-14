@@ -187,6 +187,11 @@ The spec is a living document, not a one-time artifact:
 - Making architectural decisions without documenting them
 - Skipping the spec because "it's obvious what to build"
 
+## Handoffs
+
+- **Upstream:** `interview-me` — if intent is underspecified; `idea-refine` — if the idea needs sharpening before specifying
+- **Downstream:** `planning-and-task-breakdown` — once the spec is approved, break it into tasks
+
 ## Verification
 
 Before proceeding to implementation, confirm:

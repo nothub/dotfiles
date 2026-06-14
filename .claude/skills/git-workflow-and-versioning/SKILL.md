@@ -359,6 +359,12 @@ git log --grep="validation" --oneline
 - Long-lived branches that diverge significantly from main
 - Force-pushing to shared branches
 
+## Handoffs
+
+- **Upstream:** `code-review-and-quality` — commit only after review passes
+- **Pair:** `ci-cd-and-automation` — if pipelines need setup or updating alongside the commit
+- **Downstream:** `deployment-hetzner-quadlets` — for deploy after a release tag
+
 ## Verification
 
 For every commit:

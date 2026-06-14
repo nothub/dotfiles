@@ -336,6 +336,12 @@ Part of code review is dependency review:
 - Review comments without severity labels — makes it unclear what's required vs optional
 - Accepting "I'll fix it later" — it never happens
 
+## Handoffs
+
+- **Upstream:** `incremental-implementation` + `test-driven-development` — review after a complete slice, not mid-work
+- **Optional:** `code-simplification` — if the review surfaces unnecessary complexity
+- **Downstream:** `git-workflow-and-versioning` — once all Critical and Important issues are resolved
+
 ## Verification
 
 After review is complete:

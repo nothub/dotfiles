@@ -211,6 +211,11 @@ When multiple agents or sessions are available:
 - No checkpoints between tasks
 - Dependency order isn't considered
 
+## Handoffs
+
+- **Upstream:** `spec-driven-development` — tasks are derived from an approved spec
+- **Downstream:** `incremental-implementation` + `test-driven-development` — run together, slice by slice
+
 ## Verification
 
 Before starting implementation, confirm:

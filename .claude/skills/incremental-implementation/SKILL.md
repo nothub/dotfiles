@@ -236,6 +236,12 @@ After each increment, verify:
 - Creating new utility files for one-time operations
 - Running the same build/test command twice in a row without any intervening code change
 
+## Handoffs
+
+- **Upstream:** `planning-and-task-breakdown` — start from an ordered task list
+- **Pair:** `test-driven-development` — write a failing test before each slice
+- **Downstream:** `code-review-and-quality` — review after all increments land
+
 ## Verification
 
 After completing all increments for a task:

@@ -160,6 +160,11 @@ Read `examples.md` in this skill directory for examples of what great ideation s
 - Ignoring existing codebase constraints when ideating inside a project
 - Jumping straight to Phase 3 output without running Phases 1 and 2
 
+## Handoffs
+
+- **Upstream:** `interview-me` — if the user's actual goal is unclear, clarify intent first
+- **Downstream:** `spec-driven-development` — once the direction is confirmed, write it as a spec
+
 ## Verification
 
 After completing an ideation session:

@@ -364,6 +364,12 @@ go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 - Skipping or disabling tests to make the suite pass
 - Running the same test command twice without an intervening code change
 
+## Handoffs
+
+- **Pair:** `incremental-implementation` — run together for features; TDD drives each slice
+- **Upstream (bugs):** `debugging-and-error-recovery` — write the reproduction test, fix, then guard
+- **Downstream:** `code-review-and-quality` — review after tests pass and the slice is complete
+
 ## Reference
 
 See `references/testing-patterns.md` for Go-specific patterns: table-driven tests, test helpers, HTTP handler testing, fakes vs mocks, testcontainers, CLI output testing, fuzz testing, and benchmarks.

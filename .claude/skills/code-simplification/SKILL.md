@@ -302,6 +302,11 @@ def process(data):
 - Batching many simplifications into one large, hard-to-review commit
 - Refactoring code outside the scope of the current task without being asked
 
+## Handoffs
+
+- **Triggered by:** `code-review-and-quality` — when a review surfaces unnecessary complexity
+- **Downstream:** `git-workflow-and-versioning` — commit simplifications separately from feature work
+
 ## Verification
 
 After completing a simplification pass:
