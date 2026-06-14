@@ -38,12 +38,6 @@
 | Ship | documentation-and-adrs | Document the why, not just the what |
 | Meta | claude-dir-maintenance | Audit skill descriptions, Handoffs wording, AGENTS.md, CLAUDE.md, and README.md |
 
-## Agents
-
-- **code-reviewer** — five-axis review; via `/review` or `/preflight`
-- **security-auditor** — vulnerability audit; via `/preflight`
-- **test-engineer** — coverage analysis; via `/test` or `/preflight`
-
 ## Behavior
 
 ### 1. Think Before Coding
