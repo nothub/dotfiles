@@ -56,6 +56,24 @@ document.querySelector('#list').addEventListener('click', (e) => {
 });
 ```
 
+## Accessibility Basics
+
+Semantic HTML gives you most of this for free. Minimal extra work needed.
+
+**Keyboard navigation** — `<button>`, `<a>`, `<input>`, `<select>`, `<textarea>` are all keyboard-focusable by default. Tab order follows DOM order, so keep DOM order aligned with the visual layout. Never use `tabindex > 0`.
+
+**Screen readers** — headings (`h1`–`h6`), lists, landmark elements (`<nav>`, `<main>`, `<footer>`), and `<label>` associations are all announced correctly by screen readers when you use the right element. Two things to add manually: `aria-label` on icon-only buttons, and `aria-live="polite"` on regions that update dynamically without a page load.
+
+**Contrast** — text must be readable on both light and dark backgrounds:
+
+| Context | Minimum ratio | Target ratio |
+|---|---|---|
+| Body text | 4.5:1 (WCAG AA) | 7:1 (WCAG AAA) |
+| Large text (≥18px or ≥14px bold) | 3:1 | 4.5:1 |
+| UI components, icons | 3:1 | — |
+
+Light mode anchor: `#1a1a1a` on `#ffffff` = 19:1. Dark mode anchor: `#e5e7eb` on `#111827` = 14:1. Muted/secondary text still needs 4.5:1 minimum. Check ratios in browser devtools (Accessibility panel) or with the [Colour Contrast Analyser](https://www.tpgi.com/color-contrast-checker/).
+
 ## No Build Step by Default
 
 Don't introduce a bundler or package manager without a concrete reason.
