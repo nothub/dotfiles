@@ -2,7 +2,7 @@
 description: Run the pre-release checklist via parallel fan-out to specialist personas, synthesize a go/no-go decision, then build a local release artifact on GO.
 ---
 
-`/ship` is a **fan-out orchestrator**. It runs three specialist personas in parallel against the current change, merges their reports into a go/no-go decision, and on GO builds a local release artifact.
+`/preflight` is a **fan-out orchestrator**. It runs three specialist personas in parallel against the current change, merges their reports into a go/no-go decision, and on GO builds a local release artifact.
 
 ## Phase A — Parallel fan-out
 

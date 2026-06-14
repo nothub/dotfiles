@@ -19,9 +19,9 @@
 
 ## Agents
 
-- **code-reviewer** — five-axis review; via `/review` or `/ship`
-- **security-auditor** — vulnerability audit; via `/ship`
-- **test-engineer** — coverage analysis; via `/test` or `/ship`
+- **code-reviewer** — five-axis review; via `/review` or `/preflight`
+- **security-auditor** — vulnerability audit; via `/preflight`
+- **test-engineer** — coverage analysis; via `/test` or `/preflight`
 
 ## Behavior
 
