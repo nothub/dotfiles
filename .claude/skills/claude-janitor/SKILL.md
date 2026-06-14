@@ -1,6 +1,6 @@
 ---
 name: claude-janitor
-description: Maintains the global .claude/ directory. Audits skill descriptions, checks Handoffs sections are clean navigation docs, syncs AGENTS.md decision tree, syncs CLAUDE.md skills table, and regenerates README.md. Triggers on "maintain claude config", "audit skills", "update skill descriptions", or "clean up .claude".
+description: Maintains the global .claude/ directory. Audits skill descriptions, Handoffs sections, commands, and references; syncs AGENTS.md decision tree and lifecycle sequence; syncs CLAUDE.md skills table; regenerates README.md. Triggers on "maintain claude config", "audit skills", "update skill descriptions", or "clean up .claude".
 ---
 
 # .claude Janitor
@@ -28,22 +28,43 @@ For each `skills/*/SKILL.md` that contains `## Handoffs`:
 - Each label should describe what skills relate and why — not instruct the model to invoke them
 - If any label contains imperative language ("invoke X", "run X next"), rewrite it as descriptive ("X continues from here")
 
-### 3. Sync AGENTS.md
+### 3. Audit commands
 
+For each `commands/*.md`:
+
+- Verify a non-empty `description:` frontmatter exists
+- Verify any skill name referenced in the body (as `` `skill-name` ``) has a corresponding `skills/skill-name/` directory on disk
+
+Fix missing frontmatter; flag broken skill references for manual review.
+
+### 4. Audit references
+
+- List all files under `references/`
+- Verify each one is linked from at least one `skills/*/SKILL.md`
+- List all `references/X` links in skill files; verify the file exists on disk
+
+Remove orphaned reference files; flag broken links for manual review.
+
+### 5. Sync AGENTS.md
+
+**Decision tree:**
 - List all directories under `skills/`
 - Verify every skill appears in the Intent → Skill Mapping tree
 - Verify every tree entry has a corresponding `skills/<name>/` directory
-- Verify every skill in the Lifecycle Sequence exists on disk
 - Add missing entries; remove orphaned ones
 
-### 4. Sync CLAUDE.md skills table
+**Lifecycle sequence:**
+- Verify every skill listed in the Lifecycle Sequence exists as `skills/<name>/` on disk
+- Remove any sequence entry whose skill directory is missing
+
+### 6. Sync CLAUDE.md skills table
 
 - List all directories under `skills/`
 - Verify the table has exactly one row per skill
 - Verify each one-liner matches the skill's actual purpose
 - Add missing rows; remove orphaned rows
 
-### 5. Regenerate README.md
+### 7. Regenerate README.md
 
 Rewrite `.claude/README.md` with current state:
 
@@ -56,8 +77,10 @@ Keep it minimal — this is a human reference, not instructions for the model.
 ## Verification
 
 - `ls skills/` entries match AGENTS.md decision tree exactly (no gaps, no ghosts)
+- Every skill in the AGENTS.md lifecycle sequence exists on disk
 - `ls skills/` entries match CLAUDE.md skills table exactly
-- `ls commands/` entries all appear in README.md
+- `ls commands/` entries all appear in README.md with non-empty `description:` frontmatter
+- Every `references/` file is linked from at least one skill; every skill reference link resolves to a file on disk
 - Every `## Handoffs` section contains only Upstream/Downstream/Pair labels (no imperative language)
 - All skill descriptions are action-verb led and ≤200 chars
 - README.md reflects the current on-disk state
