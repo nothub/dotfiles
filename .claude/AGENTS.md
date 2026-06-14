@@ -101,7 +101,7 @@ This repo has three composable layers. They have different jobs and should not b
 
 - **Skills** (`skills/<name>/SKILL.md`) — workflows with steps and exit criteria. The *how*. Mandatory hops when an intent matches.
 - **Personas** (`agents/<role>.md`) — roles with a perspective and an output format. The *who*.
-- **Slash commands** (`.claude/commands/*.md`) — user-facing entry points. The *when*. The orchestration layer.
+- **Slash commands** (`.claude/commands/<name>.md`) — user-facing entry points. The *when*. The orchestration layer.
 
 Composition rule: **the user (or a slash command) is the orchestrator. Personas do not invoke other personas.** A persona may invoke skills.
 

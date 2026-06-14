@@ -3,7 +3,7 @@ name: go-web-project
 description: Create, scaffold, review, or modify Go web applications that use server-side rendering. Use for daemon-style Go services, net/http applications, html/template rendering, embedded templates and static assets, CLI configuration, XDG-compatible paths, Dockerfile generation, CI workflows, and simple maintainable web project structure.
 ---
 
-Project is a Go web service. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
+Project is a Go web service. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, and common dependencies.
 
 ## CLI Behavior
 
@@ -53,17 +53,10 @@ Required template files:
 - `templates/.github/workflows/check.yaml` — GitHub Actions CI (runner: `ubuntu-24.04`)
 - `templates/.gitattributes`
 - `templates/.gitignore`
-- `templates/.goreleaser.yaml` — release automation (linux only)
-- `templates/Dockerfile`
 - `templates/LICENSE.txt`
 - `templates/renovate.json`
 
 Copy only the CI template that matches the project's hosting platform. Adapt the runner label if using self-hosted Forgejo.
-
-Resolve these placeholders in `.goreleaser.yaml` before committing:
-
-- `{{project-name}}` — binary name
-- `{{module-path}}` — Go module path (e.g. `github.com/nothub/{{project-name}}`); adjust the `buildinfo` package path to match your actual version vars, or remove the ldflags if you don't embed build info
 
 ## Third-Party Dependencies
 
@@ -78,14 +71,8 @@ Persist data either in JSON or CSV files or use SQLite (or PostgreSQL in extreme
 
 ## Containerize
 
-Use Dockerfile template `templates/Dockerfile` to containerize.
-
-The template Dockerfile uses a multi-stage build and copies ca certs to the runtime environment.
-
-Extend the build (first) stage if additional build logic is required.
-
-Extend the runtime (second) stage if changes to the `scratch` environment are needed.
+Use a multi-stage Dockerfile: build stage produces a static binary (`CGO_ENABLED=0 go build -trimpath`), runtime stage is `scratch` with `ca-certificates.crt` copied in.
 
 ## References
 
-- `references/go-project-conventions.md` — module path, code style, commands, goreleaser, common deps
+- `references/go-project-conventions.md` — module path, code style, commands, common deps

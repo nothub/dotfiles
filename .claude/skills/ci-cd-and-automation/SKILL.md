@@ -119,13 +119,7 @@ jobs:
           check-latest: true
           cache: true
 
-      - uses: goreleaser/goreleaser-action@v7
-        with:
-          distribution: goreleaser
-          version: "~> v2"
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: CGO_ENABLED=0 go build -trimpath -o {{project-name}} .
 ```
 
 ### Forgejo-specific notes

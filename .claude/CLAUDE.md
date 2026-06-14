@@ -16,7 +16,7 @@
 | Define | spec-driven-development | Requirements and acceptance criteria before code |
 | Scaffold | cli-app-designer | Design CLI commands, flags, exit codes, and help output |
 | Scaffold | go-web-project | Scaffold Go web services: net/http, html/template, XDG paths, Dockerfile |
-| Scaffold | go-cli-project | Scaffold Go CLI binaries: goreleaser, USAGE.txt, nfpms, CI workflows |
+| Scaffold | go-cli-project | Scaffold Go CLI binaries: USAGE.txt, CI workflows |
 | Scaffold | devbox-tool | Isolated, reproducible Nix-based dev environments via devbox.json |
 | Scaffold | minecraft-development | Paper plugins, Fabric mods, and NeoForge mods — scaffolding, Gradle, and MC-version pinning |
 | Plan | planning-and-task-breakdown | Decompose into small, verifiable tasks |

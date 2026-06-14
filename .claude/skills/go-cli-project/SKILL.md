@@ -1,9 +1,9 @@
 ---
 name: go-cli-project
-description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, goreleaser releases, USAGE.txt embedding, and CI workflows.
+description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, USAGE.txt embedding, and CI workflows.
 ---
 
-Project is a Go CLI binary. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, goreleaser setup, and common dependencies.
+Project is a Go CLI binary. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, and common dependencies.
 
 ## Interface Design
 
@@ -38,17 +38,10 @@ Required template files (no Dockerfile — CLI tools ship as binaries, not conta
 - `templates/.github/workflows/check.yaml` — GitHub Actions CI
 - `templates/.gitattributes`
 - `templates/.gitignore`
-- `templates/.goreleaser.yaml`
 - `templates/LICENSE.txt`
 - `templates/renovate.json`
 
 Copy only the CI template that matches the project's hosting platform.
-
-Resolve these placeholders in `.goreleaser.yaml` before committing:
-
-- `{{project-name}}` — binary name
-- `{{module-path}}` — Go module path; adjust the `buildinfo` package path or remove ldflags if not embedding build info
-- `{{git-host}}` / `{{git-owner}}` — e.g. `github.com` / `nothub` or `codeberg.org` / `fhuebner`
 
 ## Third-Party Dependencies
 
@@ -59,6 +52,6 @@ See `references/go-project-conventions.md` for common dependencies (JSON, YAML, 
 
 ## References
 
-- `references/go-project-conventions.md` — module path, code style, commands, goreleaser, common deps
+- `references/go-project-conventions.md` — module path, code style, commands, common deps
 - `references/cli-usability-checklist.md` — exit codes, output streams, signal handling, --json, scriptability
 - `references/testing-patterns.md` — table-driven tests, CLI output testing, fuzz testing, benchmarks

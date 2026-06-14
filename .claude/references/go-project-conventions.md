@@ -19,11 +19,23 @@ Set the module path to match the Git platform:
 
 ## Project Commands
 
-Build: `go build -o {{project-name}} .`
-Test: `go test -vet=all ./...`
-Run: `go run .`
-Format: `go fmt ./...`
-Dependency cleanup: `go mod tidy`
+Build: `CGO_ENABLED=0 go build -trimpath -o {{project-name}} .`
+Test: `go test -v -race -vet=all ./...`
+
+### Building
+
+Always use `-trimpath` flag to strip local file paths from the binary.
+Always set `CGO_ENABLED=0` to disable cgo and produce a static binary.
+
+### Testing
+
+Always set `-v` TODO.
+Always use `-race` TODO.
+Always set `-vet=all` TODO.
+
+### Releasing
+
+For server- or daemon-based projects, use the [`ocipack`](https://codeberg.org/fhuebner/ocipack) tool or library to package oci image tarballs.
 
 ## Pre-Commit
 
@@ -32,24 +44,6 @@ Dependency cleanup: `go mod tidy`
 3. Run tests
 
 Report any command that could not be run and the reason for it.
-
-## Goreleaser
-
-Package goreleaser as a Go tool so it is version-pinned in `go.mod` and available in CI without a separate download step:
-
-```sh
-go get -tool github.com/goreleaser/goreleaser/v2@latest
-```
-
-Run locally and in CI with:
-
-```sh
-go tool goreleaser release --clean
-go tool goreleaser build --clean --snapshot --single-target  # local snapshot
-```
-
-For Codeberg: add a `GITEA_TOKEN` secret with `write:repository` scope.
-For GitHub: `GITHUB_TOKEN` is automatic.
 
 ## Third-Party Dependencies
 
