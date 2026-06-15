@@ -8,16 +8,16 @@ Personal AI coding-agent config for Claude Code: skills, commands, agent persona
 
 ## Commands
 
-| Command | What it does |
-|---------|-------------|
-| `/spec` | Write a structured specification before writing any code |
-| `/plan` | Sequential chain: planning → doubt-driven stress-test → human approval |
-| `/build` | Sequential chain: spec → plan → full TDD implementation, one commit per task |
-| `/test` | TDD workflow: write failing tests, implement, verify |
-| `/review` | Five-axis code review: correctness, readability, architecture, security, performance |
-| `/code-simplify` | Sequential chain: simplify → review loop (max 3 cycles) until clean |
-| `/preflight` | Parallel fan-out: three specialist personas → go/no-go → local artifact |
-| `/claude-janitor` | Audit and maintain this `.claude/` directory |
+| Command           | What it does                                                                              | Call flow                                                                |
+|-------------------|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| `/spec`           | Write a structured specification before writing any code                                  | `spec-driven-development`                                                |
+| `/plan`           | Turn a spec into an adversarially stress-tested task breakdown, ready for approval        | `planning-and-task-breakdown` → `doubt-driven-development` → approval    |
+| `/build`          | Requires a spec; generates a plan if none exists, then implements every task with TDD     | [`planning-and-task-breakdown` →] approval → RED→GREEN→commit (×n tasks) |
+| `/test`           | Write failing tests first, implement to pass, verify no regressions                       | `test-driven-development`                                                |
+| `/review`         | Five-axis code review: correctness, readability, architecture, security, performance      | `code-review-and-quality`                                                |
+| `/code-simplify`  | Reduce complexity, then verify clean — no Critical or Important findings remain           | `code-simplification` → `code-review-and-quality` (×3)                   |
+| `/preflight`      | Pre-release quality gate: review, security, and coverage → go/no-go; build artifact on GO | `code-reviewer` ∥ `security-auditor` ∥ `test-engineer` → merge           |
+| `/claude-janitor` | Audit and maintain this `.claude/` directory                                              | `claude-janitor`                                                         |
 
 ## Orchestration commands
 
@@ -29,7 +29,7 @@ Generates a task breakdown, then applies `doubt-driven-development` to find gaps
 
 ```
 /plan
-  ├── Phase 1: planning-and-task-breakdown → tasks/plan.md
+  ├── Phase 1: planning-and-task-breakdown → tasks/plan.md + tasks/todo.md
   ├── Phase 2: doubt-driven-development (max 3 cycles) → revise on findings
   └── Phase 3: present clean plan → human approval checkpoint
 ```
@@ -73,6 +73,9 @@ Pre-release quality gate. Three specialist personas run concurrently, then resul
   └── (parallel) test-engineer    → coverage analysis report
                   ↓
         merge (main agent)
+          ├── aggregate persona reports
+          ├── CLI usability check (direct)
+          └── documentation check (direct)
                   ↓
         go/no-go decision → artifact build on GO
 ```
