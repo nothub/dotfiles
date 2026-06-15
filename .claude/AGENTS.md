@@ -231,12 +231,20 @@ The only multi-persona orchestration pattern this repo endorses is **parallel fa
 Do not build a "router" persona that decides which other persona to call; that's the job of slash commands and intent
 mapping.
 
-See [agents/README.md](agents/README.md) for the decision matrix
-and [references/orchestration-patterns.md](references/orchestration-patterns.md) for the full pattern catalog.
+See [references/orchestration-patterns.md](references/orchestration-patterns.md) for the full pattern catalog.
 
 **Claude Code interop:** the personas in `agents/` work as Claude Code subagents (auto-discovered from the `agents/`
 directory) and as Agent Teams teammates (referenced by name when spawning). Two platform constraints align with our
 rules: subagents cannot spawn other subagents, and teams cannot nest.
+
+As subagents, use the Agent tool with `subagent_type: <role>` (e.g. `code-reviewer`). `/preflight` is the canonical
+example. As Agent Teams teammates (experimental, requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), reference the
+persona by name — the persona body is appended to the teammate's system prompt, not a replacement.
+
+Subagents report results back to the main agent only. Agent Teams let teammates message each other directly. Use
+subagents when reports are enough; use Agent Teams when sub-agents need to challenge each other's findings.
+
+Plugin agents do not support `hooks`, `mcpServers`, or `permissionMode` frontmatter — those fields are silently ignored.
 
 ## Writing Style
 

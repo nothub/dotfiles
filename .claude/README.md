@@ -2,8 +2,10 @@
 
 Personal AI coding-agent config for Claude Code: skills, commands, agent personas, and references.
 
-- [Skills](./skills) are engineering workflow processes loaded on demand.  
-- [Commands](./commands) are slash-command entry points.  
+- [`CLAUDE.md`](./CLAUDE.md) sets the global personality.
+- [`AGENTS.md`](./AGENTS.md) defines the behavior rules, skill-driven execution model, and intent→skill mapping.
+- [Skills](./skills) are engineering workflow processes loaded on demand.
+- [Commands](./commands) are slash-command entry points.
 - [Personas](./agents) run as subagents via the Agent tool.
 
 ## Commands
@@ -82,6 +84,25 @@ Pre-release quality gate. Three specialist personas run concurrently, then resul
 
 Use when: a change is ready to ship and needs a quality gate before building a release artifact.
 
+## Adding a new command
+
+1. Create `commands/<name>.md` with the prompt/instructions for the slash command.
+2. Add a row to the Commands table in this file.
+3. If it orchestrates multiple skills or personas, add a section below the table describing the call flow.
+
 ## Skills
 
 See [AGENTS.md](AGENTS.md) for the full skills table with one-liner descriptions.
+
+### Adding a new skill
+
+1. Create `skills/<name>/SKILL.md` with the workflow steps and exit criteria.
+2. Add a row to the skills table in `AGENTS.md`.
+3. Add an entry to the intent→skill mapping in `AGENTS.md`.
+
+### Adding a new persona
+
+1. Create `agents/<role>.md` with the same frontmatter format used by existing personas.
+2. Define the role, scope, output format, and rules.
+3. Add a **Composition** block at the bottom (invoke directly when / invoke via / do not invoke from another persona).
+4. If the persona enables a new orchestration pattern, document it in `references/orchestration-patterns.md`.
