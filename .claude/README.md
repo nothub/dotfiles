@@ -16,7 +16,7 @@ Personal AI coding-agent config for Claude Code: skills, commands, agent persona
 | `/plan`           | Turn a spec into an adversarially stress-tested task breakdown, ready for approval        | `planning-and-task-breakdown` → `doubt-driven-development` → approval    |
 | `/build`          | Requires a spec; generates a plan if none exists, then implements every task with TDD     | [`planning-and-task-breakdown` →] approval → RED→GREEN→commit (×n tasks) |
 | `/test`           | Write failing tests first, implement to pass, verify no regressions                       | `test-driven-development`                                                |
-| `/review`         | Five-axis code review: correctness, readability, architecture, security, performance      | `code-review-and-quality`                                                |
+| `/quality-review` | Five-axis code review: correctness, readability, architecture, security, performance      | `code-review-and-quality`                                                |
 | `/code-simplify`  | Reduce complexity, then verify clean — no Critical or Important findings remain           | `code-simplification` → `code-review-and-quality` (×3)                   |
 | `/preflight`      | Pre-release quality gate: review, security, and coverage → go/no-go; build artifact on GO | `code-reviewer` ∥ `security-auditor` ∥ `test-engineer` → merge           |
 | `/claude-janitor` | Audit and maintain this `.claude/` directory                                              | `claude-janitor`                                                         |
