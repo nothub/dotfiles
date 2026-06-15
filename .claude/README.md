@@ -66,7 +66,7 @@ Use when: code works but has accumulated complexity — you want it simplified a
 
 ### `/preflight` — parallel fan-out
 
-Pre-release quality gate. Three specialist personas run concurrently, then results are merged into a go/no-go decision.
+Pre-release quality gate. Three specialist personas run concurrently, then results are merged into a go/no-go decision. Personas are required here — skills run inside the main agent's context and cannot be parallelized; only subagents (personas) can run concurrently.
 
 ```
 /preflight
