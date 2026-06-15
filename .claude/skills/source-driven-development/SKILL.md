@@ -1,6 +1,6 @@
 ---
 name: source-driven-development
-description: Ground implementation decisions in official docs. Use when correctness matters, to avoid outdated patterns, or when building with any framework or library.
+description: Ground implementation decisions in official docs. Use when correctness matters, to avoid outdated patterns, or when building with any framework or library. Also use alongside incremental-implementation when doc-verified correctness is required.
 ---
 
 # Source-Driven Development
