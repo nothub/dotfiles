@@ -3,7 +3,7 @@
 Personal AI coding-agent config for Claude Code: skills, commands, agent personas, and references.
 
 - [`CLAUDE.md`](./CLAUDE.md) sets the global personality.
-- [`AGENTS.md`](./AGENTS.md) defines the behavior rules, skill-driven execution model, and intent→skill mapping.
+- [`AGENTS.md`](./AGENTS.md) defines the behavior rules and skill-driven execution model.
 - [Skills](./skills) are engineering workflow processes loaded on demand.
 - [Commands](./commands) are slash-command entry points.
 - [Personas](./agents) run as subagents via the Agent tool.
@@ -92,12 +92,14 @@ Use when: a change is ready to ship and needs a quality gate before building a r
 
 ## Skills
 
-Skills are listed with descriptions in the system-provided skill index. See [AGENTS.md](AGENTS.md) for the intent→skill mapping and lifecycle sequence.
+**Routing is distributed.** There is no central intent→skill flowchart. Each skill's `description:` frontmatter is the routing entry — an agent reading only that line must be able to decide whether to invoke the skill. When writing a description: name the triggering intent first, mention any sibling sub-skills that branch from this one, and keep it under 200 chars.
+
+The `claude-janitor` skill audits this invariant: it verifies every description is self-sufficient and that parent→sub-skill relationships are stated.
 
 ### Adding a new skill
 
 1. Create `skills/<name>/SKILL.md` with the workflow steps and exit criteria.
-2. Add an entry to the intent→skill mapping in `AGENTS.md`.
+2. Write a `description:` that answers "when would I reach for this?" — no other routing registration is needed.
 
 ### Adding a new persona
 
