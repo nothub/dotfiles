@@ -62,24 +62,23 @@ Fix missing frontmatter; flag broken skill or persona references for manual revi
 
 Flag orphaned reference files and broken links for manual review — do not delete files automatically.
 
-### 7. Sync AGENTS.md
+### 7. Audit routing coverage in skill descriptions
 
-**Decision tree:**
+Routing is distributed: each skill's `description:` frontmatter must be self-sufficient — an agent reading only that line should know when to invoke the skill. There is no central routing flowchart; this audit is how it stays consistent.
 
-The tree is structured as a series of nested branches grouped by phase (Define, Scaffold, Plan, Build, Verify, Review, Ship, Meta). Each leaf has the form:
-```
-    ├── <task description>? ──────→ <skill-name>
-```
-Sub-branches indent one level further with `│   ├──`. New skills belong under the phase that matches their purpose; if none fits, add a new branch at the top level.
+For each `skills/*/SKILL.md`:
 
-- List all directories under `skills/`
-- Verify every skill appears in the Intent → Skill Mapping tree
-- Verify every tree entry has a corresponding `skills/<name>/` directory
-- Add missing leaves in the correct branch; remove orphaned leaves
+- Does the description answer "when would I reach for this?" in plain language?
+- Does it name the triggering intent, not just what the skill does?
+- If the skill has siblings (sub-skills invoked from within a parent workflow), does the parent's description mention them?
 
-**Lifecycle sequence:**
-- Verify every skill listed in the Lifecycle Sequence exists as `skills/<name>/` on disk
-- Remove any sequence entry whose skill directory is missing
+Key relationships to verify:
+- `incremental-implementation` description lists its specialised sub-skills (UI → `frontend-ui-engineering`, API → `api-and-interface-design`, shell → `bash-script`, high stakes → `doubt-driven-development`)
+- `code-review-and-quality` description mentions sub-skills for complex (`code-simplification`), security (`security-and-hardening`), and performance (`performance-optimization`) findings
+- `spec-driven-development` is the entry point for any new project or feature (not `incremental-implementation` directly)
+- `interview-me` is the entry point when the request is underspecified
+
+Fix any description that fails this check.
 
 ### 8. Sync CLAUDE.md skills table
 
@@ -100,8 +99,7 @@ Keep it minimal — this is a human reference, not instructions for the model.
 
 ## Verification
 
-- `ls skills/` entries match AGENTS.md decision tree exactly (no gaps, no ghosts)
-- Every skill in the AGENTS.md lifecycle sequence exists on disk
+- Every skill's `description:` frontmatter answers "when would I reach for this?" and names any sibling sub-skills
 - `ls skills/` entries match CLAUDE.md skills table exactly
 - `ls commands/` entries all appear in README.md with non-empty `description:` frontmatter
 - Every `references/` file is linked from at least one of: `skills/*/SKILL.md`, `commands/*.md`, `AGENTS.md`, `CLAUDE.md`, or `README.md`; every reference link in those files resolves to a file on disk

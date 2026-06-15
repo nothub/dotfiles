@@ -98,92 +98,9 @@ Agent workflow artifacts are written to each projects `.ai/` directory:
 
 ## Skill-Driven Execution
 
-Use a **skill-driven execution model**: when a task matches a skill, invoke it.
+When a task matches a skill, invoke it. Each skill's `description:` frontmatter states when it applies — read those to route correctly. Never implement directly if a skill applies; always follow the skill workflow exactly.
 
-### Core Rules
-
-- If a task matches a skill, you MUST invoke it
-- Skills are located in `skills/<skill-name>/SKILL.md`
-- Never implement directly if a skill applies
-- Always follow the skill instructions exactly (do not partially apply them)
-
-### Intent → Skill Mapping
-
-```
-Task arrives
-    │
-    ├── Don't know what you want yet? ──────→ interview-me
-    ├── Have a rough concept, need variants? → idea-refine
-    ├── New project / feature / change? ────→ spec-driven-development
-    ├── Scaffolding a project type? ─────────→ cli-app-designer / go-web-project / go-cli-project
-    ├── Minecraft plugin/mod work? ──────────→ minecraft-development
-    ├── Have a spec, need tasks? ────────────→ planning-and-task-breakdown
-    ├── Implementing code? ──────────────────→ incremental-implementation
-    │   ├── UI work? ───────────────────────→ frontend-ui-engineering
-    │   ├── API work? ──────────────────────→ api-and-interface-design
-    │   ├── Writing shell scripts? ──────────→ bash-script
-    │   ├── Devbox / env setup? ─────────────→ devbox-tool
-    │   ├── Need better context? ────────────→ context-engineering
-    │   ├── Need doc-verified code? ─────────→ source-driven-development
-    │   └── Stakes high / unfamiliar code? ──→ doubt-driven-development
-    ├── Writing / running tests? ────────────→ test-driven-development
-    ├── Something broke? ────────────────────→ debugging-and-error-recovery
-    ├── Reviewing code? ─────────────────────→ code-review-and-quality
-    │   ├── Too complex? ───────────────────→ code-simplification
-    │   ├── Security concerns? ──────────────→ security-and-hardening
-    │   └── Performance concerns? ────────────→ performance-optimization
-    ├── Committing / branching? ─────────────→ git-workflow-and-versioning
-    ├── CI/CD pipeline work? ────────────────→ ci-cd-and-automation
-    ├── Deploying to Hetzner? ───────────────→ deployment-hetzner-quadlets
-    ├── Deprecating / migrating? ────────────→ deprecation-and-migration
-    ├── Writing docs / ADRs? ────────────────→ documentation-and-adrs
-    └── Maintaining this .claude/ config? ───→ claude-janitor
-```
-
-### Lifecycle Sequence
-
-Full feature path — not every task needs every step:
-
-```
-1.  interview-me                 → extract what the user actually wants
-2.  idea-refine                  → refine vague ideas into a concrete direction
-3.  spec-driven-development      → define what gets built and how to verify it
-4.  go-cli-project / go-web-project / cli-app-designer  → scaffold (if new project)
-5.  planning-and-task-breakdown  → break the spec into verifiable chunks
-6.  context-engineering          → load the right context for the build phase
-7.  source-driven-development    → verify approach against official docs
-8.  incremental-implementation   → build thin vertical slices
-9.  doubt-driven-development     → cross-examine non-trivial decisions
-10. test-driven-development      → prove each slice works
-11. code-review-and-quality      → review before merge
-12. code-simplification          → reduce unnecessary complexity
-13. git-workflow-and-versioning  → clean commit history
-14. ci-cd-and-automation         → automated quality gates
-15. deployment-hetzner-quadlets  → deploy to production
-16. documentation-and-adrs       → record the why
-17. deprecation-and-migration    → retire old systems
-```
-
-A bug fix only needs: `debugging-and-error-recovery` → `test-driven-development` → `code-review-and-quality`.
-
-### Execution Model
-
-For every request:
-
-1. Determine if any skill applies (even 1% chance)
-2. Invoke the appropriate skill
-3. Follow the skill workflow strictly
-4. Only proceed to implementation after required steps (spec, plan, etc.) are complete
-
-### Anti-Rationalization
-
-The following thoughts are incorrect and must be ignored:
-
-- "This is too small for a skill"
-- "I can just quickly implement this"
-- "I'll gather context first"
-
-Correct behavior: always check for and use skills first.
+If a request is underspecified, start with `interview-me`. For any new project or feature, start with `spec-driven-development` before touching code.
 
 ## Orchestration: Personas, Skills, and Commands
 
@@ -219,36 +136,8 @@ Plugin agents do not support `hooks`, `mcpServers`, or `permissionMode` frontmat
 
 ## Writing Style
 
-When writing prose, comments, documentation, commit messages, PR descriptions, or chat responses, write in a plain,
-direct, human style.
+Plain, direct, engineer voice — not generated product copy. Active voice. Short sentences. One idea per sentence. Explain the useful part first. Cut anything that adds no meaning.
 
-- Prefer text that sounds like a careful engineer wrote it, not like generated product copy.
-- Do not add a summary paragraph that only repeats what was already said.
-- Do not end with a generic offer like "Let me know if you need anything else."
+State the constraint before the consequence: "scratch images have no `/etc/passwd`, so name-based users won't work" — not the reverse. Avoid `must`/`should` in prose. No summary paragraph that repeats what was already said. No closing offer ("Let me know if you need anything else").
 
-### General voice
-
-- Active voice. Short sentences. One idea per sentence.
-- Explain the useful part first.
-- Cut anything that does not add meaning.
-- Let code examples carry the detail when they are clearer than prose.
-
-### Technical writing
-
-Prefer precise, practical wording.
-
-Write:
-"scratch images have no `/etc/passwd`, so name-based users won't work"
-
-Instead of:
-"Name-based users require `/etc/passwd`, which scratch images do not have"
-
-Split sentences that contain "which", "that", or multiple "and" joins.
-Avoid spec language (`must`/`should`) where normal prose is enough.
-
-### Style anchor
-
-When possible, match the user's own writing style from nearby files, commit messages, PR descriptions, comments, or
-examples in the conversation.
-
-Concrete examples override these abstract rules.
+Match the user's writing style from nearby files, commit messages, or examples in the conversation. Concrete examples override these rules.

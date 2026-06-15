@@ -1,6 +1,6 @@
 ---
 name: code-review-and-quality
-description: Review code before merging. Assesses correctness, readability, architecture, security, and performance. Use when reviewing code from yourself, another agent, or a human.
+description: Review code before merging across five axes: correctness, readability, architecture, security, performance. If code is too complex also use code-simplification; security issues → security-and-hardening; perf issues → performance-optimization.
 ---
 
 # Code Review and Quality

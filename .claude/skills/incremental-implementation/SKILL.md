@@ -1,6 +1,6 @@
 ---
 name: incremental-implementation
-description: Implement changes as thin vertical slices. Use for features touching multiple files, or when a task feels too large to land in one step.
+description: Implement code as thin vertical slices. Use when implementing any feature or code change. For UI use frontend-ui-engineering, for APIs use api-and-interface-design, for shell scripts use bash-script.
 ---
 
 # Incremental Implementation
