@@ -35,7 +35,7 @@ Always set `-vet=all` to run all static analysis checks before testing.
 
 ### Releasing
 
-For server- or daemon-based projects, package OCI image tarballs with `ocipack` (see `oci-packaging.md`).
+For server- or daemon-based projects, use the [`ocipack`](https://codeberg.org/fhuebner/ocipack) tool or library to package oci image tarballs.
 
 ## Pre-Commit
 
