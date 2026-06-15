@@ -1,6 +1,6 @@
 ---
 name: performance-optimization
-description: Optimizes application performance. Use when profiling reveals bottlenecks, when response times exceed SLAs, or when you suspect a regression. Measure first — never optimize without data.
+description: Optimize application performance. Use when profiling reveals bottlenecks, when response times exceed SLAs, or when you suspect a regression. Measure first — never optimize without data.
 ---
 
 # Performance Optimization
