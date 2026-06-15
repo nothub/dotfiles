@@ -24,7 +24,7 @@ it will be linked to `~`, thus providing the global Claude/Agent configuration.
 # Lint shell scripts (shellcheck)
 ./_lint.sh
 
-# Format shell scripts in-place (shfmt via .local/bin/shellfmt)
+# Format shell scripts in-place shfmt (via .local/bin/shellfmt)
 ./_fmt.sh
 ```
 
@@ -55,7 +55,7 @@ Configuration for Claude Code: skills in `skills/`, slash commands in `commands/
 
 ## Code style
 
-- Shell: 4-space indent, `set -eu` (sh) or `set -eu -o pipefail` (bash), LF line endings. Match whatever `shfmt` produces.
+- Shell: 4-space indent, `set -eu` (sh) or `set -eu -o pipefail` (bash), LF line endings. Match whatever `shfmt` (via `.local/bin/shellfmt`) produces.
 - JSON/TOML/YAML: 2-space indent.
 - Python: standard style; no external deps beyond stdlib unless unavoidable.
 - All files: UTF-8, LF, trailing newline, no trailing whitespace (except `.md`).
