@@ -17,9 +17,8 @@ add_path() {
             # already present in $PATH
             ;;
         *)
-            # append to $PATH
-            # TODO: is appending correct or should this be prepended?
-            export PATH="${PATH}:${1}"
+            # prepend so user-local toolchains override system-installed ones
+            export PATH="${1}:${PATH}"
             echo "\$PATH += ${1}" >> "${HOME}/.profile.log"
             ;;
     esac

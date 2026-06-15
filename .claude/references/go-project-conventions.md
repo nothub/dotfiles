@@ -29,9 +29,9 @@ Always set `CGO_ENABLED=0` to disable cgo and produce a static binary.
 
 ### Testing
 
-Always set `-v` TODO.
-Always use `-race` TODO.
-Always set `-vet=all` TODO.
+Always set `-v` to enable verbose output, printing each test name and result as it runs.
+Always use `-race` to enable the race detector and catch concurrent memory access bugs.
+Always set `-vet=all` to run all static analysis checks before testing.
 
 ### Releasing
 
