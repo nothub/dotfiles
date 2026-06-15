@@ -3,8 +3,11 @@
 ## What this repo is
 
 Personal dotfiles for a Debian/Linux desktop.  
-Files are symlinked into `$HOME` via `reclink`.  
-Everything tracked here ends up living at the same relative path under `$HOME`.
+Files are symlinked into `~` via `reclink`.  
+Everything tracked here ends up living at the same relative path under `~`.
+
+This repos `.claude/` directory contains skills, agents, commands, and references usable by AI agents,
+it will be linked to `~`, thus providing the global Claude/Agent configuration.
 
 ## Installation
 

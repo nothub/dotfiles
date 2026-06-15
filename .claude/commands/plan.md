@@ -12,9 +12,9 @@ description: Break work into small verifiable tasks, stress-test the plan with d
 
 ## Phase 1 — Plan
 
-Invoke `planning-and-task-breakdown`. Read the spec at a known path (`SPEC.md`, `docs/SPEC.md`, or under `spec/`). If none exists, stop and tell the user to run `/spec` first.
+Invoke `planning-and-task-breakdown`. Read the spec at `.ai/spec.md`. If none exists, stop and tell the user to run `/spec` first.
 
-Save the plan to `tasks/plan.md` and task list to `tasks/todo.md`.
+Save the plan to `.ai/plan.md` and task list to `.ai/tasks.md`.
 
 ## Phase 2 — Stress-test
 

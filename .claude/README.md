@@ -31,7 +31,7 @@ Generates a task breakdown, then applies `doubt-driven-development` to find gaps
 
 ```
 /plan
-  ├── Phase 1: planning-and-task-breakdown → tasks/plan.md + tasks/todo.md
+  ├── Phase 1: planning-and-task-breakdown → .ai/plan.md + .ai/tasks.md
   ├── Phase 2: doubt-driven-development (max 3 cycles) → revise on findings
   └── Phase 3: present clean plan → human approval checkpoint
 ```
@@ -92,13 +92,12 @@ Use when: a change is ready to ship and needs a quality gate before building a r
 
 ## Skills
 
-See [AGENTS.md](AGENTS.md) for the full skills table with one-liner descriptions.
+Skills are listed with descriptions in the system-provided skill index. See [AGENTS.md](AGENTS.md) for the intent→skill mapping and lifecycle sequence.
 
 ### Adding a new skill
 
 1. Create `skills/<name>/SKILL.md` with the workflow steps and exit criteria.
-2. Add a row to the skills table in `AGENTS.md`.
-3. Add an entry to the intent→skill mapping in `AGENTS.md`.
+2. Add an entry to the intent→skill mapping in `AGENTS.md`.
 
 ### Adding a new persona
 

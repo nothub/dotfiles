@@ -6,12 +6,12 @@ description: Build from spec to working artifact — plan if needed, get one app
 
 ## Phase 1 — Prerequisites
 
-1. **Require a spec.** Look only at known paths: `SPEC.md` at repo root, `docs/SPEC.md`, or a file under `spec/`. A README or arbitrary doc does not count. If none exists, stop and tell the user to run `/spec` first.
-2. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`SPEC.md`, `docs/SPEC.md`, `spec/*`, `tasks/plan.md`, `tasks/todo.md`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
+1. **Require a spec.** Look only at `.ai/spec.md`. A README or arbitrary doc does not count. If none exists, stop and tell the user to run `/spec` first.
+2. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`.ai/`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
 
 ## Phase 2 — Plan
 
-If no `tasks/plan.md` exists, invoke `planning-and-task-breakdown` to generate one.
+If no `.ai/plan.md` exists, invoke `planning-and-task-breakdown` to generate one.
 
 Present the full plan and wait for an unambiguous affirmative ("approve", "go", "yes"). Treat hedged responses ("looks reasonable", "I guess") as **not** approved. This is the only human gate.
 
