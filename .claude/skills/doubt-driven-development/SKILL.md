@@ -1,6 +1,6 @@
 ---
 name: doubt-driven-development
-description: Adversarially review non-trivial decisions before they stand. Use when correctness matters, in unfamiliar code, or when stakes are high (production, security, irreversible ops). Also use alongside incremental-implementation in unfamiliar territory.
+description: Adversarially review non-trivial decisions before they stand. Use when correctness matters, in unfamiliar code, or when stakes are high (production, security, irreversible ops).
 ---
 
 # Doubt-Driven Development

@@ -90,15 +90,18 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Workflow Artifacts
 
-Agent workflow artifacts are written to each projects `.ai/` directory:
-- `.ai/spec.md`
-- `.ai/plan.md`
-- `.ai/tasks.md`
-- `.ai/review.md`
+Keep agent workflow artifacts in the project's `.ai/` directory. General documentation (architecture, tradeoffs, decisions) goes in `docs/`.
 
-General documentation is written to the `docs/` directory:
-- `docs/architecture.md`
-- `docs/tradeoffs.md`
+**Naming rule: `{type}-{qualifier}.md`**
+
+- **type** — artifact kind: `spec`, `plan`, `tasks`, `review`
+- **qualifier** — feature/scope, phase, persona, or date: `user-auth`, `phase-2`, `security`, `20240616`
+
+Examples: `.ai/spec-user-auth.md`, `.ai/plan-user-auth.md`, `.ai/tasks-user-auth.md`, `.ai/review-preflight.md`
+
+Type comes first so `ls .ai/` groups by artifact kind and `review-<tab>` lists all reviews. No bare names — every file has a qualifier.
+
+Commands that read or write `.ai/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
 
 ## Skill-Driven Execution
 

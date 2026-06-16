@@ -31,7 +31,7 @@ Generates a task breakdown, then applies `doubt-driven-development` to find gaps
 
 ```
 /plan
-  ├── Phase 1: planning-and-task-breakdown → .ai/plan.md + .ai/tasks.md
+  ├── Phase 1: planning-and-task-breakdown → .ai/plan-{qualifier}.md + .ai/tasks-{qualifier}.md
   ├── Phase 2: doubt-driven-development (max 3 cycles) → revise on findings
   └── Phase 3: present clean plan → human approval checkpoint
 ```
@@ -106,4 +106,6 @@ The `claude-janitor` skill audits this invariant: it verifies every description 
 1. Create `agents/<role>.md` with the same frontmatter format used by existing personas.
 2. Define the role, scope, output format, and rules.
 3. Add a **Composition** block at the bottom (invoke directly when / invoke via / do not invoke from another persona).
-4. If the persona enables a new orchestration pattern, document it in `references/orchestration-patterns.md`.
+4. Add a row to the `agents/README.md` table.
+5. If the persona enables a new orchestration pattern, document it in `references/orchestration-patterns.md`.
+6. Run the `/claude-janitor` command.

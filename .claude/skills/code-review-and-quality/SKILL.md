@@ -1,6 +1,6 @@
 ---
 name: code-review-and-quality
-description: Review code before merging across five axes: correctness, readability, architecture, security, performance. If code is too complex also use code-simplification; security issues → security-and-hardening; perf issues → performance-optimization.
+description: Review code before merging: correctness, readability, architecture, security, performance. If too complex → code-simplification; security → security-and-hardening; perf → performance-optimization.
 ---
 
 # Code Review and Quality
