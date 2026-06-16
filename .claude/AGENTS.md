@@ -95,6 +95,7 @@ Agent workflow artifacts are written to each projects `.ai/` directory:
 - `.ai/plan.md`
 - `.ai/tasks.md`
 - `.ai/review.md`
+- `.ai/tradeoffs.md`
 
 ## Skill-Driven Execution
 
