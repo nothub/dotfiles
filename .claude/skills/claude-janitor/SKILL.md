@@ -62,7 +62,33 @@ Fix missing frontmatter; flag broken skill or persona references for manual revi
 
 Flag orphaned reference files and broken links for manual review — do not delete files automatically.
 
-### 7. Audit routing coverage in skill descriptions
+### 7. Audit for extractable reference material
+
+Skill bodies should contain process steps, not lookup catalogs. A block is a candidate for extraction to `references/` when it's lookup-shaped rather than process-shaped: a code-pattern collection, a full config/pipeline template (YAML, Groovy, TOML), or a checklist — something you paste or consult on demand, not steps you follow in order.
+
+For each `skills/*/SKILL.md` over ~150 lines:
+
+- Scan headings for catalogs of code snippets or full config/template blocks. A single section over ~50 lines that's mostly code or config is a strong signal.
+- Ask: would this section read the same whether or not the skill's actual process steps are present? If yes, it's not really part of the workflow — it's reference material that happens to live inline.
+- Check whether the section duplicates an existing `references/*.md` file (especially `*-checklist.md` or `*-patterns.md` files) rather than being genuinely new content. A duplicate gets deleted, not extracted — point the skill at the existing file instead.
+
+Flag candidates for manual review; do not extract automatically. Extraction requires judgment about where the new reference file belongs and whether it overlaps existing ones.
+
+*Precedent:* `ci-cd-and-automation`'s ~150 lines of Forgejo/Jenkins YAML were lookup-shaped and became `references/ci-pipeline-templates.md`. `security-and-hardening`'s inline "Security Review Checklist" was a near-duplicate of `references/security-checklist.md` (already linked two sections later) and was deleted rather than extracted.
+
+### 8. Audit reference-trigger strength
+
+A linked reference file is only read if Claude judges it relevant to the current task — linking it doesn't load it automatically. A passive pointer ("See `references/x.md` for details") gives the model nothing to match against; an explicit condition does.
+
+For each `references/` link found in Step 6:
+
+- Check the surrounding sentence or list item states a condition — "when X", "before Y", "if Z" — not just "see X for Y" or "for more on X, see Y".
+- A condition-mapped routing list (each line already maps a situation to a reference, e.g. `Paper plugin → references/paper.md`) satisfies this without needing a separate trigger clause.
+- A reference cited only as the source/justification for a rule already stated inline (a citation, not a deferred-content pointer) doesn't need a trigger — it's not meant to be fetched on demand.
+
+Rewrite any weak pointer with an explicit condition rather than just flagging it — this is a mechanical fix, not a judgment call.
+
+### 9. Audit routing coverage in skill descriptions
 
 Routing is distributed: each skill's `description:` frontmatter must be self-sufficient — an agent reading only that line should know when to invoke the skill. There is no central routing flowchart; this audit is how it stays consistent.
 
@@ -80,14 +106,14 @@ Key relationships to verify:
 
 Fix any description that fails this check.
 
-### 8. Sync CLAUDE.md skills table
+### 10. Sync CLAUDE.md skills table
 
 - List all directories under `skills/`
 - Verify the table has exactly one row per skill
 - Verify each one-liner matches the skill's actual purpose
 - Add missing rows; remove orphaned rows
 
-### 9. Regenerate README.md
+### 11. Regenerate README.md
 
 Rewrite `.claude/README.md` with current state:
 
@@ -103,6 +129,8 @@ Keep it minimal — this is a human reference, not instructions for the model.
 - `ls skills/` entries match CLAUDE.md skills table exactly
 - `ls commands/` entries all appear in README.md with non-empty `description:` frontmatter
 - Every `references/` file is linked from at least one of: `skills/*/SKILL.md`, `commands/*.md`, `AGENTS.md`, `CLAUDE.md`, or `README.md`; every reference link in those files resolves to a file on disk
+- No SKILL.md over ~150 lines contains an un-flagged lookup-shaped block (code-pattern catalog, config/pipeline template) over ~50 lines that duplicates or should be extracted into `references/`
+- Every `references/` link is paired with an explicit when/before/if trigger, or is part of a condition-mapped routing list — not a bare "see X for Y"
 - Every `## Handoffs` section contains only Upstream/Downstream/Pair labels (no imperative language)
 - Every skill name cited in a Handoffs label resolves to a skill on disk
 - All skill descriptions are action-verb led, ≤200 chars, and have `name:` matching the directory name
