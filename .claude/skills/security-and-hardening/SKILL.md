@@ -262,7 +262,7 @@ OWASP LLM Top 10 risks in scope:
 
 ## Reference
 
-See `references/security-checklist.md` for a full OWASP Top 10 + LLM security checklist to use during review.
+Before finishing a security review, read `references/security-checklist.md` for a full OWASP Top 10 + LLM security checklist.
 
 ## Verification
 

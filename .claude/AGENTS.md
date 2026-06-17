@@ -126,7 +126,9 @@ The only multi-persona orchestration pattern this repo endorses is **parallel fa
 Do not build a "router" persona that decides which other persona to call; that's the job of slash commands and intent
 mapping.
 
-See [references/orchestration-patterns.md](references/orchestration-patterns.md) for the full pattern catalog.
+Before adding a new slash command that coordinates multiple personas, or introducing a new persona that wraps
+existing ones, read [references/orchestration-patterns.md](references/orchestration-patterns.md) for the full
+pattern catalog.
 
 **Claude Code interop:** the personas in `agents/` work as Claude Code subagents (auto-discovered from the `agents/`
 directory) and as Agent Teams teammates (referenced by name when spawning). This repo has no `.claude-plugin/plugin.json`,

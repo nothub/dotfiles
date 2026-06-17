@@ -3,7 +3,7 @@ name: go-cli-project
 description: Create, scaffold, review, or modify Go CLI applications. Use for standalone Go binaries, flag or urfave/cli-based CLIs, USAGE.txt embedding, and CI workflows.
 ---
 
-Project is a Go CLI binary. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, and common dependencies.
+Project is a Go CLI binary. Read `references/go-project-conventions.md` first for module path convention, code style, project commands, pre-commit steps, and common dependencies.
 
 ## Interface Design
 
@@ -47,10 +47,10 @@ Copy only the CI template that matches the project's hosting platform.
 - Flags/CLI: stdlib `flag` for simple tools; `github.com/urfave/cli/v3` when subcommands are needed
   - When using urfave/cli/v3: set `HideHelp: true` and `HideVersion: true` on the `cli.App` to suppress the built-in `--help`/`-h` and `--version`/`-V` flags; implement `help` and `version` as explicit `cli.Command` entries instead
 
-See `references/go-project-conventions.md` for common dependencies (JSON, YAML, UUID).
+When picking a dependency beyond the ones above, read `references/go-project-conventions.md` for common choices (JSON, YAML, UUID).
 
 ## References
 
-- `references/go-project-conventions.md` — module path, code style, commands, common deps
-- `references/cli-usability-checklist.md` — exit codes, output streams, signal handling, --json, scriptability
-- `references/testing-patterns.md` — table-driven tests, CLI output testing, fuzz testing, benchmarks
+- `references/go-project-conventions.md` — read first, applies project-wide: module path, code style, commands, common deps
+- `references/cli-usability-checklist.md` — read before finalizing the interface: exit codes, output streams, signal handling, --json, scriptability
+- `references/testing-patterns.md` — read when writing tests: table-driven tests, CLI output testing, fuzz testing, benchmarks

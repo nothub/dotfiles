@@ -113,4 +113,4 @@ Keep it minimal — this is a human reference, not instructions for the model.
 
 ## Reference
 
-See `references/orchestration-patterns.md` for the pattern catalog covering parallel fan-out, sequential chains, and other orchestration patterns used in this config.
+When auditing commands or personas in Step 5 for orchestration-pattern compliance, read `references/orchestration-patterns.md` for the pattern catalog covering parallel fan-out, sequential chains, and other orchestration patterns used in this config.

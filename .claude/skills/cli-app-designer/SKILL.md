@@ -75,7 +75,7 @@ For long-running processes, reload config on `SIGHUP` when practical.
 
 ## Reference
 
-See `references/cli-usability-checklist.md` for a full checklist covering exit codes, output streams, help output, error messages, machine-readable output, scriptability, and signal handling.
+Before finalizing a CLI's interface, read `references/cli-usability-checklist.md` for a full checklist covering exit codes, output streams, help output, error messages, machine-readable output, scriptability, and signal handling.
 
 ## Exit codes
 

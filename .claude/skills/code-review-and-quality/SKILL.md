@@ -312,8 +312,8 @@ Part of code review is dependency review:
 ```
 ## See Also
 
-- For detailed security review guidance, see `references/security-checklist.md`
-- For performance review checks, see `references/performance-checklist.md`
+- When the change touches auth, input handling, or external data, read `references/security-checklist.md` for detailed security review guidance
+- When the change touches data fetching, queries, or hot paths, read `references/performance-checklist.md` for performance review checks
 
 ## Common Rationalizations
 

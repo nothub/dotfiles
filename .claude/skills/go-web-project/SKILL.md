@@ -3,7 +3,7 @@ name: go-web-project
 description: Scaffold or modify Go web services. Use for net/http apps, html/template rendering, embedded assets, XDG paths, Dockerfile, and CI workflows.
 ---
 
-Project is a Go web service. See `references/go-project-conventions.md` for module path convention, code style, project commands, pre-commit steps, and common dependencies.
+Project is a Go web service. Read `references/go-project-conventions.md` first for module path convention, code style, project commands, pre-commit steps, and common dependencies.
 
 ## CLI Behavior
 
@@ -62,7 +62,7 @@ Copy only the CI template that matches the project's hosting platform. Adapt the
 - HTTP: `http.ServeMux`
 - SQLite: `modernc.org/sqlite`
 
-See `references/go-project-conventions.md` for common dependencies (JSON, YAML, UUID).
+When picking a dependency beyond the ones above, read `references/go-project-conventions.md` for common choices (JSON, YAML, UUID).
 
 ## Data Storage
 
@@ -74,4 +74,4 @@ Use a multi-stage Dockerfile: build stage produces a static binary (`CGO_ENABLED
 
 ## References
 
-- `references/go-project-conventions.md` — module path, code style, commands, common deps
+- `references/go-project-conventions.md` — read first, applies project-wide: module path, code style, commands, common deps

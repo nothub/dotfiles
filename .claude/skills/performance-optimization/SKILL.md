@@ -157,7 +157,7 @@ w.Header().Set("Cache-Control", "private, no-store")
 
 ## Reference
 
-See `references/performance-checklist.md` for a quick-scan checklist covering database, API, and common anti-patterns.
+Before finishing a performance pass, read `references/performance-checklist.md` for a quick-scan checklist covering database, API, and common anti-patterns.
 
 ## Verification
 

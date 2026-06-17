@@ -372,7 +372,7 @@ go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 
 ## Reference
 
-See `references/testing-patterns.md` for Go-specific patterns: table-driven tests, test helpers, HTTP handler testing, fakes vs mocks, testcontainers, CLI output testing, fuzz testing, and benchmarks.
+When writing Go tests, read `references/testing-patterns.md` for Go-specific patterns: table-driven tests, test helpers, HTTP handler testing, fakes vs mocks, testcontainers, CLI output testing, fuzz testing, and benchmarks.
 
 ## Verification
 
