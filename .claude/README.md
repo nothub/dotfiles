@@ -8,6 +8,15 @@ Personal AI coding-agent config for Claude Code: skills, commands, agent persona
 - [Commands](./commands) are slash-command entry points.
 - [Personas](./agents) run as subagents via the Agent tool.
 
+## Skills vs. personas: context model
+
+The two get invoked similarly but run in fundamentally different places:
+
+- **Skills** run inline, in whichever agent invoked them. No new session starts — the skill's steps are followed in the current context window, with full access to everything already there: conversation history, files already read, prior tool results.
+- **Personas** run as subagents. Claude Code starts a separate, fresh context window for them with no view into your conversation history — only the persona's own system prompt, a task message, and the project's `CLAUDE.md`/git status. Only the persona's final report comes back to the main session; everything it explored along the way stays in its own context and is gone once it returns.
+
+This is why `/quality-review`, `/test`, and `/code-simplify` — commands that invoke a skill — run entirely in your current session at no extra context cost, while `/preflight` — which spawns the `code-reviewer`, `security-auditor`, and `test-engineer` personas — pays for three separate context windows that start blind to anything not explicitly passed in.
+
 ## Commands
 
 | Command           | What it does                                                                              | Call flow                                                                |

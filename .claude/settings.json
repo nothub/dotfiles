@@ -4,20 +4,6 @@
     "commit": "",
     "pr": ""
   },
-  "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true
-  },
-  "outputStyle": "Grug-Brained",
-  "language": "english",
-  "feedbackSurveyRate": 0,
-  "effortLevel": "auto",
-  "theme": "dark-ansi",
-  "editorMode": "normal",
-  "preferredNotifChannel": "kitty",
-  "autoCompact": true,
   "hooks": {
     "PostToolUse": [
       {
@@ -39,5 +25,20 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "claude-md-management@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
+  },
+  "outputStyle": "Grug-Brained",
+  "language": "english",
+  "feedbackSurveyRate": 0,
+  "skillListingBudgetFraction": 0.03,
+  "effortLevel": "auto",
+  "theme": "dark-ansi",
+  "editorMode": "normal",
+  "preferredNotifChannel": "kitty",
+  "autoCompactEnabled": false
 }
