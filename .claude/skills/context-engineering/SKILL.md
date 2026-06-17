@@ -1,6 +1,6 @@
 ---
 name: context-engineering
-description: Optimizes agent context setup. Use when starting a session, output quality degrades, or switching tasks. Also use alongside incremental-implementation when context is stale mid-session.
+description: Optimize agent context setup. Use when starting a session, output quality degrades, or switching tasks. Also use alongside incremental-implementation when context is stale mid-session.
 ---
 
 # Context Engineering

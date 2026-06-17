@@ -106,14 +106,7 @@ Key relationships to verify:
 
 Fix any description that fails this check.
 
-### 10. Sync CLAUDE.md skills table
-
-- List all directories under `skills/`
-- Verify the table has exactly one row per skill
-- Verify each one-liner matches the skill's actual purpose
-- Add missing rows; remove orphaned rows
-
-### 11. Regenerate README.md
+### 10. Regenerate README.md
 
 Rewrite `.claude/README.md` with current state:
 
@@ -126,7 +119,6 @@ Keep it minimal — this is a human reference, not instructions for the model.
 ## Verification
 
 - Every skill's `description:` frontmatter answers "when would I reach for this?" and names any sibling sub-skills
-- `ls skills/` entries match CLAUDE.md skills table exactly
 - `ls commands/` entries all appear in README.md with non-empty `description:` frontmatter
 - Every `references/` file is linked from at least one of: `skills/*/SKILL.md`, `commands/*.md`, `AGENTS.md`, `CLAUDE.md`, or `README.md`; every reference link in those files resolves to a file on disk
 - No SKILL.md over ~150 lines contains an un-flagged lookup-shaped block (code-pattern catalog, config/pipeline template) over ~50 lines that duplicates or should be extracted into `references/`

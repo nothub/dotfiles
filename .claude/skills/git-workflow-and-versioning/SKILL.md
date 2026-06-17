@@ -15,34 +15,6 @@ Always. Every code change flows through git.
 
 ## Core Principles
 
-### Branching Strategy
-
-Two strategies are in use depending on the project. Both are valid. The commit discipline (atomic, conventional, small) matters more than the specific strategy.
-
-**Trunk-based** — for small, fast-moving projects or solo work:
-
-```
-main ──●──●──●──●──●──●──●──●──●──  (always deployable)
-        ╲      ╱  ╲    ╱
-         ●──●─╱    ●──╱    ← short-lived feature branches (1-3 days)
-```
-
-**Gitflow** — for projects with planned releases or multiple parallel workstreams:
-
-```
-main     ──────────────────●────────●──  (release tags only)
-develop  ──●──●──────────●─┘ ●──●──┘
-feat/x        ╲──●──●──●╱
-feat/y                    ╲──●──●──╱
-```
-
-Pick one strategy per project at the start. Don't mix.
-
-Common principles for both:
-- **Dev branches are costs.** Every day a branch lives, it accumulates merge risk.
-- **Release branches are acceptable.** When stabilizing a release while development continues.
-- **Feature flags > long branches.** Deploy incomplete work behind a flag rather than keeping it on a branch for weeks.
-
 ### 1. Commit Early, Commit Often
 
 Each successful increment gets its own commit. Don't accumulate large uncommitted changes.
@@ -131,6 +103,32 @@ Target ~100 lines per commit/PR. Changes over ~1000 lines should be split. See t
 ```
 
 ## Branching Strategy
+
+Two strategies are in use depending on the project. Both are valid. The commit discipline (atomic, conventional, small) matters more than the specific strategy.
+
+**Trunk-based** — for small, fast-moving projects or solo work:
+
+```
+main ──●──●──●──●──●──●──●──●──●──  (always deployable)
+        ╲      ╱  ╲    ╱
+         ●──●─╱    ●──╱    ← short-lived feature branches (1-3 days)
+```
+
+**Gitflow** — for projects with planned releases or multiple parallel workstreams:
+
+```
+main     ──────────────────●────────●──  (release tags only)
+develop  ──●──●──────────●─┘ ●──●──┘
+feat/x        ╲──●──●──●╱
+feat/y                    ╲──●──●──╱
+```
+
+Pick one strategy per project at the start. Don't mix.
+
+Common principles for both:
+- **Dev branches are costs.** Every day a branch lives, it accumulates merge risk.
+- **Release branches are acceptable.** When stabilizing a release while development continues.
+- **Feature flags > long branches.** Deploy incomplete work behind a flag rather than keeping it on a branch for weeks.
 
 ### Feature Branches
 
