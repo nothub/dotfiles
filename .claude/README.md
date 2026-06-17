@@ -8,6 +8,14 @@ Personal AI coding-agent config for Claude Code: skills, commands, agent persona
 - [Commands](./commands) are slash-command entry points.
 - [Personas](./agents) run as subagents via the Agent tool.
 
+## Ideal usage patterns
+
+Three rules of thumb for how this config is meant to be driven, distilled from working out the orchestration model:
+
+- **User-as-orchestrator for lifecycle work.** Multi-step work with real decision points (spec → plan → build → test → review → ship) is driven by you running slash commands in sequence, not by an agent chaining them on your behalf. An automated lifecycle orchestrator would lose the human checkpoints that catch wrong-direction work early and double the token cost via hand-off summarization. See Pattern 4 in [`references/orchestration-patterns.md`](references/orchestration-patterns.md).
+- **Distributed routing via descriptions for everything else.** For single-shot or unclear-shape requests, just describe what you want in plain language. There's no central intent→skill flowchart — each skill's `description:` frontmatter is the routing entry, and Claude matches your phrasing against it directly. Typing a command and describing intent in chat both reach the same skill; commands exist to save retyping a repeated setup, not because routing requires them.
+- **Parallel fan-out reserved for genuinely independent personas.** Multiple personas only run concurrently when their findings are independent and a merge step adds value — `/preflight` is the only example in this repo. It costs N context windows where direct invocation costs one, so it's not a default, it's a deliberate exception.
+
 ## Skills vs. personas: context model
 
 The two get invoked similarly but run in fundamentally different places:
@@ -104,6 +112,8 @@ Use when: a change is ready to ship and needs a quality gate before building a r
 **Routing is distributed.** There is no central intent→skill flowchart. Each skill's `description:` frontmatter is the routing entry — an agent reading only that line must be able to decide whether to invoke the skill. When writing a description: name the triggering intent first, mention any sibling sub-skills that branch from this one, and keep it under 200 chars.
 
 The `claude-janitor` skill audits this invariant: it verifies every description is self-sufficient and that parent→sub-skill relationships are stated.
+
+**Distributed routing only works if every description is actually visible to Claude.** The `skillListingBudgetFraction` setting (in `settings.json`) caps what fraction of the context window the skill listing may use — default `0.01` (1%). When the full listing exceeds that budget, Claude Code truncates it by collapsing the least-used skills' descriptions down to bare names: the skill is still invocable, but Claude can no longer see *why* it would apply, which silently breaks distributed routing for exactly the skills that need a description most. With 34 skills here, the 1% default truncated 17 descriptions to nothing; this repo currently runs at `0.03` (3%) while that's being tuned. Run `/doctor` to see the current truncation count and which skills are affected — if any are, raise the fraction further or shorten the longest descriptions first.
 
 ### Adding a new skill
 
