@@ -185,33 +185,7 @@ The signed tag triggers the CI release job.
 
 ### git-cliff config
 
-Minimal `cliff.toml` at repo root:
-
-```toml
-[changelog]
-header = ""
-body = """
-{% for group, commits in commits | group_by(attribute="group") %}
-### {{ group | upper_first }}
-{% for commit in commits %}
-- {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ commit.id }}))\
-{% endfor %}
-{% endfor %}
-"""
-trim = true
-
-[git]
-conventional_commits = true
-filter_unconventional = true
-commit_parsers = [
-  { message = "^feat", group = "Features" },
-  { message = "^fix", group = "Bug Fixes" },
-  { message = "^refactor", group = "Refactor" },
-  { message = "^docs", group = "Documentation" },
-  { message = "^chore", skip = true },
-  { message = "^test", skip = true },
-]
-```
+A minimal `cliff.toml` template lives in `references/ci-pipeline-templates.md` — read it when setting up changelog generation for a new project.
 
 ## Working with Worktrees
 
