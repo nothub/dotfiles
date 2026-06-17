@@ -120,7 +120,10 @@ This catalog is harness-agnostic, but most readers will run it on Claude Code. H
 
 ### Where personas live
 
-Plugin subagents go in `agents/` at the plugin root. This repo is a plugin (`.claude-plugin/plugin.json`), so `agents/code-reviewer.md`, `agents/security-auditor.md`, and `agents/test-engineer.md` are auto-discovered when the plugin is enabled. No path configuration needed.
+This repo has no `.claude-plugin/plugin.json` — it isn't a plugin. It's symlinked to `~/.claude/`, so
+`agents/code-reviewer.md`, `agents/security-auditor.md`, and `agents/test-engineer.md` are auto-discovered as
+**user-scope** subagents (`~/.claude/agents/`), the same mechanism that picks up any personal subagent file. No
+plugin manifest or path configuration needed.
 
 ### Subagents vs. Agent Teams
 
@@ -140,12 +143,18 @@ One subtlety: the `skills` and `mcpServers` frontmatter fields in a persona are 
 
 ### Platform-enforced rules
 
-Two rules in this catalog aren't just convention — Claude Code enforces them:
+Only one rule in this catalog is enforced by the platform itself:
 
-- **"Subagents cannot spawn other subagents"** (verbatim from the docs). Anti-pattern B (persona-calls-persona) and Anti-pattern D (deep persona trees) cannot exist on Claude Code by construction.
-- **"No nested teams"** — teammates cannot spawn their own teams. Same anti-patterns blocked at the team level.
+- **"No nested teams"** (verbatim from the docs) — teammates cannot spawn their own teams. Anti-patterns B and D are blocked at the Agent Teams level by construction.
 
-This means you can adopt the patterns in this catalog without worrying about contributors accidentally building the anti-patterns. They'll just fail to load.
+Subagent nesting used to be blocked the same way, but **as of Claude Code v2.1.172, a subagent can spawn nested
+subagents** unless `Agent` is removed from its `tools`/`disallowedTools`. That means Anti-pattern B
+(persona-calls-persona) and D (deep persona trees) are no longer prevented by the platform at the subagent level —
+we enforce them ourselves: every persona in `agents/` sets `disallowedTools: Agent`, so none of them can spawn
+another subagent even if asked.
+
+If you add a new persona, give it `disallowedTools: Agent` too, unless it has a genuine, deliberate need to
+delegate — which would itself be a new pattern worth adding to this catalog, not a silent exception.
 
 ### Built-in subagents to know about
 
@@ -159,11 +168,15 @@ Before defining a custom subagent, check whether one of these covers the role:
 
 Don't redefine these. Layer your specialist personas (code-reviewer, security-auditor, test-engineer) on top of them.
 
-### Frontmatter restrictions for plugin agents
+### Frontmatter restrictions for plugin agents (not applicable to this repo)
 
-Plugin subagents do **not** support the `hooks`, `mcpServers`, or `permissionMode` frontmatter fields — these are silently ignored. If a future persona needs any of those, the user must copy the file into `.claude/agents/` or `~/.claude/agents/` instead.
+This repo's personas are user-scope subagents, not plugin subagents (see "Where personas live" above), so the
+restriction below doesn't constrain them — it's documented here only in case this repo is ever packaged as a
+distributable plugin.
 
-The fields that DO work in plugin agents are: `name`, `description`, `tools`, `disallowedTools`, `model`, `maxTurns`, `skills`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. Use `model` per-persona if you want to optimize cost (e.g. Haiku for `test-engineer` coverage scans, Sonnet for `code-reviewer`, Opus for `security-auditor`).
+Plugin subagents do **not** support the `hooks`, `mcpServers`, or `permissionMode` frontmatter fields — these are silently ignored. A persona that needs any of those must live in `.claude/agents/` or `~/.claude/agents/` instead of a plugin's `agents/` directory — which is already where these personas live.
+
+Use `model` per-persona if you want to optimize cost (e.g. Haiku for `test-engineer` coverage scans, Sonnet for `code-reviewer`, Opus for `security-auditor`).
 
 ### Spawning multiple subagents in parallel
 

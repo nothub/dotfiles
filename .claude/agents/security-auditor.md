@@ -1,6 +1,7 @@
 ---
 name: security-auditor
 description: Audit code for vulnerabilities, threat-model systems, and recommend hardening measures. Use for security-focused review, threat analysis, or hardening recommendations.
+disallowedTools: Agent
 ---
 
 # Security Auditor

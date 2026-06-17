@@ -1,6 +1,7 @@
 ---
 name: test-engineer
 description: Design test suites, write tests, and analyze coverage gaps. Use for test strategy, writing tests for existing code, or evaluating test quality.
+disallowedTools: Agent
 ---
 
 # Test Engineer

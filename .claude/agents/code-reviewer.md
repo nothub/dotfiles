@@ -1,6 +1,7 @@
 ---
 name: code-reviewer
 description: Review code across five dimensions — correctness, readability, architecture, security, and performance. Use for thorough pre-merge code review.
+disallowedTools: Agent
 ---
 
 # Senior Code Reviewer

@@ -129,8 +129,14 @@ mapping.
 See [references/orchestration-patterns.md](references/orchestration-patterns.md) for the full pattern catalog.
 
 **Claude Code interop:** the personas in `agents/` work as Claude Code subagents (auto-discovered from the `agents/`
-directory) and as Agent Teams teammates (referenced by name when spawning). Two platform constraints align with our
-rules: subagents cannot spawn other subagents, and teams cannot nest.
+directory) and as Agent Teams teammates (referenced by name when spawning). This repo has no `.claude-plugin/plugin.json`,
+so these are **user-scope** subagents (loaded from `~/.claude/agents/`), not plugin subagents — plugin status isn't
+what makes `agents/` auto-discover.
+
+Only one platform constraint backs our rules: teams cannot nest. Subagent nesting is no longer platform-prevented —
+as of Claude Code v2.1.172, a subagent can spawn its own subagents unless `Agent` is removed from its `tools` or
+`disallowedTools`. We enforce "personas do not invoke other personas" explicitly instead: every persona file sets
+`disallowedTools: Agent`.
 
 As subagents, use the Agent tool with `subagent_type: <role>` (e.g. `code-reviewer`). `/preflight` is the canonical
 example. As Agent Teams teammates (experimental, requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), reference the
@@ -139,11 +145,13 @@ persona by name — the persona body is appended to the teammate's system prompt
 Subagents report results back to the main agent only. Agent Teams let teammates message each other directly. Use
 subagents when reports are enough; use Agent Teams when sub-agents need to challenge each other's findings.
 
-Plugin agents do not support `hooks`, `mcpServers`, or `permissionMode` frontmatter — those fields are silently ignored.
+Because these are user-scope subagents, not plugin subagents, `hooks`, `mcpServers`, and `permissionMode` frontmatter
+all work normally on persona files here. That restriction only applies if this repo is ever packaged and installed
+as an actual plugin.
 
 ## Writing Style
 
-Plain, direct, engineer voice — not generated product copy. Active voice. Short sentences. One idea per sentence. Explain the useful part first. Cut anything that adds no meaning.
+Plain, direct, engineer voice — not generated product copy. Active voice. Short sentences. One idea per sentence. Explain the useful part first. Cut anything that adds no meaning. Explicitly state all tradeoffs and optimizations.
 
 State the constraint before the consequence: "scratch images have no `/etc/passwd`, so name-based users won't work" — not the reverse. Avoid `must`/`should` in prose. No summary paragraph that repeats what was already said. No closing offer ("Let me know if you need anything else").
 
