@@ -88,9 +88,12 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-## Workflow Artifacts
+## Documentation
 
-Keep agent workflow artifacts in the project's `docs/ai/` directory. General documentation (architecture, tradeoffs, decisions) goes in `docs/` (ADRs in `docs/adrs/`, see Skill-Driven Execution).
+Keep agent's workflow docs in the project's `docs/ai/` directory.
+General documentation (domain-specific, architecture, scope, expectations, limitations, users, etc.) goes in `docs/`.
+ADRs go into `docs/ai/adrs/`, see Skill-Driven Execution.
+
 
 **Naming rule: `{YYYYMMDD}-{qualifier}.md`**
 
@@ -113,7 +116,7 @@ When a task matches a skill, invoke it. Each skill's `description:` frontmatter 
 
 If a request is underspecified, start with `interview-me`. For any new project or feature, start with `spec-driven-development` before touching code.
 
-When a tradeoff is worth documenting or discussing with the user, use `documentation-and-adrs` to write an ADR to `docs/adrs/`.
+When a tradeoff is worth documenting or discussing with the user, use `documentation-and-adrs` to write an ADR to `docs/ai/adrs/`.
 
 ## Orchestration: Personas, Skills, and Commands
 
