@@ -97,7 +97,7 @@ Keep agent workflow artifacts in the project's `.ai/` directory. General documen
 - **type** — artifact kind: `spec`, `plan`, `tasks`, `review`
 - **qualifier** — feature/scope, phase, persona, or date: `user-auth`, `phase-2`, `security`, `20240616`
 
-Frontmatter: All documentation workflow artifacts must have a frontmatter block with `created:` and `last-updated:` keys.
+Frontmatter: All documentation workflow artifacts must have a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values.
 
 Examples: `.ai/spec-user-auth.md`, `.ai/plan-user-auth.md`, `.ai/tasks-user-auth.md`, `.ai/review-preflight.md`
 
