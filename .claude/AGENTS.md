@@ -99,9 +99,9 @@ Keep agent workflow artifacts in the project's `docs/ai/` directory. General doc
 
 One file per feature carries its whole lifecycle as `##` sections, appended in order as each phase runs: Spec, Plan, Tasks, Review. The full `/spec` → `/plan` → `/build` → `/quality-review`/`/preflight` run for a feature lives in a single document — no separate files per phase.
 
-Re-running a phase against a qualifier that already has that section overwrites it in place. Don't keep stale phase output around — git history is where the old version lives.
+Re-running a phase against a qualifier that already has that section edits it in place — update or remove what's now outdated, keep what's still accurate. Don't regenerate the whole section from scratch, and don't keep stale phase output around — git history is where the old version lives.
 
-Frontmatter: every artifact file has a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values. `created` is set once; `updated` changes whenever any section is added or overwritten.
+Frontmatter: every artifact file has a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values. `created` is set once; `updated` changes whenever a section is added or edited.
 
 Examples: `docs/ai/20240618-project-init.md`, `docs/ai/20250102-add-database.md`, `docs/ai/20260316-realip-middleware.md`, `docs/ai/20260519-flux-capacitor.md`.
 

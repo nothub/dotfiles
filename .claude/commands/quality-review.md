@@ -17,4 +17,4 @@ Output a structured review with specific file:line references and fix recommenda
 
 **Qualifier:** use `$ARGUMENTS` as the qualifier slug (e.g. `/quality-review security`, `/quality-review user-auth`). If no argument is given, default to `review`.
 
-**File:** check for an existing `docs/ai/*-{qualifier}.md` first — if one exists (e.g. mid feature chain), overwrite its `## Review` section and bump `updated:`. Otherwise create `docs/ai/{today}-{qualifier}.md` (create the directory if it doesn't exist) with a frontmatter block (`created:`/`updated:` set to now) and a `## Review` section.
+**File:** check for an existing `docs/ai/*-{qualifier}.md` first — if one exists (e.g. mid feature chain), edit its `## Review` section in place: drop findings that are now resolved or outdated, keep what's still valid, add new ones — and bump `updated:`. Otherwise create `docs/ai/{today}-{qualifier}.md` (create the directory if it doesn't exist) with a frontmatter block (`created:`/`updated:` set to now) and a `## Review` section.

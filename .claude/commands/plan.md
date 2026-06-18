@@ -16,7 +16,7 @@ description: Break work into small verifiable tasks, stress-test the plan with d
 
 Invoke `planning-and-task-breakdown`. Read the `## Spec` section from `docs/ai/{date}-{qualifier}.md`.
 
-Write the plan and task list as `## Plan` and `## Tasks` sections in the same file, overwriting either section if it already exists, and bump `updated:`.
+Write the plan and task list as `## Plan` and `## Tasks` sections in the same file. If either section already exists, edit it in place — update or remove only what's now outdated, keep already-checked-off tasks and anything still accurate — and bump `updated:`.
 
 ## Phase 2 — Stress-test
 
