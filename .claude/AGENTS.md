@@ -92,7 +92,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Keep workflow docs in the project's `docs/ai/` directory.
 General documentation (domain-specific, architecture, scope, expectations, limitations, users, etc.) goes in `docs/`.
-ADRs, spec, plans, task-lists, etc. go into `docs/ai/adrs/`, see Skill-Driven Execution.
+Spec, plans, task-lists, etc. go directly into `docs/ai/`; ADRs go into `docs/ai/adrs/`, see Skill-Driven Execution.
 
 **Naming rule: `{YYYYMMDD}-{qualifier}.md`**
 
@@ -102,6 +102,10 @@ ADRs, spec, plans, task-lists, etc. go into `docs/ai/adrs/`, see Skill-Driven Ex
 One file per feature carries its whole lifecycle as `##` sections, appended in order as each phase runs: Spec, Plan, Tasks, Review. The full `/spec` → `/plan` → `/build` → `/quality-review`/`/preflight` run for a feature lives in a single document — no separate files per phase.
 
 Re-running a phase against a qualifier that already has that section edits it in place — update or remove what's now outdated, keep what's still accurate. Don't regenerate the whole section from scratch, and don't keep stale phase output around — git history is where the old version lives.
+
+Once a feature's full cycle is done — every task in `## Tasks` checked off and `## Review` has no outstanding findings — delete the file in the commit that closes out the work. Don't archive it elsewhere; git history retains every phase. This keeps `docs/ai/` reflecting only in-flight work, and avoids ambiguous qualifier-suffix matches if a slug gets reused later. ADRs in `docs/ai/adrs/` are exempt — those are permanent records (see `documentation-and-adrs`), never deleted.
+
+**Before deleting, promote anything worth keeping.** Git history holds the deleted file, but nobody browses git history as documentation. Re-read the `## Spec`, `## Plan`, and `## Review` sections for content with lasting value — a library/framework choice, a rejected alternative, a non-obvious gotcha, a public API change — and give each a permanent home per `documentation-and-adrs` (an ADR in `docs/ai/adrs/`, a README section, or a CLAUDE.md note) before deleting. If nothing in the file rises to that bar, deleting it loses nothing of value.
 
 Frontmatter: every artifact file has a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values. `created` is set once; `updated` changes whenever a section is added or edited.
 
