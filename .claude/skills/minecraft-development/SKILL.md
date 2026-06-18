@@ -15,9 +15,10 @@ This skill covers three Minecraft development targets:
 
 Dev environment is always Linux. The runtime can be anything Minecraft supports.
 
-**Version-check everything, every time.** Minecraft's ecosystem moves fast and breaks things constantly — not just the game API, but Gradle plugin versions, toolchain/Java requirements, mapping sets (Mojmap/Yarn), metadata file schemas (`plugin.yml`, `fabric.mod.json`, `neoforge.mods.toml`), and even Gradle itself. Code, docs, or examples that are a year old (or sometimes a few months old) can be subtly or completely wrong. Before trusting any doc, example, or interface:
-- Confirm which MC version it targets and whether that matches the user's target version.
-- Don't assume a pattern that worked for one MC version still applies to another, even adjacent ones — re-check rather than extrapolate.
+**Version-check everything!** Minecraft's ecosystem moves fast and breaks things constantly — not just the game API, but Gradle plugin versions, toolchain/Java requirements, mapping sets (Mojmap/Yarn), metadata file schemas (`plugin.yml`, `fabric.mod.json`, `neoforge.mods.toml`), and even Gradle itself.
+Code, docs, or examples that are a year old can be subtly or completely wrong. Before trusting any doc, example, or interface:
+- Confirm which MC or modding-platform version it targets and whether that matches the user's target version.
+- Don't assume a pattern that worked for one MC version still applies to another.
 - This applies to build files and tooling versions just as much as to game APIs.
 
 **Language and build constraints (non-negotiable):**
