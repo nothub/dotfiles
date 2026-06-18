@@ -97,6 +97,8 @@ Keep agent workflow artifacts in the project's `.ai/` directory. General documen
 - **type** — artifact kind: `spec`, `plan`, `tasks`, `review`
 - **qualifier** — feature/scope, phase, persona, or date: `user-auth`, `phase-2`, `security`, `20240616`
 
+Frontmatter: All documentation workflow artifacts must have a frontmatter block with `created:` and `last-updated:` keys.
+
 Examples: `.ai/spec-user-auth.md`, `.ai/plan-user-auth.md`, `.ai/tasks-user-auth.md`, `.ai/review-preflight.md`
 
 Type comes first so `ls .ai/` groups by artifact kind and `review-<tab>` lists all reviews. No bare names — every file has a qualifier.
