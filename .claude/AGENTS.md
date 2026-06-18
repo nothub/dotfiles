@@ -90,29 +90,28 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Documentation
 
-General documentation (domain-specific, scope, expectations, limitations, users, surrounding architecture, etc.) goes to `docs/`.
+General documentation (domain-specific, scope, expectations, limitations, users, surrounding architecture, deployment, etc.) goes to `docs/`.
 
-Workflow docs like specs, plans, task-lists, etc. goes into `docs/ai/work/`.
-ADRs go into `docs/ai/adrs/`, see Skill-Driven Execution.
+Workflow docs like specs, plans, task-lists, etc. go into `docs/work/`.
+ADRs go into `docs/adrs/`, see Skill-Driven Execution.
 
 **Naming rule: `{qualifier}.md`**
 
-- **date** — the date the file was first created (at `/spec` time); fixed for the file's lifetime even as later phases edit it
 - **qualifier** — short kebab-case feature/scope slug: `project-init`, `add-database`, `realip-middleware`, `flux-capacitor`
 
 One file per feature carries its whole lifecycle as `##` sections, appended in order as each phase runs: Spec, Plan, Tasks, Review. The full `/spec` → `/plan` → `/build` → `/quality-review`/`/preflight` run for a feature lives in a single document — no separate files per phase.
 
 Re-running a phase against a qualifier that already has that section edits it in place — update or remove what's now outdated, keep what's still accurate. Don't regenerate the whole section from scratch, and don't keep stale phase output around — git history is where the old version lives.
 
-Once a feature's full cycle is done — every task in `## Tasks` checked off and `## Review` has no outstanding findings — delete the workflow docs (`docs/ai/work/`) in the commit that closes out the work. Don't archive it elsewhere; git history retains every phase. This keeps `docs/ai/work/` reflecting only in-flight work, and avoids ambiguous qualifier-suffix matches if a slug gets reused later. ADRs in `docs/ai/adrs/` are exempt — those are permanent records (see `documentation-and-adrs`), never deleted.
+Once a feature's full cycle is done — every task in `## Tasks` checked off and `## Review` has no outstanding findings — delete the workflow doc (`docs/work/{qualifier}.md`) in the commit that closes out the work. Don't archive it elsewhere; git history retains every phase. This keeps `docs/work/` reflecting only in-flight work. ADRs in `docs/adrs/` are exempt — those are permanent records (see `documentation-and-adrs`), never deleted.
 
-**Before deleting, promote anything worth keeping.** Git history holds the deleted file, but nobody browses git history as documentation. Re-read the `## Spec`, `## Plan`, and `## Review` sections for content with lasting value — a library/framework choice, a rejected alternative, a non-obvious gotcha, a public API change — and give each a permanent home per `documentation-and-adrs` (an ADR in `docs/ai/adrs/`, a README section, or a CLAUDE.md note) before deleting. If nothing in the file rises to that bar, deleting it loses nothing of value.
+**Before deleting, promote anything worth keeping.** Git history holds the deleted file, but nobody browses git history as documentation. Re-read the `## Spec`, `## Plan`, and `## Review` sections for content with lasting value — a library/framework choice, a rejected alternative, a non-obvious gotcha, a public API change — and give each a permanent home: an ADR in `docs/adrs/` for decisions/trade-offs, or rarely a `docs/` page for lasting domain/architecture facts, per `documentation-and-adrs`, before deleting. If nothing in the file rises to that bar, deleting it loses nothing of value.
 
 Frontmatter: every artifact file has a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values. `created` is set once; `updated` changes whenever a section is added or edited.
 
-Examples: `docs/ai/work/20240618-project-init.md`, `docs/ai/work/20250102-add-database.md`, `docs/ai/work/20260316-realip-middleware.md`, `docs/ai/work/20260519-flux-capacitor.md`.
+Examples: `docs/work/project-init.md`, `docs/work/add-database.md`, `docs/work/realip-middleware.md`, `docs/work/flux-capacitor.md`.
 
-Commands that read or write `docs/ai/work/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`) and resolve it by matching the `{qualifier}.md` filename, ignoring the date prefix (`ls docs/ai/work/{qualifier}.md`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
+Commands that read or write `docs/work/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`) and resolve it by matching the `{qualifier}.md` filename (`ls docs/work/{qualifier}.md`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
 
 ## Skill-Driven Execution
 
@@ -120,7 +119,7 @@ When a task matches a skill, invoke it. Each skill's `description:` frontmatter 
 
 If a request is underspecified, start with `interview-me`. For any new project or feature, start with `spec-driven-development` before touching code.
 
-When a tradeoff is worth documenting or discussing with the user, use `documentation-and-adrs` to write an ADR to `docs/ai/adrs/`.
+When a tradeoff is worth documenting or discussing with the user, use `documentation-and-adrs` to write an ADR to `docs/adrs/`.
 
 ## Orchestration: Personas, Skills, and Commands
 

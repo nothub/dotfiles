@@ -6,9 +6,9 @@ description: Build from spec to working artifact — plan if needed, get one app
 
 ## Phase 1 — Prerequisites
 
-1. **Resolve the target file.** If `$ARGUMENTS` is given, treat it as the qualifier and find the file with `ls docs/ai/*-{qualifier}.md` (matches by suffix, ignoring whatever prefix the file has — see AGENTS.md naming rule). If no argument is given, run `ls docs/ai/*.md`: if exactly one file, use it directly; if multiple, ask which one; if none, stop and tell the user to run `/spec` first.
+1. **Resolve the target file.** If `$ARGUMENTS` is given, treat it as the qualifier and find the file with `ls docs/work/{qualifier}.md` (see AGENTS.md naming rule). If no argument is given, run `ls docs/work/*.md`: if exactly one file, use it directly; if multiple, ask which one; if none, stop and tell the user to run `/spec` first.
 2. **Require a spec.** Look only at the `## Spec` section in the resolved file. A README or arbitrary doc does not count.
-3. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`docs/ai/`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
+3. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`docs/work/`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
 
 ## Phase 2 — Plan
 
