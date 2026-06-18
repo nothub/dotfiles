@@ -48,7 +48,7 @@ Generates a task breakdown, then applies `doubt-driven-development` to find gaps
 
 ```
 /plan
-  ├── Phase 1: planning-and-task-breakdown → Plan + Tasks sections in docs/ai/{date}-{qualifier}.md
+  ├── Phase 1: planning-and-task-breakdown → Plan + Tasks sections in docs/ai/work/{date}-{qualifier}.md
   ├── Phase 2: doubt-driven-development (max 3 cycles) → revise on findings
   └── Phase 3: present clean plan → human approval checkpoint
 ```

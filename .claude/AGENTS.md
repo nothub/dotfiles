@@ -90,11 +90,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Documentation
 
-Keep workflow docs in the project's `docs/ai/` directory.
-General documentation (domain-specific, architecture, scope, expectations, limitations, users, etc.) goes in `docs/`.
-Spec, plans, task-lists, etc. go directly into `docs/ai/`; ADRs go into `docs/ai/adrs/`, see Skill-Driven Execution.
+General documentation (domain-specific, scope, expectations, limitations, users, surrounding architecture, etc.) goes to `docs/`.
 
-**Naming rule: `{YYYYMMDD}-{qualifier}.md`**
+Workflow docs like specs, plans, task-lists, etc. goes into `docs/ai/work/`.
+ADRs go into `docs/ai/adrs/`, see Skill-Driven Execution.
+
+**Naming rule: `{qualifier}.md`**
 
 - **date** — the date the file was first created (at `/spec` time); fixed for the file's lifetime even as later phases edit it
 - **qualifier** — short kebab-case feature/scope slug: `project-init`, `add-database`, `realip-middleware`, `flux-capacitor`
@@ -103,15 +104,15 @@ One file per feature carries its whole lifecycle as `##` sections, appended in o
 
 Re-running a phase against a qualifier that already has that section edits it in place — update or remove what's now outdated, keep what's still accurate. Don't regenerate the whole section from scratch, and don't keep stale phase output around — git history is where the old version lives.
 
-Once a feature's full cycle is done — every task in `## Tasks` checked off and `## Review` has no outstanding findings — delete the file in the commit that closes out the work. Don't archive it elsewhere; git history retains every phase. This keeps `docs/ai/` reflecting only in-flight work, and avoids ambiguous qualifier-suffix matches if a slug gets reused later. ADRs in `docs/ai/adrs/` are exempt — those are permanent records (see `documentation-and-adrs`), never deleted.
+Once a feature's full cycle is done — every task in `## Tasks` checked off and `## Review` has no outstanding findings — delete the workflow docs (`docs/ai/work/`) in the commit that closes out the work. Don't archive it elsewhere; git history retains every phase. This keeps `docs/ai/work/` reflecting only in-flight work, and avoids ambiguous qualifier-suffix matches if a slug gets reused later. ADRs in `docs/ai/adrs/` are exempt — those are permanent records (see `documentation-and-adrs`), never deleted.
 
 **Before deleting, promote anything worth keeping.** Git history holds the deleted file, but nobody browses git history as documentation. Re-read the `## Spec`, `## Plan`, and `## Review` sections for content with lasting value — a library/framework choice, a rejected alternative, a non-obvious gotcha, a public API change — and give each a permanent home per `documentation-and-adrs` (an ADR in `docs/ai/adrs/`, a README section, or a CLAUDE.md note) before deleting. If nothing in the file rises to that bar, deleting it loses nothing of value.
 
 Frontmatter: every artifact file has a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values. `created` is set once; `updated` changes whenever a section is added or edited.
 
-Examples: `docs/ai/20240618-project-init.md`, `docs/ai/20250102-add-database.md`, `docs/ai/20260316-realip-middleware.md`, `docs/ai/20260519-flux-capacitor.md`.
+Examples: `docs/ai/work/20240618-project-init.md`, `docs/ai/work/20250102-add-database.md`, `docs/ai/work/20260316-realip-middleware.md`, `docs/ai/work/20260519-flux-capacitor.md`.
 
-Commands that read or write `docs/ai/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`) and resolve it by matching the `-{qualifier}.md` filename suffix, ignoring the date prefix (`ls docs/ai/*-{qualifier}.md`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
+Commands that read or write `docs/ai/work/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`) and resolve it by matching the `{qualifier}.md` filename, ignoring the date prefix (`ls docs/ai/work/{qualifier}.md`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
 
 ## Skill-Driven Execution
 
