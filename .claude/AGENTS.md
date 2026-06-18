@@ -90,10 +90,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Documentation
 
-Keep agent's workflow docs in the project's `docs/ai/` directory.
+Keep workflow docs in the project's `docs/ai/` directory.
 General documentation (domain-specific, architecture, scope, expectations, limitations, users, etc.) goes in `docs/`.
-ADRs go into `docs/ai/adrs/`, see Skill-Driven Execution.
-
+ADRs, spec, plans, task-lists, etc. go into `docs/ai/adrs/`, see Skill-Driven Execution.
 
 **Naming rule: `{YYYYMMDD}-{qualifier}.md`**
 
