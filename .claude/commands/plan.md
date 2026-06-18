@@ -12,11 +12,11 @@ description: Break work into small verifiable tasks, stress-test the plan with d
 
 ## Phase 1 — Plan
 
-**Qualifier:** use `$ARGUMENTS` as the qualifier slug (e.g. `/plan user-auth`). If no argument is given, run `ls .ai/spec-*.md`: if exactly one file, extract the qualifier from its name; if multiple, ask which one; if none, stop and tell the user to run `/spec` first.
+**Qualifier:** use `$ARGUMENTS` as the qualifier slug (e.g. `/plan user-auth`). If no argument is given, run `ls docs/ai/*.md`: if exactly one file, extract the qualifier from its name (strip the date prefix); if multiple, ask which one; if none, stop and tell the user to run `/spec` first.
 
-Invoke `planning-and-task-breakdown`. Read the spec at `.ai/spec-{qualifier}.md`.
+Invoke `planning-and-task-breakdown`. Read the `## Spec` section from `docs/ai/{date}-{qualifier}.md`.
 
-Save the plan to `.ai/plan-{qualifier}.md` and task list to `.ai/tasks-{qualifier}.md`.
+Write the plan and task list as `## Plan` and `## Tasks` sections in the same file, overwriting either section if it already exists, and bump `updated:`.
 
 ## Phase 2 — Stress-test
 

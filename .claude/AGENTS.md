@@ -90,26 +90,30 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Workflow Artifacts
 
-Keep agent workflow artifacts in the project's `.ai/` directory. General documentation (architecture, tradeoffs, decisions) goes in `docs/`.
+Keep agent workflow artifacts in the project's `docs/ai/` directory. General documentation (architecture, tradeoffs, decisions) goes in `docs/` (ADRs in `docs/adrs/`, see Skill-Driven Execution).
 
-**Naming rule: `{type}-{qualifier}.md`**
+**Naming rule: `{YYYYMMDD}-{qualifier}.md`**
 
-- **type** — artifact kind: `spec`, `plan`, `tasks`, `review`
-- **qualifier** — feature/scope, phase, persona, or date: `user-auth`, `phase-2`, `security`, `20240616`
+- **date** — the date the file was first created (at `/spec` time); fixed for the file's lifetime even as later phases edit it
+- **qualifier** — short kebab-case feature/scope slug: `project-init`, `add-database`, `realip-middleware`, `flux-capacitor`
 
-Frontmatter: All documentation workflow artifacts must have a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values.
+One file per feature carries its whole lifecycle as `##` sections, appended in order as each phase runs: Spec, Plan, Tasks, Review. The full `/spec` → `/plan` → `/build` → `/quality-review`/`/preflight` run for a feature lives in a single document — no separate files per phase.
 
-Examples: `.ai/spec-user-auth.md`, `.ai/plan-user-auth.md`, `.ai/tasks-user-auth.md`, `.ai/review-preflight.md`
+Re-running a phase against a qualifier that already has that section overwrites it in place. Don't keep stale phase output around — git history is where the old version lives.
 
-Type comes first so `ls .ai/` groups by artifact kind and `review-<tab>` lists all reviews. No bare names — every file has a qualifier.
+Frontmatter: every artifact file has a frontmatter block with `created:` and `updated:` keys with ISO 8601 (`2026-06-19T03:04:43+02:00`) values. `created` is set once; `updated` changes whenever any section is added or overwritten.
 
-Commands that read or write `.ai/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
+Examples: `docs/ai/20240618-project-init.md`, `docs/ai/20250102-add-database.md`, `docs/ai/20260316-realip-middleware.md`, `docs/ai/20260519-flux-capacitor.md`.
+
+Commands that read or write `docs/ai/` files accept a qualifier argument (e.g. `/spec user-auth`, `/build user-auth`) and resolve it by matching the `-{qualifier}.md` filename suffix, ignoring the date prefix (`ls docs/ai/*-{qualifier}.md`). If no qualifier is given and exactly one matching artifact exists, use it automatically; if multiple exist, ask.
 
 ## Skill-Driven Execution
 
 When a task matches a skill, invoke it. Each skill's `description:` frontmatter states when it applies — read those to route correctly. Never implement directly if a skill applies; always follow the skill workflow exactly.
 
 If a request is underspecified, start with `interview-me`. For any new project or feature, start with `spec-driven-development` before touching code.
+
+When a tradeoff is worth documenting or discussing with the user, use `documentation-and-adrs` to write an ADR to `docs/adrs/`.
 
 ## Orchestration: Personas, Skills, and Commands
 

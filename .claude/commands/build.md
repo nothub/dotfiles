@@ -6,13 +6,13 @@ description: Build from spec to working artifact — plan if needed, get one app
 
 ## Phase 1 — Prerequisites
 
-1. **Resolve qualifier.** Use `$ARGUMENTS` as the qualifier slug (e.g. `/build user-auth`). If no argument is given, run `ls .ai/spec-*.md`: if exactly one file, extract the qualifier from its name; if multiple, ask; if none, stop and tell the user to run `/spec` first.
-2. **Require a spec.** Look only at `.ai/spec-{qualifier}.md`. A README or arbitrary doc does not count.
-3. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`.ai/`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
+1. **Resolve qualifier.** Use `$ARGUMENTS` as the qualifier slug (e.g. `/build user-auth`). If no argument is given, run `ls docs/ai/*.md`: if exactly one file, extract the qualifier from its name (strip the date prefix); if multiple, ask; if none, stop and tell the user to run `/spec` first.
+2. **Require a spec.** Look only at the `## Spec` section in `docs/ai/{date}-{qualifier}.md`. A README or arbitrary doc does not count.
+3. **Establish a clean baseline.** Run `git status --porcelain`. If there are uncommitted changes outside planning artifacts (`docs/ai/`), stop and ask the user to commit, stash, or confirm how to handle them. Per-task commits must not absorb unrelated local work.
 
 ## Phase 2 — Plan
 
-If no `.ai/plan-{qualifier}.md` exists, invoke `planning-and-task-breakdown` to generate one.
+If `docs/ai/{date}-{qualifier}.md` has no `## Plan` section yet, invoke `planning-and-task-breakdown` to generate `## Plan` and `## Tasks` sections in it.
 
 Present the full plan and wait for an unambiguous affirmative ("approve", "go", "yes"). Treat hedged responses ("looks reasonable", "I guess") as **not** approved. This is the only human gate.
 
@@ -26,8 +26,8 @@ For each task in dependency order:
 2. Implement the minimum code to make it pass (GREEN)
 3. Run the full test suite for regressions
 4. Run the build to verify compilation
-5. Commit with a descriptive message — stage only files that task touched plus its task-status update, never `git add -A`
-6. Mark the task complete
+5. Commit with a descriptive message — stage only files that task touched plus the `docs/ai/{date}-{qualifier}.md` task-status update, never `git add -A`
+6. Check off the task in the `## Tasks` section and bump `updated:`
 
 Stop and ask (do not push through) when:
 - A test can't be made to pass or the build breaks without an obvious fix → follow `debugging-and-error-recovery`

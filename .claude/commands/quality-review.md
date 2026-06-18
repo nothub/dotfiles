@@ -15,4 +15,6 @@ Review the current changes (staged or recent commits) across all five axes:
 Categorize findings as Critical, Important, or Suggestion.
 Output a structured review with specific file:line references and fix recommendations.
 
-**Qualifier:** use `$ARGUMENTS` as the qualifier slug (e.g. `/quality-review security`, `/quality-review preflight`). If no argument is given, default to the current date (`YYYYMMDD`). Save the report to `.ai/review-{qualifier}.md` (create the directory if it doesn't exist).
+**Qualifier:** use `$ARGUMENTS` as the qualifier slug (e.g. `/quality-review security`, `/quality-review user-auth`). If no argument is given, default to `review`.
+
+**File:** check for an existing `docs/ai/*-{qualifier}.md` first — if one exists (e.g. mid feature chain), overwrite its `## Review` section and bump `updated:`. Otherwise create `docs/ai/{today}-{qualifier}.md` (create the directory if it doesn't exist) with a frontmatter block (`created:`/`updated:` set to now) and a `## Review` section.
