@@ -12,9 +12,9 @@ description: Break work into small verifiable tasks, stress-test the plan with d
 
 ## Phase 1 — Plan
 
-**Qualifier:** use `$ARGUMENTS` as the qualifier slug (e.g. `/plan user-auth`). If no argument is given, run `ls docs/ai/*.md`: if exactly one file, extract the qualifier from its name (strip the date prefix); if multiple, ask which one; if none, stop and tell the user to run `/spec` first.
+**Resolve the target file.** If `$ARGUMENTS` is given, treat it as the qualifier and find the file with `ls docs/ai/*-{qualifier}.md` (matches by suffix, ignoring whatever prefix the file has — see AGENTS.md naming rule). If no argument is given, run `ls docs/ai/*.md`: if exactly one file, use it directly; if multiple, ask which one; if none, stop and tell the user to run `/spec` first.
 
-Invoke `planning-and-task-breakdown`. Read the `## Spec` section from `docs/ai/{date}-{qualifier}.md`.
+Invoke `planning-and-task-breakdown`. Read the `## Spec` section from the resolved file.
 
 Write the plan and task list as `## Plan` and `## Tasks` sections in the same file. If either section already exists, edit it in place — update or remove only what's now outdated, keep already-checked-off tasks and anything still accurate — and bump `updated:`.
 
