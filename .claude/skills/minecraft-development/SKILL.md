@@ -15,6 +15,11 @@ This skill covers three Minecraft development targets:
 
 Dev environment is always Linux. The runtime can be anything Minecraft supports.
 
+**Version-check everything, every time.** Minecraft's ecosystem moves fast and breaks things constantly — not just the game API, but Gradle plugin versions, toolchain/Java requirements, mapping sets (Mojmap/Yarn), metadata file schemas (`plugin.yml`, `fabric.mod.json`, `neoforge.mods.toml`), and even Gradle itself. Code, docs, or examples that are a year old (or sometimes a few months old) can be subtly or completely wrong. Before trusting any doc, example, or interface:
+- Confirm which MC version it targets and whether that matches the user's target version.
+- Don't assume a pattern that worked for one MC version still applies to another, even adjacent ones — re-check rather than extrapolate.
+- This applies to build files and tooling versions just as much as to game APIs.
+
 **Language and build constraints (non-negotiable):**
 - Build files: Gradle Groovy DSL only (`build.gradle`, never `build.gradle.kts`)
 - Source language: Java only (no Kotlin, no Groovy source files)
@@ -30,7 +35,7 @@ Before writing any code or config, determine:
    curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' \
      | jq -r '.versions | map(select(.type == "release")) | .[0].id'
    ```
-   Use this version everywhere — Gradle dependencies, plugin metadata, API version strings.
+   Use this version everywhere — Gradle dependencies, plugin metadata, API version strings. Once known, treat it as the lens for everything that follows: any doc, snippet, or interface you consult next needs to be checked against this specific version, not assumed current.
 
 Then read the relevant reference file before proceeding:
 
@@ -45,7 +50,7 @@ Then read the relevant reference file before proceeding:
 
 **Gradle is the build tool.** All three frameworks ship Gradle plugins that handle Minecraft-specific setup (source remapping, deobfuscation, run tasks). Never reach for Maven.
 
-**Java version**: Minecraft 26.x targets Java 25+. Use `toolchain { languageVersion = JavaLanguageVersion.of(25) }` in Gradle unless a newer version is required.
+**Java version**: tracks the MC version (e.g. MC 26.x targets Java 25+) and has bumped multiple times across recent MC releases. Check the required Java version for the target MC version rather than assuming, then set it via `toolchain { languageVersion = JavaLanguageVersion.of(<n>) }` in Gradle.
 
 **Always verify API versions against the actual MC version being targeted.** Paper API, Fabric API, and NeoForge API all have their own versioning that tracks MC versions. Do not guess version numbers — derive them from official sources or ask the user to confirm.
 
