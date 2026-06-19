@@ -54,6 +54,8 @@ For each `commands/*.md`:
 
 Fix missing frontmatter; flag broken skill or persona references for manual review.
 
+Never add a `README.md` (or any other file without command frontmatter) inside `commands/` — Claude Code loads every `.md` file in that directory as a slash command.
+
 ### 6. Audit references
 
 - List all files under `references/`
@@ -130,6 +132,7 @@ Keep it minimal — this is a human reference, not instructions for the model.
 - All persona descriptions are action-verb led and ≤200 chars, with `name:` matching the filename
 - README.md's Personas table lists exactly the on-disk personas
 - `agents/` contains only persona `.md` files with valid frontmatter — no README or other non-persona files
+- `commands/` contains only command `.md` files with valid frontmatter — no README or other non-command files
 - Every persona referenced by a command exists in `agents/`
 - README.md reflects the current on-disk state
 
