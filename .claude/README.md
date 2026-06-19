@@ -6,7 +6,7 @@ Personal AI coding-agent config for Claude Code: skills, commands, agent persona
 - [`AGENTS.md`](./AGENTS.md) defines the behavior rules and skill-driven execution model.
 - [Skills](./skills) are engineering workflow processes loaded on demand.
 - [Commands](./commands) are slash-command entry points.
-- [Personas](./agents) run as subagents via the Agent tool.
+- [Personas](#personas) run as subagents via the Agent tool, defined in `agents/`.
 
 ## Ideal usage patterns
 
@@ -37,6 +37,17 @@ This is why `/quality-review`, `/test`, and `/code-simplify` — commands that i
 | `/code-simplify`  | Reduce complexity, then verify clean — no Critical or Important findings remain           | `code-simplification` → `code-review-and-quality` (×3)                   |
 | `/preflight`      | Pre-release quality gate: review, security, and coverage → go/no-go; build artifact on GO | `code-reviewer` ∥ `security-auditor` ∥ `test-engineer` → merge           |
 | `/claude-janitor` | Audit and maintain this `.claude/` directory                                              | `claude-janitor`                                                         |
+
+## Personas
+
+| Name               | Role                                                                                 |
+|--------------------|---------------------------------------------------------------------------------------|
+| `code-reviewer`    | Five-axis code review: correctness, readability, architecture, security, performance |
+| `security-auditor` | Vulnerability audit, threat modeling, and hardening recommendations                  |
+| `test-engineer`    | Test strategy, coverage analysis, and writing tests for existing code                |
+
+See [`AGENTS.md`](./AGENTS.md) for orchestration rules. Before deciding between subagents and Agent Teams for a
+new multi-persona workflow, read [`references/orchestration-patterns.md`](references/orchestration-patterns.md).
 
 ## Orchestration commands
 
@@ -125,6 +136,6 @@ The `claude-janitor` skill audits this invariant: it verifies every description 
 1. Create `agents/<role>.md` with the same frontmatter format used by existing personas.
 2. Define the role, scope, output format, and rules.
 3. Add a **Composition** block at the bottom (invoke directly when / invoke via / do not invoke from another persona).
-4. Add a row to the `agents/README.md` table.
+4. Add a row to the Personas table in this file.
 5. If the persona enables a new orchestration pattern, document it in `references/orchestration-patterns.md`.
 6. Run the `/claude-janitor` command.

@@ -27,13 +27,13 @@ Fix any descriptions that fail this check.
 
 ### 3. Audit personas
 
-For each `agents/*.md` (excluding `README.md`):
+For each `agents/*.md`:
 
 - Verify `name:` frontmatter exists and matches the filename (without `.md`)
 - Verify `description:` frontmatter exists, is action-verb led, and is ≤200 chars
 - Fix any that fail this check
 
-Verify `agents/README.md` table lists exactly the personas on disk — add missing rows, remove orphaned ones.
+Verify the Personas table in `README.md` lists exactly the personas on disk — add missing rows, remove orphaned ones. Never add a `README.md` (or any other file without persona frontmatter) inside `agents/` — Claude Code loads every `.md` file in that directory as a persona definition.
 
 ### 4. Audit Handoffs sections
 
@@ -112,7 +112,8 @@ Rewrite `.claude/README.md` with current state:
 
 1. One-paragraph description of the `.claude/` directory
 2. Commands table: name + one-liner from each command's `description:` frontmatter, ordered by real-world usage sequence
-3. Command chains: for each orchestration command, what skills/agents it invokes and in what pattern (sequential, fan-out, etc.)
+3. Personas table: name + role from each persona's `description:` frontmatter
+4. Command chains: for each orchestration command, what skills/agents it invokes and in what pattern (sequential, fan-out, etc.)
 
 Keep it minimal — this is a human reference, not instructions for the model.
 
@@ -127,7 +128,8 @@ Keep it minimal — this is a human reference, not instructions for the model.
 - Every skill name cited in a Handoffs label resolves to a skill on disk
 - All skill descriptions are action-verb led, ≤200 chars, and have `name:` matching the directory name
 - All persona descriptions are action-verb led and ≤200 chars, with `name:` matching the filename
-- `agents/README.md` table lists exactly the on-disk personas
+- README.md's Personas table lists exactly the on-disk personas
+- `agents/` contains only persona `.md` files with valid frontmatter — no README or other non-persona files
 - Every persona referenced by a command exists in `agents/`
 - README.md reflects the current on-disk state
 
