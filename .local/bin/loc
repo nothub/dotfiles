@@ -17,16 +17,12 @@ cloc \
     \
     --exclude-content='\.idea' \
     --exclude-content='\.iml$' \
-    \
     --exclude-content='\.vscode' \
-    \
-    --exclude-content='\.github' \
     \
     --exclude-content='\.terraform' \
     \
     --exclude-content='build' \
+    --exclude-content='dist' \
     --exclude-content='out' \
-    \
-    --exclude-lang='Markdown' \
     \
     "${args[@]}"
