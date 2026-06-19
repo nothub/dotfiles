@@ -125,7 +125,7 @@ When a tradeoff is worth documenting or discussing with the user, use `documenta
 
 The user keeps a Zettelkasten — a personal knowledge base of small, atomic notes that link to each other (backlinks included) and accumulate over time, rather than one big document. It's reachable through the `aikb` MCP server (`mcp__aikb__*` tools: `note_search`, `note_read`, `note_list`, `note_backlinks`, `note_create`, `note_link`, `note_update`).
 
-Before researching a topic with WebSearch/WebFetch, or answering a question whose answer might already be written down (people, projects, past decisions, recurring topics), check `aikb` first:
+Before researching a topic with WebSearch/WebFetch, or answering a question whose answer might already be written down (facts, projects, past decisions, recurring topics), check `aikb` first:
 
 1. `mcp__aikb__note_search` for the topic.
 2. If a note matches, `mcp__aikb__note_read` it and check `mcp__aikb__note_backlinks` for related notes before falling back to external search.
