@@ -151,33 +151,3 @@ withCredentials([string(credentialsId: 'deploy-token', variable: 'TOKEN')]) {
     sh 'deploy.sh "$TOKEN"'
 }
 ```
-
-## git-cliff Config
-
-Minimal `cliff.toml` at repo root, for conventional-commits-driven changelog generation:
-
-```toml
-[changelog]
-header = ""
-body = """
-{% for group, commits in commits | group_by(attribute="group") %}
-### {{ group | upper_first }}
-{% for commit in commits %}
-- {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ commit.id }}))\
-{% endfor %}
-{% endfor %}
-"""
-trim = true
-
-[git]
-conventional_commits = true
-filter_unconventional = true
-commit_parsers = [
-  { message = "^feat", group = "Features" },
-  { message = "^fix", group = "Bug Fixes" },
-  { message = "^refactor", group = "Refactor" },
-  { message = "^docs", group = "Documentation" },
-  { message = "^chore", skip = true },
-  { message = "^test", skip = true },
-]
-```

@@ -72,18 +72,11 @@ feat!: rename config file format  ← breaking change
 **Tagging a release:**
 
 ```sh
-# Determine version from commits since last tag
-git-cliff --bumped-version   # prints e.g. v1.2.0
-
-# Tag and push
-VERSION=$(git-cliff --bumped-version)
 git tag -s "$VERSION" -m "$VERSION"
 git push origin "$VERSION"
 ```
 
-CI picks up the tag and runs the release job (see Release on tag above).
-
-**Changelog:** `git-cliff` reads conventional commits and generates `CHANGELOG.md` or release notes. Config in `cliff.toml` at repo root.
+CI picks up the tag and runs the release job (see Release on tag above). For deriving the version string a build embeds (release or dev), see the `git-workflow-and-versioning` skill — same scheme for every project.
 
 ## Deployment
 

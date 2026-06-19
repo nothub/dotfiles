@@ -154,9 +154,13 @@ chore/<short-description>     → chore/update-deps
 refactor/<short-description>  → refactor/auth-module
 ```
 
-## Semver Releases and Changelog
+## Versioning
 
-Releases follow [Semantic Versioning](https://semver.org/). Version number is determined by the conventional commit types since the last tag:
+Releases follow [Semantic Versioning](https://semver.org/). This scheme applies to every project that gets released — don't introduce a different one.
+
+### Choosing the next tag
+
+Look at the conventional commit types since the last tag to pick the bump:
 
 | Commits since last tag | Bump |
 |---|---|
@@ -164,26 +168,35 @@ Releases follow [Semantic Versioning](https://semver.org/). Version number is de
 | any `feat:` | minor (1.0.0 → 1.1.0) |
 | any `feat!:` or `BREAKING CHANGE:` footer | major (1.0.0 → 2.0.0) |
 
-### Tagging a release
-
 ```bash
-# See what version git-cliff would bump to
-git-cliff --bumped-version
-
-# Generate changelog for this release
-git-cliff --current --strip header -o CHANGES.md
-
-# Review, then tag
-VERSION=$(git-cliff --bumped-version)
 git tag -s "$VERSION" -m "$VERSION"
 git push origin "$VERSION"
 ```
 
 The signed tag triggers the CI release job.
 
-### git-cliff config
+### Deriving the build version string
 
-A minimal `cliff.toml` template lives in `references/ci-pipeline-templates.md` — read it when setting up changelog generation for a new project.
+Every build — release or not — embeds a version string derived from git state, never hand-set. Rules, in priority order:
+
+1. Base version is the latest reachable tag, or `v0.0.0` if there's no tag yet.
+2. HEAD exactly tagged **and** the tree is clean → that's a real release: use the tag as-is (`v1.2.3`).
+3. Anything else (untagged commit, or a dirty tree even on a tagged commit) is a dev build: `v1.2.3-dev.4+abc1234`, or `v1.2.3-dev.4+abc1234.dirty` if the tree is dirty.
+
+```sh
+tag="$(git describe --tags --abbrev=0 2>/dev/null)" || tag="v0.0.0"
+commit="$(git rev-parse --short=7 HEAD)"
+dirty=""; test -z "$(git status --porcelain)" || dirty=".dirty"
+
+if test -z "$dirty" && test -n "$(git tag --points-at HEAD)"; then
+    version="$tag"
+else
+    n="$(git rev-list "${tag}..HEAD" --count 2>/dev/null || git rev-list HEAD --count)"
+    version="${tag}-dev.${n}+${commit}${dirty}"
+fi
+```
+
+A dirty tagged commit still counts as a dev build (`-dev.0+abc1234.dirty`) — a release means exactly-tagged *and* clean, no exceptions.
 
 ## Working with Worktrees
 
