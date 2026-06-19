@@ -138,7 +138,7 @@ When you learn something new during a task that has lasting value outside that t
 2. If yes, `mcp__aikb__note_update` it (fold in the new information, don't duplicate). If no, `mcp__aikb__note_create` a new atomic note — one idea per note.
 3. `mcp__aikb__note_link` it to related existing notes where the connection is obvious.
 
-This is about durable, generally-useful knowledge — not this repo's own Claude-memory system (which tracks user/feedback/project context for *this* agent), and not task-scoped details (todo items, in-progress state) that have no value once the task ends.
+This is about durable, generally-useful knowledge — not the agent's own short-term session memory or scratch notes, and not task-scoped details (todo items, in-progress state) that have no value once the task ends.
 
 ## Orchestration: Personas, Skills, and Commands
 
