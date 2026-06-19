@@ -367,7 +367,7 @@ go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 ## Handoffs
 
 - **Pair:** `incremental-implementation` — run together for features; TDD drives each slice
-- **Upstream (bugs):** `debugging-and-error-recovery` — write the reproduction test, fix, then guard
+- **Upstream:** `debugging-and-error-recovery` — for bug fixes, write the reproduction test, fix, then guard
 - **Downstream:** `code-review-and-quality` — review after tests pass and the slice is complete
 
 ## Reference

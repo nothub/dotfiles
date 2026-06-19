@@ -67,7 +67,7 @@ Controls bolted on without a threat model are guesses. Before hardening, spend f
 
 ## OWASP Top 10 Prevention Patterns
 
-Go implementation patterns for injection, password hashing, XSS, broken access control, security headers, sensitive data exposure, and SSRF live in `references/security-code-patterns.md` — read it when implementing any of these controls.
+Go implementation patterns for injection, password hashing, XSS, broken access control, security headers, sensitive data exposure, SSRF, file upload safety, and rate limiting live in `references/security-code-patterns.md` — read it when implementing any of these controls.
 
 ## Input Validation at Boundaries
 
@@ -110,76 +110,9 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-## File Upload Safety
+## File Upload Safety and Rate Limiting
 
-```go
-const maxUploadSize = 5 << 20 // 5 MB
-
-var allowedTypes = map[string]bool{
-    "image/jpeg": true,
-    "image/png":  true,
-    "image/webp": true,
-}
-
-func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
-    r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
-    if err := r.ParseMultipartForm(maxUploadSize); err != nil {
-        http.Error(w, "file too large", http.StatusBadRequest)
-        return
-    }
-    file, _, err := r.FormFile("file")
-    if err != nil {
-        http.Error(w, "invalid upload", http.StatusBadRequest)
-        return
-    }
-    defer file.Close()
-
-    // Detect type from magic bytes — don't trust the extension or Content-Type header
-    buf := make([]byte, 512)
-    if _, err := file.Read(buf); err != nil {
-        http.Error(w, "cannot read file", http.StatusBadRequest)
-        return
-    }
-    if !allowedTypes[http.DetectContentType(buf)] {
-        http.Error(w, "file type not allowed", http.StatusBadRequest)
-        return
-    }
-}
-```
-
-## Rate Limiting
-
-```go
-import "golang.org/x/time/rate"
-
-// Per-IP limiter map (simplest approach; use a proper store for distributed systems)
-var (
-    mu       sync.Mutex
-    limiters = map[string]*rate.Limiter{}
-)
-
-func getLimiter(ip string) *rate.Limiter {
-    mu.Lock()
-    defer mu.Unlock()
-    if l, ok := limiters[ip]; ok {
-        return l
-    }
-    l := rate.NewLimiter(rate.Every(time.Minute/20), 5) // 20/min, burst 5
-    limiters[ip] = l
-    return l
-}
-
-func rateLimitMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        ip, _, _ := net.SplitHostPort(r.RemoteAddr)
-        if !getLimiter(ip).Allow() {
-            http.Error(w, "too many requests", http.StatusTooManyRequests)
-            return
-        }
-        next.ServeHTTP(w, r)
-    })
-}
-```
+Patterns for both are in `references/security-code-patterns.md` alongside the other OWASP controls.
 
 ## Secrets Management
 
