@@ -123,22 +123,7 @@ When a tradeoff is worth documenting or discussing with the user, use `documenta
 
 ## Personal Knowledge Base (aikb)
 
-The user keeps a Zettelkasten — a personal knowledge base of small, atomic notes that link to each other (backlinks included) and accumulate over time, rather than one big document. It's reachable through the `aikb` MCP server (`mcp__aikb__*` tools: `note_search`, `note_read`, `note_list`, `note_backlinks`, `note_create`, `note_link`, `note_update`).
-
-Before researching a topic with WebSearch/WebFetch, or answering a question whose answer might already be written down (facts, projects, past decisions, recurring topics), check `aikb` first:
-
-1. `mcp__aikb__note_search` for the topic.
-2. If a note matches, `mcp__aikb__note_read` it and check `mcp__aikb__note_backlinks` for related notes before falling back to external search.
-
-Skip this for tasks that are purely code/repo-local — it applies to open-ended lookups where the answer could plausibly already be a note.
-
-When you learn something new during a task that has lasting value outside that task — a concept, a fact about a person/place/project, a decision and its reasoning, a technique worth recalling later — write it to `aikb`, not just to working memory:
-
-1. `mcp__aikb__note_search` to check whether a note on this already exists.
-2. If yes, `mcp__aikb__note_update` it (fold in the new information, don't duplicate). If no, `mcp__aikb__note_create` a new atomic note — one idea per note.
-3. `mcp__aikb__note_link` it to related existing notes where the connection is obvious.
-
-This is about durable, generally-useful knowledge — not the agent's own short-term session memory or scratch notes, and not task-scoped details (todo items, in-progress state) that have no value once the task ends.
+The user keeps a Zettelkasten reachable through the `aikb` MCP server. Use `personal-knowledge-base` to look up open-ended facts before researching them externally, and to write back anything learned with lasting value outside the current task — even from inside a code/infra task, if the specific fact learned is portable.
 
 ## Orchestration: Personas, Skills, and Commands
 

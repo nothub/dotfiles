@@ -32,6 +32,14 @@
     "gopls-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
+  "permissions": {
+    "allow": [
+      "mcp__aikb__note_search",
+      "mcp__aikb__note_read",
+      "mcp__aikb__note_list",
+      "mcp__aikb__note_backlinks"
+    ]
+  },
   "outputStyle": "Grug-Brained",
   "language": "english",
   "feedbackSurveyRate": 0,
