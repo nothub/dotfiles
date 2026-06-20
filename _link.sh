@@ -16,5 +16,4 @@ set -eu
     "_fmt.sh" \
     "_link.sh" \
     "_lint.sh" \
-    "README.md" \
-    ".claude/settings.local.json"
+    "README.md"

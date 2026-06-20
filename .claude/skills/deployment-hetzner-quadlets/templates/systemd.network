@@ -1,3 +1,0 @@
-# /etc/containers/systemd/{{app-name}}.network
-[Network]
-NetworkName={{app-name}}

@@ -6,9 +6,6 @@ Personal dotfiles for a Debian/Linux desktop.
 Files are symlinked into `~` via `reclink`.  
 Everything tracked here ends up living at the same relative path under `~`.
 
-This repos `.claude/` directory contains skills, agents, commands, and references usable by AI agents,
-it will be linked to `~`, thus providing the global Claude/Agent configuration.
-
 ## Installation
 
 ```sh
@@ -48,10 +45,6 @@ Files are numbered to control load order. `.profile.d/` sets PATH and env export
 ### `.local/bin/` scripts
 
 Standalone utilities, each a self-contained executable. Shebangs are either `#!/usr/bin/env sh`, `#!/usr/bin/env bash`, or `#!/usr/bin/env python3`. No shared libraries between them.
-
-### `.claude/`
-
-Configuration for Claude Code: skills in `skills/`, slash commands in `commands/`, sub-agents in `agents/`, reference docs in `references/`, usage tracking hooks in `tracker/`. `CLAUDE.md` there is the global AI personality/behavior file — not a repo guide.
 
 ## Code style
 
