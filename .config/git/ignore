@@ -21,3 +21,6 @@ coverage.out
 *.log
 
 **/.claude/settings.local.json
+
+.env
+.env.*
