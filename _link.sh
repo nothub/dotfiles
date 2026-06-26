@@ -16,4 +16,5 @@ set -eu
     "_fmt.sh" \
     "_link.sh" \
     "_lint.sh" \
+    "CLAUDE.md" \
     "README.md"
