@@ -1,0 +1,18 @@
+# XScreenSaver Preferences File
+# Written by xscreensaver 6.09
+
+mode:		blank
+timeout:	0:10:00
+cycle:		0:10:00
+lock:		True
+lockTimeout:	0:00:10
+
+# DP monitors drop off the RandR layout when they power down, which resets
+# the xrandr arrangement (see ~/.local/bin/display-layout). Blank only.
+dpmsEnabled:	False
+dpmsQuickOff:	False
+
+fade:		True
+unfade:		True
+fadeSeconds:	0:00:03
+splash:		False
