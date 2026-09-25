@@ -30,4 +30,15 @@ for f in "${files[@]}"; do
     esac
 done
 
-# TODO: check there are no stale links left in `.local/share/bash-completion/completions/`, each link in there should have a corresponding script in `.local/bin/`.
+# every completion link is named after the script it completes, so a link
+# without a matching script means the script was removed and the link was not
+stale=0
+for link in ".local/share/bash-completion/completions/"*; do
+    test -L "${link}" || continue
+    name="$(basename "${link}")"
+    if ! test -e ".local/bin/${name}"; then
+        echo >&2 "stale completion link: ${link} (no .local/bin/${name})"
+        stale=1
+    fi
+done
+test "${stale}" -eq 0
