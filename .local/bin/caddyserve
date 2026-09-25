@@ -15,7 +15,7 @@ log() {
 
 finally() {
     trap - SIGINT SIGTERM ERR EXIT
-    if [[ -f $config ]]; then rm -f "${config}"; fi
+    if test -f "${config}"; then rm -f "${config}"; fi
     log "Bye :)"
 }
 

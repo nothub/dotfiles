@@ -29,7 +29,7 @@ check_dependency() {
 }
 
 read_stdin() {
-    if [[ -p /dev/stdin ]]; then
+    if test -p /dev/stdin; then
         local line
         while IFS= read -r line; do
             echo "${line}"
@@ -53,19 +53,19 @@ while getopts u:vh opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -gt 0 ]] && [[ $* != "-" ]]; then
+if test "$#" -gt 0 && test "$*" != "-"; then
     text="$*"
 else
     text="$(read_stdin)"
 fi
 
-if [[ -z $url ]]; then
+if test -z "$url"; then
     log "Error: webhook url required"
     usage
     exit 1
 fi
 
-if [[ -z $text ]]; then
+if test -z "$text"; then
     log "Error: missing message content"
     usage
     exit 1

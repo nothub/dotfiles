@@ -20,7 +20,7 @@ repeats=10000
 delay=0
 
 while true; do
-    if [[ ${repeats} -le 0 ]]; then break; fi
+    if test "${repeats}" -le 0; then break; fi
 
     if ! xdotool getwindowfocus getwindowname 2> /dev/null | grep --quiet "${window_name}"; then
         sleep 0.1
@@ -30,5 +30,5 @@ while true; do
     xdotool "${mode}" "${key_code}"
     repeats="$((repeats - 1))"
 
-    if [[ ${delay} -gt 0 ]]; then sleep "${delay}"; fi
+    if test "${delay}" -gt 0; then sleep "${delay}"; fi
 done

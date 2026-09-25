@@ -3,8 +3,8 @@
 
 # colors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-if [[ -x /usr/bin/dircolors ]]; then
-    if [[ -d "${HOME}/.dircolors" ]]; then
+if test -x /usr/bin/dircolors; then
+    if test -d "${HOME}/.dircolors"; then
         eval "$(dircolors -b "${HOME}/.dircolors")"
     else
         eval "$(dircolors -b)"
@@ -15,4 +15,4 @@ if [[ -x /usr/bin/dircolors ]]; then
 fi
 
 # less non-text input files
-command -v lesspipe > /dev/null && [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+command -v lesspipe > /dev/null && test -x /usr/bin/lesspipe && eval "$(SHELL=/bin/sh lesspipe)"

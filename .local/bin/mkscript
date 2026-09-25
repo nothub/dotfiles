@@ -26,14 +26,14 @@ while getopts a:b:vh opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -lt 1 ]]; then
+if test "$#" -lt 1; then
     print_usage
 fi
 
 script_dir="$(dirname "$(readlink -f -- "$0")")"
 script_name=$(echo "$*" | inline-detox -v)
 
-if [[ -e "$script_dir/$script_name" || -e "$HOME/.local/bin/$script_name" ]]; then
+if test -e "$script_dir/$script_name" || test -e "$HOME/.local/bin/$script_name"; then
     log "file exists!"
     exit 1
 fi

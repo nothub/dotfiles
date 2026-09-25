@@ -33,7 +33,7 @@ Options:
 }
 
 read_stdin() {
-    if [[ -p /dev/stdin ]]; then
+    if test -p /dev/stdin; then
         local line
         while IFS= read -r line; do
             echo "${line}"
@@ -76,7 +76,7 @@ done
 shift $((OPTIND - 1))
 
 # check required options
-if [[ -z $a ]]; then
+if test -z "$a"; then
     log "Error: Missing option: -a"
     exit 1
 fi
