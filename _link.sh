@@ -17,4 +17,5 @@ set -eu
     "_link.sh" \
     "_lint.sh" \
     "CLAUDE.md" \
-    "README.md"
+    "README.md" \
+    "renovate.json"
