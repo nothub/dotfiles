@@ -110,6 +110,47 @@ check_dependency() {
 }
 ```
 
+## Shell completion
+
+`.local/share/bash-completion/completions/_complete` is one generic completion function shared by every script that wants completion. Wire a script up by symlinking `_complete` under that script's own name, and teaching the script a hidden `--list-commands` flag:
+
+```sh
+ln -s _complete .local/share/bash-completion/completions/<name>
+```
+
+`--list-commands` prints one `name<TAB>args` line per subcommand. A single line with an empty name field means the script has no subcommands, so its args apply from the first word instead of after a subcommand name.
+
+No subcommands:
+
+```sh
+if test "${1:-}" = --list-commands; then
+    printf '\t<host> <port>\n'
+    exit 0
+fi
+```
+
+With subcommands, from a `COMMANDS` array of (name, args, description) triples:
+
+```bash
+--list-commands)
+    for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
+        printf '%s\t%s\n' "${COMMANDS[i]}" "${COMMANDS[i + 1]}"
+    done
+    return
+    ;;
+```
+
+The arg placeholders decide what each position completes:
+
+- `<a|b|c>` completes that enum
+- `<path>` and `<file>` complete filenames
+- `<seconds>`, `<minutes>`, `<hours>` complete the static example `42`
+- `<day>`, `<month>`, `<year>` complete today's actual day/month/year
+- `<epoch>` completes the current unix timestamp
+- `<command>...` completes a command name, then delegates the rest to that command's own completion
+- any other `<placeholder>` completes its bare name as a free-text hint
+- a token ending in `...` repeats for every further argument position
+
 ## Code style
 
 - Shell: 4-space indent, `set -eu` (sh) or `set -eu -o pipefail` (bash), LF line endings. Match whatever `shfmt` (via `.local/bin/shellfmt`) produces.
