@@ -3,8 +3,8 @@
 set -o errexit
 set -o pipefail
 
-if [[ -z "$1" ]] || [[ ! -r "$1" ]] ||
-   [[ -z "$2" ]] || [[ ! -r "$2" ]]; then
+if test -z "$1" || test ! -r "$1" \
+    || test -z "$2" || test ! -r "$2"; then
     echo >&2 "Usage: $(basename "${BASH_SOURCE[0]}") <path> <path>"
     exit 2
 fi
@@ -15,7 +15,7 @@ b=$(sha256sum "$2")
 echo "${a}" >&2
 echo "${b}" >&2
 
-if [ "${a/$1/}" == "${b/$2/}" ]; then
+if test "${a/$1/}" = "${b/$2/}"; then
     echo "OK"
 else
     exit 1
