@@ -25,7 +25,7 @@ Everything tracked here ends up living at the same relative path under `~`.
 ./_fmt.sh
 ```
 
-`_lint.sh` runs `shellcheck` on `.profile`, `.profile.d/`, `.bashrc`, and `.bashrc.d/`, passing `--rcfile=.config/shellcheckrc` so a fresh clone lints correctly. That same file also lands at `$XDG_CONFIG_HOME/shellcheckrc` and serves as the global config. It disables SC2002 (useless cat). Shellcheck wants it directly in `.config/`, not in a `shellcheck/` subdirectory.
+`_lint.sh` runs `shellcheck` on `.profile`, `.profile.d/`, `.bashrc`, `.bashrc.d/`, the `sh` and `bash` executables under `.local/bin/`, the bash-completion files, and the three repo scripts, passing `--rcfile=.config/shellcheckrc` so a fresh clone lints correctly. That same file also lands at `$XDG_CONFIG_HOME/shellcheckrc` and serves as the global config. It disables SC2002 (useless cat). Shellcheck wants it directly in `.config/`, not in a `shellcheck/` subdirectory.
 
 `_fmt.sh` runs `.local/bin/shellfmt` on `.bashrc.d/`, `.profile.d/`, and all `sh` or `bash` executables under `.local/bin/`.  
 
