@@ -1,13 +1,18 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -eu
+set -o pipefail
 
-shellcheck --shell sh ".profile"
+cd "$(dirname "$(realpath "$0")")"
+
+rcfile=".config/shellcheckrc"
+
+shellcheck --rcfile="${rcfile}" --shell sh ".profile"
 find ".profile.d" -type f \
-    -exec shellcheck --shell sh {} \;
+    -exec shellcheck --rcfile="${rcfile}" --shell sh {} \;
 
-shellcheck --shell bash ".bashrc"
+shellcheck --rcfile="${rcfile}" --shell bash ".bashrc"
 find ".bashrc.d" -type f \
-    -exec shellcheck --shell bash {} \;
+    -exec shellcheck --rcfile="${rcfile}" --shell bash {} \;
 
 # TODO: check there are no stale links left in `.local/share/bash-completion/completions/`, each link in there should have a corresponding script in `.local/bin/`.

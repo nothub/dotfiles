@@ -2,9 +2,6 @@
 set nocompatible
 set nostartofline
 
-" automatically write files when changing when multiple files open
-set autowrite
-
 " ui
 set number
 set ruler
@@ -66,3 +63,10 @@ map <ScrollWheelDown> <C-E>
 
 " command history
 set history=200
+
+" keep viminfo out of $HOME. vim does not create the directory itself, and
+" silently writes no viminfo at all when it is missing
+if !isdirectory(expand('~/.local/state/vim'))
+    call mkdir(expand('~/.local/state/vim'), 'p', 0700)
+endif
+set viminfofile=~/.local/state/vim/viminfo

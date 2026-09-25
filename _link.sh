@@ -1,9 +1,12 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -eu
+set -o pipefail
+
+cd "$(dirname "$(realpath "$0")")"
 
 .local/bin/reclink \
-    --source "$(dirname "$(readlink -f -- "$0")")" \
+    --source . \
     --target "$HOME" \
     --replace \
     --quiet \

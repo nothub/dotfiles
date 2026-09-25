@@ -25,9 +25,9 @@ Everything tracked here ends up living at the same relative path under `~`.
 ./_fmt.sh
 ```
 
-`_lint.sh` runs `shellcheck` on `.profile`, `.profile.d/`, `.bashrc`, and `.bashrc.d/`. `.shellcheckrc` disables SC2002 (useless cat) globally.
+`_lint.sh` runs `shellcheck` on `.profile`, `.profile.d/`, `.bashrc`, and `.bashrc.d/`, passing `--rcfile=.config/shellcheckrc` so a fresh clone lints correctly. That same file also lands at `$XDG_CONFIG_HOME/shellcheckrc` and serves as the global config. It disables SC2002 (useless cat). Shellcheck wants it directly in `.config/`, not in a `shellcheck/` subdirectory.
 
-`_fmt.sh` runs `shfmt` (via the local `shellfmt` wrapper) on `.bashrc.d/`, `.profile.d/`, and all executables under `.local/bin/` with an `sh` or `bash` shebang. `shellfmt` calls `shfmt --write --simplify --indent 4 --binary-next-line --case-indent --space-redirects`.
+`_fmt.sh` runs `.local/bin/shellfmt` on `.bashrc.d/`, `.profile.d/`, and all `sh` or `bash` executables under `.local/bin/`.  
 
 There is no test suite.
 
@@ -40,15 +40,18 @@ login shell:   .profile  →  sources each .profile.d/[0-9]*.sh in order
 bash shell:    .bashrc   →  sources each .bashrc.d/[0-9]*.bash in order
 ```
 
-Files are numbered to control load order. `.profile.d/` sets PATH and env exports (sh-compatible). `.bashrc.d/` sets history, SSH agent, tool config, aliases, functions, completions, and prompt (bash-specific).
+Files are numbered to control load order. `.profile.d/` sets PATH and env exports (sh-compatible).
+`.bashrc.d/` sets up the interactive shell: history, ssh-agent, tool config, etc.  
+Most of it is bash-specific; the rest is portable but interactive-only.
 
 ### `.local/bin/` scripts
 
-Standalone utilities, each a self-contained executable. Shebangs are either `#!/usr/bin/env sh`, `#!/usr/bin/env bash`, or `#!/usr/bin/env python3`. No shared libraries between them.
+Standalone utilities, each a self-contained executable.  
+Shebangs are either `#!/usr/bin/env sh` or `#!/usr/bin/env bash`.
 
 ## Script snippets
 
-Patterns for new `.local/bin/` scripts, kept from the removed `template` and `mkscript`.
+Patterns for new `.local/bin/` scripts.
 
 Log to stderr, leave stdout for the actual output:
 
@@ -82,21 +85,6 @@ while getopts a:vh? opt; do
     esac
 done
 shift $((OPTIND - 1))
-```
-
-Fall back to stdin when no args are given:
-
-```bash
-read_stdin() {
-    if test -p /dev/stdin; then
-        local line
-        while IFS= read -r line; do
-            echo "${line}"
-        done
-    fi
-}
-
-echo "${*:-$(read_stdin)}"
 ```
 
 Fail early on missing tools:
