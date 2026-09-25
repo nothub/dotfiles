@@ -16,6 +16,7 @@ set -eu
     "_fmt.sh" \
     "_link.sh" \
     "_lint.sh" \
+    "AGENTS.md" \
     "CLAUDE.md" \
     "README.md" \
     "renovate.json"
