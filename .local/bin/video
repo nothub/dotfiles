@@ -1,0 +1,383 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+USAGE="Usage: video <command> [args...]
+
+Commands:
+  shrink <path>...              shrink video files in place (libx265), keeps original if not smaller
+  label <text> <path>...        burn a text label onto video(s)
+  mbpm <path>...                report MB/min bitrate density for video files
+  gif <path>...                 convert video to GIF, staying under 5MB
+  to-mp3 <path>...              extract audio to mp3
+  to-ogg <path>...              extract audio to ogg
+  cut front <file> <seconds>    trim from <seconds> to end
+  cut end <file> <seconds>      drop the last <seconds> from the end
+  doctor                        check required tools are installed
+  help                          show this usage
+
+<path> arguments accept files or directories (directories are searched recursively)
+unless noted otherwise above."
+
+usage_error() {
+    echo >&2 "video: $*"
+    echo >&2
+    echo >&2 "${USAGE}"
+    exit 2
+}
+
+on_interrupt() {
+    echo >&2 "video: interrupted"
+    exit 130
+}
+trap on_interrupt INT TERM
+
+is_video_file() {
+    case "${1##*.}" in
+        mp4 | MP4 | m4v | M4V | mov | MOV | mkv | MKV | webm | WEBM | avi | AVI)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# resolves <path>... to video files, recursing into directories; one path per line on stdout
+expand_video_paths() {
+    local arg path
+    for arg in "$@"; do
+        path="$(realpath "${arg}")"
+        if test -f "${path}"; then
+            if is_video_file "${path}"; then
+                printf '%s\n' "${path}"
+            else
+                echo >&2 "ignoring non-video file: ${path}"
+            fi
+        elif test -d "${path}"; then
+            find "${path}" -type f \( \
+                -iname '*.mp4' -o \
+                -iname '*.m4v' -o \
+                -iname '*.mov' -o \
+                -iname '*.mkv' -o \
+                -iname '*.webm' -o \
+                -iname '*.avi' \
+                \)
+        else
+            echo >&2 "ignoring: ${path}"
+        fi
+    done
+}
+
+# resolves <path>... to files, recursing into directories, with no extension filtering
+expand_any_paths() {
+    local arg path
+    for arg in "$@"; do
+        path="$(realpath "${arg}")"
+        if test -f "${path}"; then
+            printf '%s\n' "${path}"
+        elif test -d "${path}"; then
+            find "${path}" -type f
+        else
+            echo >&2 "ignoring: ${path}"
+        fi
+    done
+}
+
+shrink_one() {
+    local orig_file="$1" base_file temp_file
+    base_file="${orig_file%.*}"
+    temp_file="${base_file}-shrink.mp4"
+
+    if test "${orig_file}" = "${temp_file}"; then
+        echo >&2 "ignoring generated file: ${orig_file}"
+        return 0
+    fi
+
+    echo >&2 "shrinking: ${orig_file}"
+
+    ffmpeg -hide_banner -loglevel warning -stats -stats_period 1 \
+        -i "${orig_file}" \
+        -map 0:v:0 \
+        -map 0:a? \
+        -map 0:s? \
+        -c:v libx265 -crf 26 -preset medium \
+        -c:a aac -b:a 160k \
+        -c:s mov_text \
+        -movflags +faststart \
+        "${temp_file}"
+
+    if ! ffprobe -v error "${temp_file}" > /dev/null 2>&1; then
+        echo >&2 "generated file is invalid, keeping original: ${orig_file}"
+        rm -f "${temp_file}"
+        return 1
+    fi
+
+    local orig_bytes temp_bytes orig_size temp_size
+    orig_bytes="$(wc -c < "${orig_file}")"
+    temp_bytes="$(wc -c < "${temp_file}")"
+    orig_size="$(du -h "${orig_file}" | awk '{print $1;}')"
+    temp_size="$(du -h "${temp_file}" | awk '{print $1;}')"
+
+    if test "${temp_bytes}" -ge "${orig_bytes}"; then
+        printf >&2 "not smaller: %s -> %s, keeping original\n" "${orig_size}" "${temp_size}"
+        rm -f "${temp_file}"
+        return 0
+    fi
+
+    printf >&2 "shrunk from %s to %s\n" "${orig_size}" "${temp_size}"
+    mv -vf "${temp_file}" "${orig_file}"
+}
+
+cmd_shrink() {
+    test "$#" -ge 1 || usage_error "shrink: expected at least one path"
+    local file
+    while IFS= read -r file; do
+        shrink_one "${file}"
+    done < <(expand_video_paths "$@")
+}
+
+# measures the pixel width of the label at ref_fontsize by rendering it onto a
+# black canvas and letting cropdetect find the bounding box of the text
+measured_width() {
+    local text_file="$1" ref_fontsize="$2" probe_output
+    probe_output="$(ffmpeg -hide_banner -loglevel info -f lavfi \
+        -i "color=c=black:s=8000x300:d=1,drawtext=textfile='${text_file}':expansion=none:fontcolor=white:fontsize=${ref_fontsize}:x=(w-text_w)/2:y=(h-text_h)/2,cropdetect=round=2:reset=1:skip=0" \
+        -frames:v 1 -f null - 2>&1)"
+
+    printf '%s\n' "${probe_output}" | grep -o 'crop=[0-9]*:' | tail -n1 | cut -d= -f2 | tr -d :
+}
+
+label_one() {
+    local text_file="$1" orig_file="$2"
+    local base_file="${orig_file%.*}"
+    local out_file="${base_file}-label.mp4"
+
+    if test "${orig_file}" = "${out_file}"; then
+        echo >&2 "ignoring generated file: ${orig_file}"
+        return 0
+    fi
+
+    echo >&2 "labeling: ${orig_file}"
+
+    local ref_fontsize=200
+    local video_size video_width video_height target_width text_width fontsize
+    video_size="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "${orig_file}")"
+    video_width="${video_size%x*}"
+    video_height="${video_size#*x}"
+    target_width=$(awk -v w="${video_width}" 'BEGIN { printf "%d", w * 0.9 }')
+    text_width="$(measured_width "${text_file}" "${ref_fontsize}")"
+    fontsize=$(awk -v ref="${ref_fontsize}" -v mw="${text_width}" -v tw="${target_width}" -v maxh="${video_height}" '
+        BEGIN {
+            size = (ref * tw / mw) + 0.5
+            max_size = maxh * 0.6
+            if (size > max_size) size = max_size
+            printf "%d", size
+        }')
+
+    ffmpeg -hide_banner -loglevel warning -stats -stats_period 1 \
+        -i "${orig_file}" \
+        -vf "drawtext=textfile='${text_file}':expansion=none:fontcolor=white@0.6:fontsize=${fontsize}:x=w-tw-30:y=h-th-20" \
+        "${out_file}"
+}
+
+cmd_label() {
+    test "$#" -ge 2 || usage_error "label: expected <text> <path>..."
+    local text="$1"
+    shift
+
+    local text_file
+    text_file="$(mktemp)"
+    trap 'rm -f "${text_file}"' EXIT
+    printf '%s' "${text}" > "${text_file}"
+
+    local file
+    while IFS= read -r file; do
+        label_one "${text_file}" "${file}"
+    done < <(expand_video_paths "$@")
+}
+
+mbpm_analyze() {
+    local file="$1"
+
+    case "$(file -ib "${file}" | awk -F\; '{print $1}')" in
+        'video/mp4') ;;
+        'video/webm') ;;
+        'video/x-m4v') ;;
+        'video/x-matroska') ;;
+        *)
+            echo >&2 "ignoring: ${file}"
+            return
+            ;;
+    esac
+
+    echo >&2 "checking: ${file}"
+
+    local size_mb size_gb duration duration_min data_per_minute
+    size_mb=$(echo "$(stat -c%s "${file}") / 1024 / 1024" | bc -l)
+    size_gb=$(echo "${size_mb} / 1024" | bc -l)
+
+    duration=$(ffprobe -v error -show_entries format=duration \
+        -of default=noprint_wrappers=1:nokey=1 "${file}")
+
+    if test -z "${duration}" || test "${duration}" == "N/A"; then
+        return
+    fi
+
+    duration_min=$(echo "${duration} / 60" | bc -l)
+
+    if (($(echo "${duration_min} > 0" | bc -l))); then
+        data_per_minute=$(echo "${size_mb} / ${duration_min}" | bc -l)
+        if test "$(printf "%.0f" "${size_mb}")" -lt 50; then
+            echo >&2 "ignoring: ${file}"
+            return
+        fi
+        if test "$(printf "%.0f" "${data_per_minute}")" -lt 30; then
+            echo >&2 "ignoring: ${file}"
+            return
+        fi
+        printf "%.2fmb/s %.2fgb %s\n" "${data_per_minute}" "${size_gb}" "${file}"
+    fi
+}
+
+cmd_mbpm() {
+    test "$#" -ge 1 || usage_error "mbpm: expected at least one path"
+    local file
+    while IFS= read -r file; do
+        mbpm_analyze "${file}"
+    done < <(expand_any_paths "$@")
+}
+
+gif_convert() {
+    local input="$1"
+    local base="${input%.*}"
+    local output="${base}.gif"
+    local palette="${base}-palette.png"
+    local max_bytes=$((5 * 1024 * 1024))
+    local fps_list=(8 7 6 5 4)
+    local width_list=(320 280 240 200 160)
+    local ok=0 fps width size
+
+    for fps in "${fps_list[@]}"; do
+        for width in "${width_list[@]}"; do
+            ffmpeg -y -i "${input}" -vf "fps=${fps},scale=${width}:-1:flags=lanczos,palettegen=stats_mode=diff" "${palette}" > /dev/null 2>&1 || exit 1
+            ffmpeg -y -i "${input}" -i "${palette}" -filter_complex "fps=${fps},scale=${width}:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" "${output}" > /dev/null 2>&1 || exit 1
+            size=$(stat -c%s "${output}")
+            if test "${size}" -le "${max_bytes}"; then
+                echo "Created: ${output}"
+                echo "Size: $((size / 1024)) KB"
+                echo "Settings: fps=${fps}, width=${width}"
+                ok=1
+                break 2
+            fi
+        done
+    done
+
+    rm -f "${palette}"
+
+    if test "${ok}" -eq 0; then
+        echo "Could not get below 5 MB with current fallback settings."
+        echo "Last size: $((size / 1024)) KB"
+        exit 1
+    fi
+}
+
+cmd_gif() {
+    test "$#" -ge 1 || usage_error "gif: expected at least one path"
+    local file
+    # unlike the other subcommands, upstream video-to-gif never filtered
+    # directory contents by extension; kept as-is here
+    while IFS= read -r file; do
+        gif_convert "${file}"
+    done < <(expand_any_paths "$@")
+}
+
+cmd_to_mp3() {
+    test "$#" -ge 1 || usage_error "to-mp3: expected at least one path"
+    local file
+    for file in "$@"; do
+        ffmpeg -loglevel warning -stats -stats_period 1 \
+            -i "${file}" \
+            -vn -acodec libmp3lame -q:a 2 -y \
+            "${file%.*}.mp3"
+    done
+}
+
+cmd_to_ogg() {
+    test "$#" -ge 1 || usage_error "to-ogg: expected at least one path"
+    local file
+    for file in "$@"; do
+        ffmpeg -loglevel warning -stats -stats_period 1 \
+            -i "${file}" \
+            -vn -acodec libvorbis -y \
+            "${file%.mp4}.ogg"
+    done
+}
+
+cmd_cut() {
+    test "$#" -ge 1 || usage_error "cut: expected <front|end> <file> <seconds>"
+    local mode="$1"
+    shift
+
+    case "${mode}" in
+        front)
+            test "$#" -eq 2 || usage_error "cut front: expected <file> <seconds>"
+            ffmpeg -i "$1" -ss "$2" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
+            ;;
+        end)
+            test "$#" -eq 2 || usage_error "cut end: expected <file> <seconds>"
+            local duration cut_duration
+            duration=$(ffprobe -v error -show_entries format=duration \
+                -of default=noprint_wrappers=1:nokey=1 "$1")
+            cut_duration=$(awk "BEGIN {print ${duration} - $2}")
+            ffmpeg -i "$1" -t "${cut_duration}" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
+            ;;
+        *)
+            usage_error "cut: unknown mode '${mode}' (expected front|end)"
+            ;;
+    esac
+}
+
+cmd_doctor() {
+    local tool ok=0
+    for tool in ffmpeg ffprobe bc; do
+        if command -v "${tool}" > /dev/null 2>&1; then
+            echo "ok: ${tool} found"
+        else
+            echo >&2 "missing: ${tool}"
+            ok=1
+        fi
+    done
+    return "${ok}"
+}
+
+main() {
+    if test "$#" -lt 1; then
+        echo "${USAGE}"
+        exit 0
+    fi
+
+    local cmd="$1"
+    shift
+
+    # keep .local/share/bash-completion/completions/video in sync with the
+    # subcommands handled here
+    case "${cmd}" in
+        shrink) cmd_shrink "$@" ;;
+        label) cmd_label "$@" ;;
+        mbpm) cmd_mbpm "$@" ;;
+        gif) cmd_gif "$@" ;;
+        to-mp3) cmd_to_mp3 "$@" ;;
+        to-ogg) cmd_to_ogg "$@" ;;
+        cut) cmd_cut "$@" ;;
+        doctor) cmd_doctor ;;
+        help | --help | -h)
+            echo "${USAGE}"
+            ;;
+        *)
+            usage_error "unknown command: ${cmd}"
+            ;;
+    esac
+}
+
+main "$@"

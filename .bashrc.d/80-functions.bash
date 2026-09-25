@@ -41,27 +41,6 @@ function semver_next_patch() {
     git describe --abbrev=0 | awk -F '.' '{$3+=1; OFS="."; print}' | tr ' ' '.'
 }
 
-function ffmpeg_cut_front() {
-    ffmpeg -i "${1}" -ss "${2}" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
-}
-
-ffmpeg_cut_end() {
-    duration=$(ffprobe -v error -show_entries format=duration \
-        -of default=noprint_wrappers=1:nokey=1 "$1")
-
-    cut_duration=$(awk "BEGIN {print $duration - $2}")
-
-    ffmpeg -i "$1" -t "$cut_duration" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
-}
-
-function ffmpeg_conv_mp4_mp3() {
-    ffmpeg -i "${1}" -vn -acodec libmp3lame -q:a 2 "${1%.*}.mp3"
-}
-
-function video_cut4() {
-    ffmpeg -i "${1}" -ss 4 -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
-}
-
 function freemem() {
     kb=$(cat /proc/meminfo | grep -F 'MemAvailable:' | awk '{print $2}')
     mb=$((kb / 1024))
@@ -92,3 +71,31 @@ function go-bump() {
 function lan_cidrs() {
     ip a | grep -F '    inet ' | awk '{print $2}'
 }
+
+function gh-repos() {
+    local page=1 resp chunk out=''
+    while ((page <= 50)); do
+        resp=$(curl -fsSL --netrc-file "${HOME}/.config/curl/github.netrc" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/user/repos?per_page=100&page=${page}&affiliation=owner") || return 1
+        jq -e 'type == "array"' <<< "$resp" > /dev/null 2>&1 \
+            || {
+                echo "ghrepos: unexpected response on page $page" >&2
+                return 1
+            }
+        (($(jq 'length' <<< "$resp") == 0)) && break
+        chunk=$(jq -r '.[] | select(.fork == false and .archived == false) | .name' <<< "$resp")
+        test -n "$chunk" && out+="$chunk"$'\n'
+        ((page++))
+    done
+    test -n "$out" || return 0
+    printf '%s' "$out" | LC_ALL=C sort -u
+}
+
+function claude-temp() (
+    dir="$(mktemp -d)" || return 1
+    trap 'rm -rf -- "$dir"' EXIT
+    cd -- "$dir" || return 1
+    claude "$@"
+)

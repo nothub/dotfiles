@@ -1,0 +1,28 @@
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+
+_video_complete() {
+    local cur words cword
+    _init_completion || return
+
+    local commands="shrink label mbpm gif to-mp3 to-ogg cut doctor help"
+
+    if ((cword == 1)); then
+        mapfile -t COMPREPLY < <(compgen -W "${commands}" -- "${cur}")
+        return
+    fi
+
+    case "${words[1]}" in
+        cut)
+            if ((cword == 2)); then
+                mapfile -t COMPREPLY < <(compgen -W "front end" -- "${cur}")
+            else
+                _filedir
+            fi
+            ;;
+        shrink | label | mbpm | gif | to-mp3 | to-ogg)
+            _filedir
+            ;;
+    esac
+}
+complete -F _video_complete video
