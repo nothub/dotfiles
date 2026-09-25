@@ -17,20 +17,20 @@ screen_left_off=(
 )
 
 screen_right=(
-    "--output" "DP-0"
-    "--pos" "3000x896"
-    "--mode" "1280x1024"
-    "--rotate" "normal"
+    "--output" "DP-1"
+    "--pos" "3000x78"
+    "--mode" "1920x1080"
+    "--rotate" "left"
 )
 
 screen_right_off=(
-    "--output" "DP-0"
+    "--output" "DP-1"
     "--off"
 )
 
 screen_center=(
     "--output" "HDMI-0"
-    "--pos" "1080x695"
+    "--pos" "1080x498"
     "--mode" "1920x1080"
     "--rotate" "normal"
     "--primary"
