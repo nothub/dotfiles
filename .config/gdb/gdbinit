@@ -4,8 +4,11 @@ set target-wide-charset UTF-8
 set osabi none
 set complaints 0
 set confirm off
+# keep history out of $HOME. gdb does not create the directory itself, it only
+# warns at exit and drops the history when it is missing
+shell mkdir -p ~/.local/state/gdb
 set history save on
-set history filename ~/.gdb_history
+set history filename ~/.local/state/gdb/history
 define asm
   layout asm
   layout reg
