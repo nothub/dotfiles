@@ -3,13 +3,13 @@
 ## What this repo is
 
 Personal dotfiles for a Debian/Linux desktop.  
-Files are symlinked into `~` via `reclink`.  
 Everything tracked here ends up living at the same relative path under `~`.
 
 ## Installation
 
 ```sh
-# Symlink all tracked files into $HOME (replaces existing files, no confirmation prompt)
+# Symlink all tracked files into $HOME
+# (replaces existing files, no confirmation prompt)
 ./_link.sh
 ```
 
@@ -45,6 +45,70 @@ Files are numbered to control load order. `.profile.d/` sets PATH and env export
 ### `.local/bin/` scripts
 
 Standalone utilities, each a self-contained executable. Shebangs are either `#!/usr/bin/env sh`, `#!/usr/bin/env bash`, or `#!/usr/bin/env python3`. No shared libraries between them.
+
+## Script snippets
+
+Patterns for new `.local/bin/` scripts, kept from the removed `template` and `mkscript`.
+
+Log to stderr, leave stdout for the actual output:
+
+```bash
+log() {
+    echo >&2 "$*"
+}
+```
+
+Cleanup on exit and on signals. `set -o errtrace` makes the `ERR` trap fire inside functions too:
+
+```bash
+finally() {
+    trap - SIGINT SIGTERM ERR EXIT
+    log "Bye ;)"
+}
+trap finally SIGINT SIGTERM ERR EXIT
+```
+
+Option parsing:
+
+```bash
+while getopts a:vh? opt; do
+    case $opt in
+        a) a="$OPTARG" ;;
+        v) set -o xtrace ;;
+        h | \? | *)
+            usage
+            exit
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+```
+
+Fall back to stdin when no args are given:
+
+```bash
+read_stdin() {
+    if test -p /dev/stdin; then
+        local line
+        while IFS= read -r line; do
+            echo "${line}"
+        done
+    fi
+}
+
+echo "${*:-$(read_stdin)}"
+```
+
+Fail early on missing tools:
+
+```bash
+check_dependency() {
+    if ! command -v "$1" > /dev/null 2>&1; then
+        log "Error: missing dependency: $1"
+        exit 1
+    fi
+}
+```
 
 ## Code style
 
