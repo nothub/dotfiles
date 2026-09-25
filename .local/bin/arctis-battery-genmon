@@ -1,0 +1,33 @@
+#!/bin/bash
+# xfce4-genmon command: SteelSeries Arctis 7+ battery.
+# genmon parses <txt>/<tool> from stdout; <txt> accepts pango markup.
+set -uo pipefail
+
+icon='🎧'
+
+info=$(headsetcontrol -o json -b 2>/dev/null \
+	| jq -r '.devices[0].battery | "\(.status) \(.level)"' 2>/dev/null)
+read -r status level <<<"${info:-BATTERY_UNAVAILABLE -1}"
+
+case "$status" in
+BATTERY_AVAILABLE)
+	if [ "$level" -le 15 ]; then
+		text="<span foreground=\"#e05252\">$icon ${level}%</span>"
+	elif [ "$level" -le 30 ]; then
+		text="<span foreground=\"#e0b252\">$icon ${level}%</span>"
+	else
+		text="$icon ${level}%"
+	fi
+	tip="Arctis 7+: ${level}%"
+	;;
+BATTERY_CHARGING)
+	text="$icon ⚡${level}%"
+	tip="Arctis 7+: charging (${level}%)"
+	;;
+*)
+	text="<span alpha=\"50%\">$icon --</span>"
+	tip="Arctis 7+: off or out of range"
+	;;
+esac
+
+printf '<txt>%s</txt>\n<tool>%s</tool>\n' "$text" "$tip"
