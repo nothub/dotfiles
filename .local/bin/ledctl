@@ -7,9 +7,9 @@ ledValue=$(cat "$ledFile")
 
 if test -z ${1+x}; then
 
-    if test $ledValue -eq 0; then
+    if test "$ledValue" -eq 0; then
         echo 1 > $ledFile
-    elif test $ledValue -gt 0; then
+    elif test "$ledValue" -gt 0; then
         echo 0 > $ledFile
     else
         echo "something went wrong! '$ledValue' '$ledFile'"
@@ -17,9 +17,9 @@ if test -z ${1+x}; then
 
 else
 
-    if test $1 -eq 0; then
+    if test "$1" -eq 0; then
         echo 0 > $ledFile
-    elif test $1 -gt 0; then
+    elif test "$1" -gt 0; then
         echo 1 > $ledFile
     else
         echo "something went wrong! '$ledValue' '$ledFile'"

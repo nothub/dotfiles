@@ -13,6 +13,8 @@ if test "$#" -lt 1; then
 fi
 
 while true; do
+    # running an arbitrary command string is the whole point of this script
+    # shellcheck disable=SC2294
     eval "$@"
     sleep 0.1
 done
