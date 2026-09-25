@@ -2,27 +2,42 @@
 
 set -eu -o pipefail
 
-USAGE="Usage: video <command> [args...]
+readonly COMMANDS=(
+    shrink '<path>...' 'shrink video files in place (libx265), keeps original if not smaller'
+    label '<text> <path>...' 'burn a text label onto video(s)'
+    mbpm '<path>...' 'report MB/min bitrate density for video files'
+    gif '<path>...' 'convert video to GIF, staying under 5MB'
+    to-mp3 '<path>...' 'extract audio to mp3'
+    to-ogg '<path>...' 'extract audio to ogg'
+    cut '<front|end> <file> <seconds>' 'drop the first <seconds> off the front, or the last <seconds> off the end'
+    doctor '' ''
+    help '' ''
+)
 
-Commands:
-  shrink <path>...              shrink video files in place (libx265), keeps original if not smaller
-  label <text> <path>...        burn a text label onto video(s)
-  mbpm <path>...                report MB/min bitrate density for video files
-  gif <path>...                 convert video to GIF, staying under 5MB
-  to-mp3 <path>...              extract audio to mp3
-  to-ogg <path>...              extract audio to ogg
-  cut front <file> <seconds>    trim from <seconds> to end
-  cut end <file> <seconds>      drop the last <seconds> from the end
-  doctor                        check required tools are installed
-  help                          show this usage
+print_usage() {
+    printf 'Usage: video <command> [args...]\n\nCommands:\n'
 
-<path> arguments accept files or directories (directories are searched recursively)
-unless noted otherwise above."
+    local i name args width=0 len
+    for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
+        name="${COMMANDS[i]}"
+        args="${COMMANDS[i + 1]}"
+        len=$((${#name} + 1 + ${#args}))
+        test "${len}" -gt "${width}" && width="${len}"
+    done
+
+    for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
+        name="${COMMANDS[i]}"
+        args="${COMMANDS[i + 1]}"
+        printf '  %-*s  %s\n' "${width}" "${name}${args:+ }${args}" "${COMMANDS[i + 2]}"
+    done
+
+    printf '\n<path> arguments accept files or directories (directories are searched recursively)\nunless noted otherwise above.\n'
+}
 
 usage_error() {
     echo >&2 "video: $*"
     echo >&2
-    echo >&2 "${USAGE}"
+    print_usage >&2
     exit 2
 }
 
@@ -186,7 +201,7 @@ cmd_label() {
     local text="$1"
     shift
 
-    local text_file
+    # not `local`: the EXIT trap below must still see this after cmd_label returns
     text_file="$(mktemp)"
     trap 'rm -f "${text_file}"' EXIT
     printf '%s' "${text}" > "${text_file}"
@@ -353,31 +368,35 @@ cmd_doctor() {
 
 main() {
     if test "$#" -lt 1; then
-        echo "${USAGE}"
+        print_usage
         exit 0
     fi
 
-    local cmd="$1"
+    local cmd="$1" i known=0
     shift
 
-    # keep .local/share/bash-completion/completions/video in sync with the
-    # subcommands handled here
     case "${cmd}" in
-        shrink) cmd_shrink "$@" ;;
-        label) cmd_label "$@" ;;
-        mbpm) cmd_mbpm "$@" ;;
-        gif) cmd_gif "$@" ;;
-        to-mp3) cmd_to_mp3 "$@" ;;
-        to-ogg) cmd_to_ogg "$@" ;;
-        cut) cmd_cut "$@" ;;
-        doctor) cmd_doctor ;;
         help | --help | -h)
-            echo "${USAGE}"
+            print_usage
+            return
             ;;
-        *)
-            usage_error "unknown command: ${cmd}"
+        --list-commands) # read by bash-completion script
+            for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
+                printf '%s\t%s\n' "${COMMANDS[i]}" "${COMMANDS[i + 1]}"
+            done
+            return
             ;;
     esac
+
+    for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
+        if test "${COMMANDS[i]}" = "${cmd}"; then
+            known=1
+            break
+        fi
+    done
+    test "${known}" -eq 1 || usage_error "unknown command: ${cmd}"
+
+    "cmd_${cmd//-/_}" "$@"
 }
 
 main "$@"

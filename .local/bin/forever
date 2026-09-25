@@ -2,6 +2,11 @@
 
 set -eu
 
+if test "${1:-}" = --list-commands; then
+    printf '\t<command>...\n'
+    exit 0
+fi
+
 if test "$#" -lt 1; then
     echo >&2 "Usage: forever <command>"
     exit 1

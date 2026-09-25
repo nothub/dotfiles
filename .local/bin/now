@@ -3,6 +3,11 @@
 set -o errexit
 set -o nounset
 
+if test "${1:-}" = --list-commands; then
+    printf '\t<epoch>\n'
+    exit 0
+fi
+
 epoch="${1:-$(date +%s)}"
 echo "8601 (local): $(date --date=@"$epoch" --iso-8601="seconds")"
 echo "8601 (utc):   $(date --date=@"$epoch" --utc --iso-8601="seconds")"

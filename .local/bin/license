@@ -3,6 +3,11 @@
 set -o errexit
 set -o nounset
 
+if test "${1:-}" = --list-commands; then
+    printf '\t<type> <name> <year>\n'
+    exit 0
+fi
+
 function print_mit() {
     cat << EOL
 The MIT License (MIT)

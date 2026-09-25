@@ -1,0 +1,85 @@
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+
+# generic completion for scripts exposing a `--list-commands` flag printing "name<TAB>args" lines.
+# a single line with an empty name field means the program has no subcommands;
+# its args apply starting at the first word instead of after a subcommand name
+#   - an arg token <a|b|c> completes that enum
+#   - an arg token <path>/<file> (optionally followed by ...) completes filenames
+#   - an arg token <seconds>/<minutes>/<hours> completes the static example "42"
+#   - an arg token <day>/<month>/<year> completes today's actual day/month/year
+#   - an arg token <epoch> completes the current unix timestamp
+#   - an arg token <command>... completes a command name, then delegates the completion
+#   - any other <placeholder> completes its bare name as a free-text hint
+#   - a token ending in ... repeats for every further argument position
+_subcommand_complete() {
+    # shellcheck disable=SC2034 # prev is read by _command_offset via dynamic scoping
+    local cur prev words cword
+    _init_completion || return
+
+    local prog="${words[0]}"
+    local commands
+    commands="$("${prog}" --list-commands 2> /dev/null)" || return
+
+    local args idx arg_base
+    if [[ ${commands} == $'\t'* ]] && (($(wc -l <<< "${commands}") == 1)); then
+        args="${commands#$'\t'}"
+        arg_base=1
+    else
+        if ((cword == 1)); then
+            mapfile -t COMPREPLY < <(compgen -W "$(cut -f1 <<< "${commands}")" -- "${cur}")
+            return
+        fi
+        args="$(awk -F'\t' -v name="${words[1]}" '$1 == name { print $2 }' <<< "${commands}")"
+        arg_base=2
+    fi
+    idx=$((cword - arg_base))
+
+    local -a tokens
+    read -ra tokens <<< "${args}"
+
+    local token=''
+    if ((idx < ${#tokens[@]})); then
+        token="${tokens[idx]}"
+    elif ((${#tokens[@]} > 0)); then
+        token="${tokens[-1]}"
+        [[ ${token} == *'...' ]] || token=''
+    fi
+
+    case "${token}" in
+        *'|'*)
+            local enum="${token#<}"
+            enum="${enum%>}"
+            mapfile -t COMPREPLY < <(compgen -W "${enum//|/ }" -- "${cur}")
+            ;;
+        '<path>'* | '<file>'*)
+            _filedir
+            ;;
+        '<seconds>'* | '<minutes>'* | '<hours>'*)
+            mapfile -t COMPREPLY < <(compgen -W 42 -- "${cur}")
+            ;;
+        '<day>'*)
+            mapfile -t COMPREPLY < <(compgen -W "$(date +%-d)" -- "${cur}")
+            ;;
+        '<month>'*)
+            mapfile -t COMPREPLY < <(compgen -W "$(date +%-m)" -- "${cur}")
+            ;;
+        '<year>'*)
+            mapfile -t COMPREPLY < <(compgen -W "$(date +%Y)" -- "${cur}")
+            ;;
+        '<epoch>'*)
+            mapfile -t COMPREPLY < <(compgen -W "$(date +%s)" -- "${cur}")
+            ;;
+        '<command>'*)
+            # word-index where the wrapped command starts: constant regardless
+            # of how many of its own args have been typed since
+            _command_offset $((arg_base + ${#tokens[@]} - 1))
+            ;;
+        '<'*'>'*)
+            local hint="${token#<}"
+            hint="${hint%%>*}"
+            mapfile -t COMPREPLY < <(compgen -W "${hint}" -- "${cur}")
+            ;;
+    esac
+}
+complete -F _subcommand_complete "$(basename -- "${BASH_SOURCE[0]}")"

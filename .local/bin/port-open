@@ -3,6 +3,11 @@
 set -o nounset
 set -o errexit
 
+if test "${1:-}" = --list-commands; then
+    printf '\t<host> <port>\n'
+    exit 0
+fi
+
 case $# in
     2)
         host="$1"

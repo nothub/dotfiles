@@ -12,6 +12,7 @@ readarray -d '' files < <(find .local/bin/ -type f -print0)
 for f in "${files[@]}"; do
     if file "${f}" | grep "ASCII text executable" > /dev/null; then
         bang="$(head -n 1 "${f}")"
+        # TODO: also check for `# shellcheck shell=bash`
         if test "${bang}" = '#!/usr/bin/env sh' || test "${bang}" = '#!/usr/bin/env bash'; then
             .local/bin/shellfmt "${f}"
         fi

@@ -2,6 +2,11 @@
 
 set -o errexit
 
+if test "${1:-}" = --list-commands; then
+    printf '\t<path>...\n'
+    exit 0
+fi
+
 shfmt \
     --write \
     --simplify \
