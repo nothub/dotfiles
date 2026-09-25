@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+#
+# Serve a directory with Caddy and expose it via a Cloudflare quick tunnel.
+# Runs both as docker containers on their own network; no local caddy or
+# cloudflared install required. No Cloudflare account or domain required;
+# prints a random *.trycloudflare.com URL.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly DIR="${1:-.}"
+readonly PORT="${2:-8080}"
+
+readonly RUN_ID="$$"
+readonly NET_NAME="cfserve-net-${RUN_ID}"
+readonly CADDY_NAME="cfserve-caddy-${RUN_ID}"
+readonly TUNNEL_NAME="cfserve-tunnel-${RUN_ID}"
+
+cleanup() {
+    echo "shutting down" >&2
+    docker rm -f "${TUNNEL_NAME}" "${CADDY_NAME}" > /dev/null 2>&1 || true
+    docker network rm "${NET_NAME}" > /dev/null 2>&1 || true
+}
+trap cleanup EXIT INT TERM
+
+command -v docker > /dev/null || {
+    echo "docker not found: install it (https://docs.docker.com/engine/install/)" >&2
+    exit 1
+}
+test -d "${DIR}" || {
+    echo "directory not found: ${DIR}" >&2
+    exit 1
+}
+ABS_DIR="$(cd "${DIR}" && pwd)"
+readonly ABS_DIR
+
+docker network create "${NET_NAME}" > /dev/null
+
+echo "serving ${DIR} on localhost:${PORT}" >&2
+docker run --detach --name "${CADDY_NAME}" --network "${NET_NAME}" \
+    --publish "${PORT}:80" --volume "${ABS_DIR}:/srv:ro" \
+    caddy:alpine caddy file-server --listen :80 --root /srv --browse > /dev/null
+sleep 0.5
+test -n "$(docker ps -q --filter "name=^${CADDY_NAME}\$")" || {
+    echo "caddy container exited unexpectedly:" >&2
+    docker logs "${CADDY_NAME}" >&2
+    exit 1
+}
+
+docker run --detach --name "${TUNNEL_NAME}" --network "${NET_NAME}" \
+    cloudflare/cloudflared:latest tunnel --url "http://${CADDY_NAME}:80" > /dev/null
+
+echo "waiting for tunnel URL..." >&2
+url_found=""
+for _ in $(seq 1 30); do
+    tunnel_url="$(docker logs "${TUNNEL_NAME}" 2>&1 | grep -o 'https://[a-zA-Z0-9.-]*\.trycloudflare\.com' | head -n1 || true)"
+    if test -n "${tunnel_url}"; then
+        echo "${tunnel_url}"
+        url_found=1
+        break
+    fi
+    test -n "$(docker ps -q --filter "name=^${TUNNEL_NAME}\$")" || {
+        echo "cloudflared container exited unexpectedly:" >&2
+        docker logs "${TUNNEL_NAME}" >&2
+        exit 1
+    }
+    sleep 1
+done
+test -n "${url_found}" || {
+    echo "timed out waiting for tunnel URL" >&2
+    exit 1
+}
+
+docker logs --follow "${TUNNEL_NAME}" >&2 &
+tail_pid=$!
+trap 'kill "${tail_pid}" 2>/dev/null || true; cleanup' EXIT INT TERM
+
+docker wait "${TUNNEL_NAME}" > /dev/null
