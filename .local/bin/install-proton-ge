@@ -21,10 +21,10 @@ fi
 
 echo >&2 "Installing ${latest} from \"${REPO_URL}\" to \"${TARGET_DIR}\""
 
-file_tar_url="${REPO_URL%.git}/releases/download/${latest}/${latest}.tar.gz"
+file_tar_url="${REPO_URL%.git}/releases/download/${latest}/${latest}-x86_64.tar.gz"
 file_tar="$(basename "${file_tar_url}")"
 
-file_sha_url="${REPO_URL%.git}/releases/download/${latest}/${latest}.sha512sum"
+file_sha_url="${REPO_URL%.git}/releases/download/${latest}/${latest}-x86_64.sha512sum"
 file_sha="$(basename "${file_sha_url}")"
 
 mkdir -p "${TARGET_DIR}/tmp"
