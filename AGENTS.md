@@ -11,9 +11,12 @@ Everything tracked here ends up living at the same relative path under `~`.
 # Symlink all tracked files into $HOME
 # (replaces existing files, no confirmation prompt)
 ./_link.sh
+
+# print what would be linked, without touching the filesystem
+DRY=1 ./_link.sh
 ```
 
-`_link.sh` calls `.local/bin/reclink`, a Python 3 script that recursively symlinks source → target, skipping the files listed in the `--ignore` block (repo meta-files, `.idea/`, etc.).
+`_link.sh` walks the repo and symlinks every file into `$HOME` at the same relative path, creating directories as needed and replacing whatever is already there. The `ignore` array at the top holds the repo meta files that stay out of `$HOME`. A target that is a real directory is skipped rather than linked into.
 
 ## Lint and format
 
@@ -69,22 +72,6 @@ finally() {
     log "Bye ;)"
 }
 trap finally SIGINT SIGTERM ERR EXIT
-```
-
-Option parsing:
-
-```bash
-while getopts a:vh? opt; do
-    case $opt in
-        a) a="$OPTARG" ;;
-        v) set -o xtrace ;;
-        h | \? | *)
-            usage
-            exit
-            ;;
-    esac
-done
-shift $((OPTIND - 1))
 ```
 
 Fail early on missing tools:
