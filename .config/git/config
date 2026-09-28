@@ -1,6 +1,8 @@
+[user]
+	useConfigOnly = true
+
 [include]
 	path = config.d/identity
-    useConfigOnly = true
 
 [core]
 	editor = hx
