@@ -8,4 +8,4 @@ Shell configuration lives in [`.bashrc.d/`](.bashrc.d/) and [`.profile.d/`](.pro
 
 [`.local/bin/`](.local/bin/) holds a bunch of tools and toys.
 
-[`.local/bin/reclink`](.local/bin/reclink) handles installation and synchronization (see [`_link.sh`](_link.sh)).
+Symlink stuff into `~` with [`_link.sh`](_link.sh).
