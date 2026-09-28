@@ -37,6 +37,12 @@ while IFS= read -r -d '' src; do
     done
 
     target="${HOME}/${rel}"
+    source="${PWD}/${rel}"
+
+    # already linked, nothing to report
+    if test -L "${target}" && test "$(readlink "${target}")" = "${source}"; then
+        continue
+    fi
 
     # ln would place the link inside it instead of replacing it
     if test -d "${target}" && ! test -L "${target}"; then
@@ -47,6 +53,6 @@ while IFS= read -r -d '' src; do
     log "linking: ${rel}"
     if test -z "${DRY:-}"; then
         mkdir -p "$(dirname "${target}")"
-        ln -sfn "${PWD}/${rel}" "${target}"
+        ln -sfn "${source}" "${target}"
     fi
 done < <(find . \( -type f -o -type l \) -print0)
