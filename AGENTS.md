@@ -16,10 +16,6 @@ Everything tracked here ends up living at the same relative path under `~`.
 DRY=1 ./_link.sh
 ```
 
-`_link.sh` walks the repo and symlinks every file into `$HOME` at the same relative path, creating directories as needed and replacing whatever is already there. The `ignore` array at the top holds the repo meta files that stay out of `$HOME`. A target that is a real directory is skipped rather than linked into. Only links that actually change are reported, so a run with nothing to do prints nothing.
-
-It then removes stale links: a symlink in one of the directories the repo populates, pointing into the repo, whose target no longer exists. That combination only happens for a link an earlier run created for a file that has since been deleted, so no record of what was linked is needed. Links pointing anywhere else are never touched, dangling or not.
-
 ## Lint and format
 
 ```sh
@@ -30,9 +26,7 @@ It then removes stale links: a symlink in one of the directories the repo popula
 ./_fmt.sh
 ```
 
-`_lint.sh` runs `shellcheck` on `.profile`, `.profile.d/`, `.bashrc`, `.bashrc.d/`, the `sh` and `bash` executables under `.local/bin/`, the bash-completion files, and the three repo scripts, passing `--rcfile=.config/shellcheckrc` so a fresh clone lints correctly. That same file also lands at `$XDG_CONFIG_HOME/shellcheckrc` and serves as the global config. It disables SC2002 (useless cat). Shellcheck wants it directly in `.config/`, not in a `shellcheck/` subdirectory.
-
-`_fmt.sh` runs `.local/bin/shellfmt` on `.bashrc.d/`, `.profile.d/`, and all `sh` or `bash` executables under `.local/bin/`.  
+Both are driven by `.config/shellcheckrc`, which also lands at `$XDG_CONFIG_HOME/shellcheckrc` and serves as the global config. Shellcheck wants that file directly in `.config/`, not in a `shellcheck/` subdirectory.
 
 There is no test suite.
 
@@ -49,91 +43,26 @@ Files are numbered to control load order. `.profile.d/` sets PATH and env export
 `.bashrc.d/` sets up the interactive shell: history, ssh-agent, tool config, etc.  
 Most of it is bash-specific; the rest is portable but interactive-only.
 
-`.bashrc` times each file it sources and prints `slow: <file> took <n>ms` to stderr past 500ms, so a startup that suddenly hangs names the file responsible. Normally nothing prints: the slowest file, `97-completion.bash`, sits around 300ms. Timing uses the `EPOCHREALTIME` builtin, which costs no subprocess, about 0.1ms for the whole loop. `.profile` is not timed, since it has to stay sh-compatible and dash has neither that builtin nor the substitution used to strip it.
-
 ### `.local/bin/` scripts
 
 Standalone utilities, each a self-contained executable.  
 Shebangs are either `#!/usr/bin/env sh` or `#!/usr/bin/env bash`.
 
-## Script snippets
-
-Patterns for new `.local/bin/` scripts.
-
-Log to stderr, leave stdout for the actual output:
-
-```bash
-log() {
-    echo >&2 "$*"
-}
-```
-
-Cleanup on exit and on signals. `set -o errtrace` makes the `ERR` trap fire inside functions too:
-
-```bash
-finally() {
-    trap - SIGINT SIGTERM ERR EXIT
-    log "Bye ;)"
-}
-trap finally SIGINT SIGTERM ERR EXIT
-```
-
-Fail early on missing tools:
-
-```bash
-check_dependency() {
-    if ! command -v "$1" > /dev/null 2>&1; then
-        log "Error: missing dependency: $1"
-        exit 1
-    fi
-}
-```
+For a new script, copy the preamble and helpers (`log`, dependency checks, cleanup traps) from an existing one.
 
 ## Shell completion
 
-`.local/share/bash-completion/completions/_complete` is one generic completion function shared by every script that wants completion. Wire a script up by symlinking `_complete` under that script's own name, and teaching the script a hidden `--list-commands` flag:
+`.local/share/bash-completion/completions/_complete` is one generic completion function shared by every script that wants completion. Wire a script up by symlinking `_complete` under that script's own name, and teaching the script a hidden `--list-commands` flag that prints one `name<TAB>args` line per subcommand:
 
 ```sh
 ln -s _complete .local/share/bash-completion/completions/<name>
 ```
 
-`--list-commands` prints one `name<TAB>args` line per subcommand. A single line with an empty name field means the script has no subcommands, so its args apply from the first word instead of after a subcommand name.
-
-No subcommands:
-
-```sh
-if test "${1:-}" = --list-commands; then
-    printf '\t<host> <port>\n'
-    exit 0
-fi
-```
-
-With subcommands, from a `COMMANDS` array of (name, args, description) triples:
-
-```bash
---list-commands)
-    for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
-        printf '%s\t%s\n' "${COMMANDS[i]}" "${COMMANDS[i + 1]}"
-    done
-    return
-    ;;
-```
-
-The arg placeholders decide what each position completes:
-
-- `<a|b|c>` completes that enum
-- `<path>` and `<file>` complete filenames
-- `<seconds>`, `<minutes>`, `<hours>` complete the static example `42`
-- `<day>`, `<month>`, `<year>` complete today's actual day/month/year
-- `<epoch>` completes the current unix timestamp
-- `<command>...` completes a command name, then delegates the rest to that command's own completion
-- any other `<placeholder>` completes its bare name as a free-text hint
-- a token ending in `...` repeats for every further argument position
+The header of `_complete` documents the arg placeholders and what each one completes.
 
 ## Code style
 
-- Shell: 4-space indent, `set -eu` (sh) or `set -eu -o pipefail` (bash), LF line endings. Match whatever `shfmt` (via `.local/bin/shellfmt`) produces.
+- Shell: `set -eu` (sh) or `set -eu -o pipefail` (bash). Match whatever `shfmt` (via `.local/bin/shellfmt`) produces.
 - Sourced-only shell files (no shebang, e.g. under `.local/share/bash-completion/completions/`) must have `# shellcheck shell=bash` or `# shellcheck shell=sh` as their first line; `_fmt.sh` detects them by it.
-- JSON/TOML/YAML: 2-space indent.
 - Python: standard style; no external deps beyond stdlib unless unavoidable.
-- All files: UTF-8, LF, trailing newline, no trailing whitespace (except `.md`).
+- Everything else (indent, charset, line endings, final newline, trailing whitespace) is in `.editorconfig`.
