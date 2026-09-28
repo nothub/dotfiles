@@ -4,6 +4,11 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+if test "${1:-}" = --list-commands; then
+    printf '\t<all|left|right|center|right+center>\n'
+    exit 0
+fi
+
 screen_left=(
     "--output" "DP-5"
     "--pos" "0x0"
