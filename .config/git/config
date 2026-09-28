@@ -1,7 +1,6 @@
-[user]
-	name = Florian Hübner
-	email = fhuebner@posteo.de
-	signingkey = 89AFBFB19EBA410D
+[include]
+	path = config.d/identity
+    useConfigOnly = true
 
 [core]
 	editor = hx
@@ -40,8 +39,3 @@
 [commit]
 	gpgsign = true
 	verbose = true
-
-[includeIf "hasconfig:remote.*.url:https://github.com/cloudogu/**"]
-	path = config.d/cloudogu
-[includeIf "hasconfig:remote.*.url:git@github.com:cloudogu/**"]
-	path = config.d/cloudogu
