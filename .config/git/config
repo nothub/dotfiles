@@ -40,3 +40,8 @@
 [commit]
 	gpgsign = true
 	verbose = true
+
+[includeIf "hasconfig:remote.*.url:https://github.com/cloudogu/**"]
+	path = config.d/cloudogu
+[includeIf "hasconfig:remote.*.url:git@github.com:cloudogu/**"]
+	path = config.d/cloudogu
