@@ -4,6 +4,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# DP monitors drop off the layout when they power down, so DPMS must be disabled in screensavers etc.
+
 if test "${1:-}" = --list-commands; then
     printf '\t<all|left|right|center|right+center>\n'
     exit 0
