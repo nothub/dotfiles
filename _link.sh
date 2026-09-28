@@ -56,3 +56,21 @@ while IFS= read -r -d '' src; do
         ln -sfn "${source}" "${target}"
     fi
 done < <(find . \( -type f -o -type l \) -print0)
+
+# a link into this repo whose target is gone was created by an earlier run for
+# a file that no longer exists, which makes it ours to remove. no bookkeeping
+# needed, the link itself says where it came from
+while IFS= read -r dir; do
+    test -d "${HOME}/${dir}" || continue
+    while IFS= read -r link; do
+        case "$(readlink "${link}")" in
+            "${PWD}/"*) ;;
+            *) continue ;;
+        esac
+        test -e "${link}" && continue
+        log "removing stale link: ${link#"${HOME}"/}"
+        if test -z "${DRY:-}"; then
+            rm -- "${link}"
+        fi
+    done < <(find "${HOME}/${dir}" -maxdepth 1 -type l)
+done < <(find . \( -type f -o -type l \) -printf '%h\n' | sed 's|^\./||' | sort -u | grep -v '^\.git$\|^\.git/')

@@ -16,7 +16,9 @@ Everything tracked here ends up living at the same relative path under `~`.
 DRY=1 ./_link.sh
 ```
 
-`_link.sh` walks the repo and symlinks every file into `$HOME` at the same relative path, creating directories as needed and replacing whatever is already there. The `ignore` array at the top holds the repo meta files that stay out of `$HOME`. A target that is a real directory is skipped rather than linked into.
+`_link.sh` walks the repo and symlinks every file into `$HOME` at the same relative path, creating directories as needed and replacing whatever is already there. The `ignore` array at the top holds the repo meta files that stay out of `$HOME`. A target that is a real directory is skipped rather than linked into. Only links that actually change are reported, so a run with nothing to do prints nothing.
+
+It then removes stale links: a symlink in one of the directories the repo populates, pointing into the repo, whose target no longer exists. That combination only happens for a link an earlier run created for a file that has since been deleted, so no record of what was linked is needed. Links pointing anywhere else are never touched, dangling or not.
 
 ## Lint and format
 
