@@ -2,7 +2,7 @@
 
 # Control X220 ThinkLight with a simple script.
 
-ledFile="/sys/devices/platform/thinkpad_acpi/leds/tpacpi\:\:thinklight/brightness"
+ledFile="/sys/devices/platform/thinkpad_acpi/leds/tpacpi::thinklight/brightness"
 ledValue=$(cat "$ledFile")
 
 if test -z ${1+x}; then

@@ -52,7 +52,7 @@ There is no test suite.
 - Shell:
   - `set -eu` (sh) or `set -eu -o pipefail` (bash).
   - Match whatever `./_fmt.sh` / `.local/bin/shellfmt` produces.
-  - Use `test` instead of `[[` or `[`.
+  - Use `test` instead of `[[` or `[`, when feasible.
 - Also respect `.editorconfig`
 
 Sourced-only shell files (no shebang, e.g. completion script) must have `# shellcheck shell=bash`
