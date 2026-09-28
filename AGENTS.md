@@ -49,6 +49,8 @@ Files are numbered to control load order. `.profile.d/` sets PATH and env export
 `.bashrc.d/` sets up the interactive shell: history, ssh-agent, tool config, etc.  
 Most of it is bash-specific; the rest is portable but interactive-only.
 
+`.bashrc` times each file it sources and prints `slow: <file> took <n>ms` to stderr past 500ms, so a startup that suddenly hangs names the file responsible. Normally nothing prints: the slowest file, `97-completion.bash`, sits around 300ms. Timing uses the `EPOCHREALTIME` builtin, which costs no subprocess, about 0.1ms for the whole loop. `.profile` is not timed, since it has to stay sh-compatible and dash has neither that builtin nor the substitution used to strip it.
+
 ### `.local/bin/` scripts
 
 Standalone utilities, each a self-contained executable.  
