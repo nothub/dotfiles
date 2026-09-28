@@ -36,7 +36,7 @@ for f in "${files[@]}"; do
     if file "${f}" | grep "ASCII text" > /dev/null; then
         bang="$(head -n 1 "${f}")"
         case "${bang}" in
-            '#!/usr/bin/env sh' | '#!/usr/bin/env bash' | '# shellcheck shell=bash')
+            '#!/usr/bin/env sh' | '#!/usr/bin/env bash' | '# shellcheck shell=sh' | '# shellcheck shell=bash')
                 .local/bin/shellfmt "${f}"
                 ;;
         esac
