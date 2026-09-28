@@ -4,8 +4,8 @@ My cozy `${HOME}`
 
 ---
 
-Shell configuration lives in [`.bashrc.d/`](.bashrc.d/) and [`.profile.d/`](.profile.d/).
+Shell config lives in [`.bashrc.d/`](.bashrc.d/) and [`.profile.d/`](.profile.d/).
 
-[`.local/bin/`](.local/bin/) holds a bunch of tools and toys.
+[`.local/bin/`](.local/bin/) has a bunch of tools and toys.
 
-Symlink stuff into `~` with [`_link.sh`](_link.sh).
+[`_link.sh`](_link.sh) links stuff to `~`.

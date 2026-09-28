@@ -3,7 +3,7 @@
 ## What this repo is
 
 Personal dotfiles for a Debian/Linux desktop.  
-Everything tracked here ends up living at the same relative path under `~`.
+Most stuff tracked here ends up living at the same relative path under `~`.
 
 ## Installation
 
@@ -16,53 +16,44 @@ Everything tracked here ends up living at the same relative path under `~`.
 DRY=1 ./_link.sh
 ```
 
-## Lint and format
-
-```sh
-# Lint shell scripts (shellcheck)
-./_lint.sh
-
-# Format shell scripts in-place shfmt (via .local/bin/shellfmt)
-./_fmt.sh
-```
-
-Both are driven by `.config/shellcheckrc`, which also lands at `$XDG_CONFIG_HOME/shellcheckrc` and serves as the global config. Shellcheck wants that file directly in `.config/`, not in a `shellcheck/` subdirectory.
-
-There is no test suite.
-
 ## Architecture
 
-### Shell config loading order
+### Shell config
 
-```
-login shell:   .profile  →  sources each .profile.d/[0-9]*.sh in order
-bash shell:    .bashrc   →  sources each .bashrc.d/[0-9]*.bash in order
-```
-
-Files are numbered to control load order. `.profile.d/` sets PATH and env exports (sh-compatible).
-`.bashrc.d/` sets up the interactive shell: history, ssh-agent, tool config, etc.  
-Most of it is bash-specific; the rest is portable but interactive-only.
+1. Login shell (`.profile`) sources `.profile.d/`  
+   (PATH, env exports, etc.)
+2. Interactive shell (`.bashrc`) sources `.bashrc.d/`  
+   (history, tool config, etc.)
 
 ### `.local/bin/` scripts
 
 Standalone utilities, each a self-contained executable.  
-Shebangs are either `#!/usr/bin/env sh` or `#!/usr/bin/env bash`.
+Only text-files (with `+x` and a shebang) allowed, no binary blobs.
 
-For a new script, copy the preamble and helpers (`log`, dependency checks, cleanup traps) from an existing one.
+For a new script, copy the required helpers from an existing one.
 
-## Shell completion
+#### Completion
 
-`.local/share/bash-completion/completions/_complete` is one generic completion function shared by every script that wants completion. Wire a script up by symlinking `_complete` under that script's own name, and teaching the script a hidden `--list-commands` flag that prints one `name<TAB>args` line per subcommand:
-
-```sh
-ln -s _complete .local/share/bash-completion/completions/<name>
-```
-
+`.local/share/bash-completion/completions/_complete` is one generic helper shared by every script that has completion.  
+Link `_complete` under that script name and add `--list-commands` to print one `name<TAB>args` line per subcommand.  
 The header of `_complete` documents the arg placeholders and what each one completes.
+Ask the user before adding any new placeholders.
 
-## Code style
+## Development
 
-- Shell: `set -eu` (sh) or `set -eu -o pipefail` (bash). Match whatever `shfmt` (via `.local/bin/shellfmt`) produces.
-- Sourced-only shell files (no shebang, e.g. under `.local/share/bash-completion/completions/`) must have `# shellcheck shell=bash` or `# shellcheck shell=sh` as their first line; `_fmt.sh` detects them by it.
-- Python: standard style; no external deps beyond stdlib unless unavoidable.
-- Everything else (indent, charset, line endings, final newline, trailing whitespace) is in `.editorconfig`.
+### Pre-Commit
+
+Lint: `./_lint.sh`  
+Format: `./_fmt.sh`  
+There is no test suite.
+
+### Code style
+
+- Shell:
+  - `set -eu` (sh) or `set -eu -o pipefail` (bash).
+  - Match whatever `./_fmt.sh` / `.local/bin/shellfmt` produces.
+  - Use `test` instead of `[[` or `[`.
+- Also respect `.editorconfig`
+
+Sourced-only shell files (no shebang, e.g. completion script) must have `# shellcheck shell=bash`
+or `# shellcheck shell=sh` as the first line; `_fmt.sh` detects them by it.
