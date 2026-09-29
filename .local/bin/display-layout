@@ -6,74 +6,64 @@ set -o pipefail
 
 # DP monitors drop off the layout when they power down, so DPMS must be disabled in screensavers etc.
 
-if test "${1:-}" = --list-commands; then
-    printf '\t<all|left|right|center|right+center>\n'
-    exit 0
-fi
+host="$(hostname -s)"
 
-screen_left=(
-    "--output" "DP-5"
-    "--pos" "0x0"
-    "--mode" "1920x1080"
-    "--rotate" "left"
-)
-
-screen_left_off=(
-    "--output" "DP-5"
-    "--off"
-)
-
-screen_right=(
-    "--output" "DP-1"
-    "--pos" "3000x78"
-    "--mode" "1920x1080"
-    "--rotate" "left"
-)
-
-screen_right_off=(
-    "--output" "DP-1"
-    "--off"
-)
-
-screen_center=(
-    "--output" "HDMI-0"
-    "--pos" "1080x498"
-    "--mode" "1920x1080"
-    "--rotate" "normal"
-    "--primary"
-)
-
-screen_center_off=(
-    "--output" "HDMI-0"
-    "--off"
-)
-
-case "$(hostname -f)" in
-    "box.home.arpa")
-        case "${1:-"all"}" in
-            "all")
-                xrandr "${screen_left[@]}" "${screen_right[@]}" "${screen_center[@]}"
-                ;;
-            "left")
-                xrandr "${screen_left[@]}" "${screen_right_off[@]}" "${screen_center_off[@]}"
-                ;;
-            "right")
-                xrandr "${screen_left_off[@]}" "${screen_right[@]}" "${screen_center_off[@]}"
-                ;;
-            "center")
-                xrandr "${screen_left_off[@]}" "${screen_right_off[@]}" "${screen_center[@]}"
-                ;;
-            "right+center")
-                xrandr "${screen_left_off[@]}" "${screen_right[@]}" "${screen_center[@]}"
-                ;;
-            *)
-                echo 1>&2 "unknown mode"
-                exit 1
-                ;;
-        esac
+# `off` lists every output the machine has. a layout starts from it and names
+# only the screens it wants on, because a later --output for the same one wins
+case "${host}" in
+    "box")
+        modes="left+right+center|right+center|right"
+        off=(
+            "--output" "DP-5" "--off"
+            "--output" "DP-1" "--off"
+            "--output" "HDMI-0" "--off"
+        )
+        left=("--output" "DP-5" "--pos" "0x0" "--mode" "1920x1080" "--rotate" "left")
+        right=("--output" "DP-1" "--pos" "3000x78" "--mode" "1920x1080" "--rotate" "left")
+        center=("--output" "HDMI-0" "--pos" "1080x498" "--mode" "1920x1080" "--rotate" "normal" "--primary")
+        ;;
+    "tuxedo")
+        modes="laptop+right|laptop"
+        off=(
+            "--output" "eDP-1" "--off"
+            "--output" "DP-1-1" "--off"
+            "--output" "DP-1-3" "--off"
+            "--output" "HDMI-1" "--off"
+            "--output" "DP-1" "--off"
+            "--output" "DP-2" "--off"
+            "--output" "DP-1-2" "--off"
+        )
+        # the panel sits lower and gives up primary when the externals are on
+        laptop=("--output" "eDP-1" "--pos" "0x950" "--mode" "2880x1800" "--rotate" "normal")
+        laptop_solo=("--output" "eDP-1" "--pos" "0x555" "--mode" "2880x1800" "--rotate" "normal" "--primary")
+        right=("--output" "DP-1-1" "--pos" "2880x0" "--mode" "1920x1080" "--rotate" "left")
+        center=("--output" "DP-1-3" "--pos" "3960x708" "--mode" "1920x1080" "--rotate" "normal" "--primary")
         ;;
     *)
         echo 1>&2 "unknown machine"
         exit 1
         ;;
+esac
+
+if test "${1:-}" = --list-commands; then
+    printf '\t<%s>\n' "${modes}"
+    exit 0
+fi
+
+# the first mode listed is the default
+mode="${1:-"${modes%%|*}"}"
+case "|${modes}|" in
+    *"|${mode}|"*) ;;
+    *)
+        echo 1>&2 "unknown mode"
+        exit 1
+        ;;
+esac
+
+case "${mode}" in
+    "left+right+center") xrandr "${off[@]}" "${left[@]}" "${right[@]}" "${center[@]}" ;;
+    "right+center") xrandr "${off[@]}" "${right[@]}" "${center[@]}" ;;
+    "right") xrandr "${off[@]}" "${right[@]}" ;;
+    "laptop+right") xrandr "${off[@]}" "${laptop[@]}" "${right[@]}" "${center[@]}" ;;
+    "laptop") xrandr "${off[@]}" "${laptop_solo[@]}" ;;
 esac
