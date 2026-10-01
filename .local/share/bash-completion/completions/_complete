@@ -15,7 +15,8 @@
 _subcommand_complete() {
     # shellcheck disable=SC2034 # prev is read by _command_offset via dynamic scoping
     local cur prev words cword
-    _init_completion || return
+    # keep "7:00:00" one word; bash splits words at COMP_WORDBREAKS, which holds ":"
+    _init_completion -n : || return
 
     local prog="${words[0]}"
     local commands
@@ -81,5 +82,7 @@ _subcommand_complete() {
             mapfile -t COMPREPLY < <(compgen -W "${hint}" -- "${cur}")
             ;;
     esac
+    # readline replaces only the text after the last ":", so drop what precedes it
+    [[ ${token} == '<command>'* ]] || __ltrim_colon_completions "${cur}"
 }
 complete -F _subcommand_complete "$(basename -- "${BASH_SOURCE[0]}")"
