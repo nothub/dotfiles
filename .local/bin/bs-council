@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+site="https://www.braunschweig.de"
+page_dir="/politik_verwaltung/politik/ratderstadt"
+hls_base="https://stream.video-stream-hosting.de/medienatelier-vod/_definst_/mp4:"
+
+usage() {
+    echo >&2 "bs-council lists or downloads recordings of the Braunschweig city council meetings.
+
+Usage:
+  bs-council list [audio|video]
+  bs-council download audio|video <date> [<start> [<end>]]
+  bs-council -h
+
+list prints one recording per line: <date> <kind> <file>, newest first.
+download fetches every recording of <kind> on <date> (YYYY-MM-DD)
+into the current directory, clipped to <start> and <end> (H:MM:SS) if given.
+Pass an empty <start> to set only <end>.
+Audio meetings split into parts download as several files.
+
+Options:
+  -h  Print help and exit"
+}
+
+# Prints <date> <kind> <path>, where <path> is the mp3 path on the city site
+# or the stream name on the video host.
+recordings() {
+    local kind="$1"
+    case "${kind}" in
+        audio)
+            curl --silent --fail "${site}${page_dir}/audio_rat.php" \
+                | grep --only-matching --extended-regexp 'src="[^"]*\.mp3"' \
+                | sed 's/^src="//; s/"$//'
+            ;;
+        video)
+            curl --silent --fail "${site}${page_dir}/videostream_archiv.php" \
+                | grep --only-matching --extended-regexp 'streamname=[^&"]*' \
+                | sed 's/^streamname=//'
+            ;;
+    esac | sort --unique | while read -r path; do
+        local date
+        date="$(grep --only-matching --extended-regexp '[0-9]{4}-[0-9]{2}-[0-9]{2}' <<< "${path}" | head -1)"
+        printf "%s\t%s\t%s\n" "${date}" "${kind}" "${path}"
+    done
+}
+
+list() {
+    local kinds=("$@")
+    if test "${#kinds[@]}" -eq 0; then
+        kinds=(audio video)
+    fi
+    for kind in "${kinds[@]}"; do
+        recordings "${kind}"
+    done | sort --reverse | awk -F '\t' -v OFS='\t' '{ n = split($3, p, "/"); print $1, $2, p[n] }'
+}
+
+download() {
+    local kind="$1" date="$2" start="${3:-}" end="${4:-}"
+
+    local paths
+    paths="$(recordings "${kind}" | awk -F '\t' -v d="${date}" '$1 == d { print $3 }')"
+    if test -z "${paths}"; then
+        echo >&2 "no ${kind} recording on ${date}"
+        exit 1
+    fi
+
+    local clip=() suffix=""
+    if test -n "${start}"; then
+        clip+=(-ss "${start}")
+        suffix+="_${start//:/-}"
+    fi
+    if test -n "${end}"; then
+        clip+=(-to "${end}")
+        suffix+="_${end//:/-}"
+    fi
+
+    while read -r path; do
+        local file="${path##*/}"
+        local out="${file%.*}${suffix}.${file##*.}"
+        echo >&2 "downloading ${out}"
+        case "${kind}" in
+            audio)
+                if test "${#clip[@]}" -eq 0; then
+                    curl --fail --location --progress-bar --output "${out}" "${site}${path}"
+                else
+                    # mp3 frames are ~26 ms, so a stream copy cuts close enough.
+                    ffmpeg -hide_banner -loglevel error -stats "${clip[@]}" -i "${site}${path}" -c copy "${out}"
+                fi
+                ;;
+            video)
+                if test "${#clip[@]}" -eq 0; then
+                    ffmpeg -hide_banner -loglevel error -stats -i "${hls_base}${path}/playlist.m3u8" -c copy "${out}"
+                else
+                    # A stream copy snaps the start to the previous keyframe,
+                    # seconds off. Re-encoding cuts on the exact frame.
+                    ffmpeg -hide_banner -loglevel error -stats "${clip[@]}" -i "${hls_base}${path}/playlist.m3u8" \
+                        -c:v libx264 -preset veryfast -crf 20 -c:a aac "${out}"
+                fi
+                ;;
+        esac
+    done <<< "${paths}"
+}
+
+if test "$#" -lt 1; then
+    usage
+    exit 1
+fi
+
+command="$1"
+shift
+case "${command}" in
+    -h)
+        usage
+        ;;
+    --list-commands) # read by bash-completion script
+        printf 'list\t<audio|video>\n'
+        printf 'download\t<audio|video> <YYYY-MM-DD> <H:MM:SS> <H:MM:SS>\n'
+        ;;
+    list)
+        if test "$#" -gt 1 || { test "$#" -eq 1 && test "$1" != audio && test "$1" != video; }; then
+            usage
+            exit 1
+        fi
+        list "$@"
+        ;;
+    download)
+        if test "$#" -lt 2 || test "$#" -gt 4 || { test "$1" != audio && test "$1" != video; }; then
+            usage
+            exit 1
+        fi
+        download "$@"
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac
