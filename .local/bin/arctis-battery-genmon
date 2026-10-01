@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # xfce4-genmon command: SteelSeries Arctis 7+ battery.
 # genmon parses <txt>/<tool> from stdout; <txt> accepts pango markup.
+#
+# Requires headsetcontrol (https://github.com/Sapd/HeadsetControl) on PATH,
+# plus its udev rule, else battery reads fail with "Could not open device":
+#   headsetcontrol -u | sudo tee /etc/udev/rules.d/70-headsets.rules
+#   sudo udevadm control --reload && sudo udevadm trigger
+# Then unplug and replug the dongle.
 set -uo pipefail
 
 icon='🎧'
