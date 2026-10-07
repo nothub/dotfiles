@@ -23,7 +23,7 @@ _subcommand_complete() {
     commands="$("${prog}" --list-commands 2> /dev/null)" || return
 
     local args idx arg_base
-    if [[ ${commands} == $'\t'* ]] && (($(wc -l <<< "${commands}") == 1)); then
+    if test "${commands:0:1}" = $'\t' && (($(wc -l <<< "${commands}") == 1)); then
         args="${commands#$'\t'}"
         arg_base=1
     else
@@ -44,7 +44,7 @@ _subcommand_complete() {
         token="${tokens[idx]}"
     elif ((${#tokens[@]} > 0)); then
         token="${tokens[-1]}"
-        [[ ${token} == *'...' ]] || token=''
+        test "${token: -3}" = '...' || token=''
     fi
 
     case "${token}" in
@@ -75,6 +75,7 @@ _subcommand_complete() {
             # word-index where the wrapped command starts: constant regardless
             # of how many of its own args have been typed since
             _command_offset $((arg_base + ${#tokens[@]} - 1))
+            return
             ;;
         '<'*'>'*)
             local hint="${token#<}"
@@ -83,6 +84,6 @@ _subcommand_complete() {
             ;;
     esac
     # readline replaces only the text after the last ":", so drop what precedes it
-    [[ ${token} == '<command>'* ]] || __ltrim_colon_completions "${cur}"
+    __ltrim_colon_completions "${cur}"
 }
 complete -F _subcommand_complete "$(basename -- "${BASH_SOURCE[0]}")"
