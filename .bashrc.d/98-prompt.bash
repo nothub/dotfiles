@@ -6,7 +6,8 @@ if test -f /usr/share/git/git-prompt.sh; then
     source /usr/share/git/git-prompt.sh
 fi
 
-PROMPT_COMMAND=__prompt_command
+# __prompt_command goes first so it still sees the exit status of the user command
+PROMPT_COMMAND="__prompt_command${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
 
 # shellcheck disable=SC2034
 __prompt_command() {
