@@ -334,10 +334,23 @@ cmd_cut() {
     local mode="$1"
     shift
 
+    # mp3 is stream-copied: no second lossy encode, and its ~26ms frames keep the cut accurate
+    local file="${1-}" out codec_args
+    case "${file}" in
+        *.mp3 | *.MP3)
+            out="${file%.*}-cut.${file##*.}"
+            codec_args=(-c copy)
+            ;;
+        *)
+            out="${file%.*}-cut.mp4"
+            codec_args=(-c:v libx264 -c:a aac)
+            ;;
+    esac
+
     case "${mode}" in
         front)
             test "$#" -eq 2 || usage_error "cut front: expected <file> <seconds>"
-            ffmpeg -i "$1" -ss "$2" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
+            ffmpeg -i "$1" -ss "$2" "${codec_args[@]}" "${out}"
             ;;
         end)
             test "$#" -eq 2 || usage_error "cut end: expected <file> <seconds>"
@@ -345,7 +358,7 @@ cmd_cut() {
             duration=$(ffprobe -v error -show_entries format=duration \
                 -of default=noprint_wrappers=1:nokey=1 "$1")
             cut_duration=$(awk "BEGIN {print ${duration} - $2}")
-            ffmpeg -i "$1" -t "${cut_duration}" -c:v libx264 -c:a aac "${1%.*}-cut.mp4"
+            ffmpeg -i "$1" -t "${cut_duration}" "${codec_args[@]}" "${out}"
             ;;
         *)
             usage_error "cut: unknown mode '${mode}' (expected front|end)"
