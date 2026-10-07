@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=XFCE4 Keybinds
 Comment=Apply custom XFCE4 Keybinds
-Exec=/home/hub/.local/bin/xfce4-keybinds.go
+Exec=/home/hub/.local/bin/xfce4-keybinds
 Type=Application
 Categories=Other
 Terminal=true
