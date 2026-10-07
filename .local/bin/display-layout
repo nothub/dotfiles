@@ -19,7 +19,7 @@ case "${host}" in
             "--output" "HDMI-0" "--off"
         )
         left=("--output" "DP-5" "--pos" "0x0" "--mode" "1920x1080" "--rotate" "left")
-        right=("--output" "DP-1" "--pos" "3000x78" "--mode" "1920x1080" "--rotate" "left")
+        right=("--output" "DP-1" "--pos" "3000x498" "--mode" "1920x1080" "--rotate" "normal")
         center=("--output" "HDMI-0" "--pos" "1080x498" "--mode" "1920x1080" "--rotate" "normal" "--primary")
         ;;
     "tuxedo")
