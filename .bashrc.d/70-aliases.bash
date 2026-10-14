@@ -21,7 +21,7 @@ fi
 
 alias record="LC_ALL='en_US.UTF-8' asciinema rec -i 4"
 
-alias clear-caches-java="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
+alias java-clear-caches="rm -rf ~/.m2/repository/ ; rm -rf ~/.gradle/caches/"
 
 if command -v xdg-open > /dev/null; then
     alias o="xdg-open"
