@@ -10,6 +10,7 @@ readonly COMMANDS=(
     to-mp3 '<path>...' 'extract audio to mp3'
     to-ogg '<path>...' 'extract audio to ogg'
     cut '<front|end> <file> <seconds>' 'drop the first <seconds> off the front, or the last <seconds> off the end'
+    fix '<path>...' 'repair container defects into <name>-fixed.mp4; --ref <file> lends HEVC/H.264 headers'
     doctor '' ''
     help '' ''
 )
@@ -366,9 +367,411 @@ cmd_cut() {
     esac
 }
 
+# byte-level MP4 work that bash can't do: `atoms <file>` lists top-level boxes,
+# `rebuild <file> <out>` recovers a recording whose moov index was never written
+video_py() {
+    python3 - "$@" << 'PY'
+import ctypes, mmap, os, re, struct, subprocess, sys, tempfile
+from fractions import Fraction
+
+
+def atoms(d):
+    off, out = 0, []
+    while off + 8 <= len(d):
+        size, kind = struct.unpack_from('>I4s', d, off)
+        hdr = 8
+        if size == 1:
+            if off + 16 > len(d):
+                break
+            size, hdr = struct.unpack_from('>Q', d, off + 8)[0], 16
+        elif size == 0:
+            size = len(d) - off
+        if not re.fullmatch(rb'[a-z0-9 ]{4}', kind) or size < hdr:
+            break
+        out.append((kind.decode(), off, hdr, size))
+        off += size
+    return out
+
+
+# the AAC decoder knows where a raw frame ends; nothing else in the file does.
+# Struct offsets below (AVPacket.data, AVCodecParameters fields) have been
+# stable since FFmpeg 4.
+class AacDecoder:
+    def __init__(self, channels):
+        ver = subprocess.run(['ffmpeg', '-version'], capture_output=True, text=True).stdout
+        major = lambda lib: re.search(lib + r'\s+(\d+)\.', ver).group(1)
+        self.av = av = ctypes.CDLL('libavcodec.so.' + major('libavcodec'))
+        au = ctypes.CDLL('libavutil.so.' + major('libavutil'))
+        au.av_log_set_level(-8)
+        for f in ('avcodec_find_decoder', 'avcodec_alloc_context3', 'avcodec_parameters_alloc', 'av_packet_alloc'):
+            getattr(av, f).restype = ctypes.c_void_p
+        au.av_frame_alloc.restype = au.av_mallocz.restype = ctypes.c_void_p
+        aac = 86018
+        # AudioSpecificConfig: AAC-LC, 48 kHz; the rate doesn't change frame parsing
+        asc = bytes([0x11, 0x80 | channels << 3])
+        codec = ctypes.c_void_p(av.avcodec_find_decoder(aac))
+        self.ctx = ctypes.c_void_p(av.avcodec_alloc_context3(codec))
+        par = av.avcodec_parameters_alloc()
+        ext = au.av_mallocz(ctypes.c_size_t(len(asc) + 64))
+        ctypes.memmove(ext, asc, len(asc))
+        ctypes.c_int.from_address(par).value = 1  # AVMEDIA_TYPE_AUDIO
+        ctypes.c_int.from_address(par + 4).value = aac
+        ctypes.c_void_p.from_address(par + 16).value = ext
+        ctypes.c_int.from_address(par + 24).value = len(asc)
+        if av.avcodec_parameters_to_context(self.ctx, ctypes.c_void_p(par)) or av.avcodec_open2(self.ctx, codec, None):
+            sys.exit('video: cannot open AAC decoder')
+        self.pkt = ctypes.c_void_p(av.av_packet_alloc())
+        self.frm = ctypes.c_void_p(au.av_frame_alloc())
+
+    def decodes(self, data):
+        """whether data starts with a whole frame: the decoder returns the first
+        frame even when the bytes after it are garbage, and rejects a cut-off one"""
+        av = self.av
+        av.av_packet_unref(self.pkt)
+        av.av_new_packet(self.pkt, len(data))
+        ctypes.memmove(ctypes.c_void_p.from_address(self.pkt.value + 24).value, data, len(data))
+        ok = av.avcodec_send_packet(self.ctx, self.pkt) >= 0 and av.avcodec_receive_frame(self.ctx, self.frm) >= 0
+        av.avcodec_flush_buffers(self.ctx)
+        return ok
+
+    def frame_size(self, buf):
+        """size of the raw frame at the start of buf, None if there is none.
+        decodes() is monotonic in the prefix length, so binary search for the
+        shortest prefix that holds a whole frame."""
+        hi = min(MAX_FRAME, len(buf))
+        if not self.decodes(buf[:hi]):
+            return None
+        lo = 1
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if self.decodes(buf[:mid]):
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo
+
+
+CODECS = {
+    'h264': dict(hdr=1, nal_type=lambda h: h & 0x1f, valid=lambda t, b: 1 <= t <= 23,
+                 vcl=range(1, 6), prefix={6, 7, 8, 9}, params={7, 8}, tick_div=2),
+    # second header byte: nuh_layer_id 0, nuh_temporal_id_plus1 nonzero
+    'hevc': dict(hdr=2, nal_type=lambda h: h >> 1 & 0x3f, valid=lambda t, b: t <= 40 and b >> 3 == 0 and b & 7,
+                 vcl=range(0, 32), prefix={32, 33, 34, 35, 39}, params={32, 33, 34}, tick_div=1),
+}
+RATES = [96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000]
+SAMPLES_PER_FRAME = 1024
+DRIFT_LIMIT = 0.25  # seconds of A/V clock disagreement treated as a stream stall
+FRAME_RATES = [Fraction(n, k) for n, k in ((24000, 1001), (24, 1), (25, 1), (30000, 1001), (30, 1),
+                                           (50, 1), (60000, 1001), (60, 1))]
+MAX_FRAME = 8192  # AAC caps a frame at 6144 bits per channel
+
+
+def log(msg):
+    print(msg, file=sys.stderr)
+
+
+def frame_rate(es_path, codec):
+    """fixed frame rate from the SPS/VPS timing info, None if absent"""
+    trace = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-f', codec, '-i', es_path, '-c', 'copy',
+                            '-bsf:v', 'trace_headers', '-frames:v', '1', '-f', 'null', '-'],
+                           capture_output=True, text=True).stderr
+    units = re.search(r'num_units_in_tick\s+[01]+ = (\d+)', trace)
+    scale = re.search(r'time_scale\s+[01]+ = (\d+)', trace)
+    if not units or not scale or not int(units.group(1)):
+        return None
+    return Fraction(int(scale.group(1)), int(units.group(1)) * CODECS[codec]['tick_div'])
+
+
+def ref_param_sets(ref, codec):
+    """Annex B parameter set NALs from the first keyframe of a healthy recording"""
+    probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=codec_name',
+                            '-of', 'csv=p=0', ref], capture_output=True, text=True).stdout.strip()
+    if probe != codec:
+        sys.exit(f'video: reference is {probe or "unreadable"}, need {codec}')
+    es = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-i', ref, '-map', '0:v:0', '-c', 'copy',
+                         '-bsf:v', codec + '_mp4toannexb', '-frames:v', '1', '-f', codec, '-'],
+                        capture_output=True, check=True).stdout
+    spec = CODECS[codec]
+    nals = [n.strip(b'\0') for n in es.split(b'\0\0\1') if n.strip(b'\0')]
+    return b''.join(b'\0\0\0\1' + n for n in nals if spec['nal_type'](n[0]) in spec['params'])
+
+
+def rebuild(src, out, ref=None):
+    with open(src, 'rb') as f:
+        d = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+    mdat = next((a for a in atoms(d) if a[0] == 'mdat'), None)
+    if not mdat:
+        sys.exit('video: no mdat box, nothing to recover')
+    start, end = mdat[1] + mdat[2], min(mdat[1] + mdat[3], len(d))
+
+    def nal_at(o, spec):
+        """(nal_type, size incl. length prefix, starts a picture) or None"""
+        if o + 4 + spec['hdr'] + 1 > end:
+            return None
+        n = struct.unpack_from('>I', d, o)[0]
+        h, b = d[o + 4], d[o + 5]
+        t = spec['nal_type'](h)
+        if n <= spec['hdr'] or o + 4 + n > end or h & 0x80 or not spec['valid'](t, b):
+            return None
+        # first_mb_in_slice == 0 / first_slice_segment_in_pic_flag: first slice header bit is set
+        starts = t in spec['prefix'] or (t in spec['vcl'] and d[o + 4 + spec['hdr']] & 0x80)
+        return t, 4 + n, bool(starts)
+
+    # mdat opens with a video sample; HEVC's header check is stricter, so try it first
+    codec = next((c for c in ('hevc', 'h264') if (n := nal_at(start, CODECS[c])) and n[2]), None)
+    if not codec:
+        sys.exit('video: mdat does not start with an H.264/HEVC picture')
+    spec = CODECS[codec]
+    nal = lambda o: nal_at(o, spec)
+
+    decoder, channels = None, None
+
+    def video_resumes(q):
+        """q starts a picture under 16 MB that is followed by more video, audio, or the end"""
+        n = nal(q)
+        if not n or not n[2] or d[q]:
+            return False
+        nxt = q + n[1]
+        return nxt == end or bool(nal(nxt)) or decoder.decodes(d[nxt:nxt + MAX_FRAME])
+
+    def audio_run(o):
+        """frame sizes of the AAC frames at o, up to where video resumes"""
+        sizes = []
+        while o < end and not (sizes and video_resumes(o)):
+            if not (z := decoder.frame_size(d[o:o + MAX_FRAME])):
+                break
+            sizes.append(z)
+            o += z
+        return sizes
+
+    # mdat is a sequence of video samples (NAL chains) and runs of raw AAC frames
+    video, audio, events = [], [], []
+    has_params, o, cut, cur = False, start, None, None
+    while o < end:
+        if n := nal(o):
+            t, z, starts = n
+            if cur is None or (cur[1] and starts):
+                if cur:
+                    video.append((cur[0], o - cur[0]))
+                    events.append(('v', 1))
+                cur = [o, False]
+            cur[1] |= t in spec['vcl']
+            has_params |= t in spec['params']
+            o += z
+            continue
+        if cur:
+            video.append((cur[0], o - cur[0]))
+            events.append(('v', 1))
+            cur = None
+        if decoder is None:
+            # a decoder set up for the wrong channel count rejects every frame
+            for channels in (2, 1):
+                decoder = AacDecoder(channels)
+                if run := audio_run(o):
+                    break
+        else:
+            run = audio_run(o)
+        if not run:
+            cut = o
+            break
+        for z in run:
+            audio.append((o, z))
+            o += z
+        events.append(('a', len(run)))
+    if cur:
+        video.append((cur[0], o - cur[0]))
+        events.append(('v', 1))
+    if not video:
+        sys.exit('video: no video samples recovered')
+    if cut is not None:
+        log(f'dropping {end - cut} undecodable bytes from offset {cut} to the end')
+
+    params = b''
+    if not has_params:
+        if not ref:
+            sys.exit(f'video: the {codec} parameter sets were stored in the lost moov; '
+                     'rerun with --ref <healthy recording from the same source>')
+        params = ref_param_sets(ref, codec)
+
+    with tempfile.TemporaryDirectory(dir=os.path.dirname(os.path.abspath(out))) as tmp:
+        es, adts = os.path.join(tmp, 'v.' + codec), os.path.join(tmp, 'a.aac')
+        with open(es, 'wb') as w:
+            w.write(params)
+            for s, n in video:
+                p = s
+                while p < s + n:
+                    z = nal(p)[1]
+                    w.write(b'\0\0\0\1' + d[p + 4:p + z])
+                    p += z
+
+        # the muxer interleaved by timestamp, so audio frames per video frame give
+        # the rate ratio; the median over windows ignores bursts after stalls
+        ratios, na, nv = [], 0, 0
+        for kind, n in events:
+            na += n if kind == 'a' else 0
+            nv += kind == 'v'
+            if nv == 300:
+                ratios.append(Fraction(na, nv))
+                na = nv = 0
+        ratio = sorted(ratios)[len(ratios) // 2] if ratios else Fraction(len(audio), len(video))
+        fps = frame_rate(es, codec)
+        rate = 48000
+        if fps and ratio:
+            rate = min(RATES, key=lambda r: abs(r - ratio * fps * SAMPLES_PER_FRAME))
+        elif ratio:
+            # windowed counts are coarse, so snap to a standard rate when one is within 1%
+            fps = Fraction(rate, SAMPLES_PER_FRAME) / ratio
+            fps = next((f for f in FRAME_RATES if abs(f / fps - 1) < 0.01), fps)
+        if not fps:
+            sys.exit('video: no frame rate in the stream and no audio to derive one from')
+
+        # where one clock runs ahead (a stall dropped the other stream's
+        # packets), shift the lagging stream so both stay in sync afterwards
+        v_shift, a_shift, nv, na, vo, ao = [], [], 0, 0, 0.0, 0.0
+        for kind, n in events:
+            if kind == 'a':
+                na += n
+                continue
+            gap = (na * SAMPLES_PER_FRAME / rate + ao) - (nv / fps + vo)
+            if gap > DRIFT_LIMIT:
+                v_shift.append((nv, gap))
+                vo += gap
+            elif gap < -DRIFT_LIMIT:
+                a_shift.append((na, -gap))
+                ao -= gap
+            nv += 1
+        for (n, gap) in v_shift:
+            log(f'video stalled at {n / fps:.2f}s, holding the frame for {gap:.2f}s to keep sync')
+        for (n, gap) in a_shift:
+            log(f'audio missing at {n * SAMPLES_PER_FRAME / rate:.2f}s, leaving {gap:.2f}s of silence to keep sync')
+
+        if audio:
+            ri = RATES.index(rate)
+            with open(adts, 'wb') as w:
+                for s, z in audio:
+                    n = z + 7  # ADTS header: MPEG-4, no CRC, AAC-LC
+                    w.write(bytes([0xFF, 0xF1, 1 << 6 | ri << 2 | channels >> 2,
+                                   (channels & 3) << 6 | n >> 11, n >> 3 & 0xFF, (n & 7) << 5 | 0x1F, 0xFC]) + d[s:s + z])
+
+        def setts(shifts):
+            terms = ''.join(f'+if(gte(N\\,{n})\\,{gap:.6f}\\,0)' for n, gap in shifts)
+            return 'setts=ts=TS+round((0' + terms + ')/TB)'
+
+        ff = ['ffmpeg', '-nostdin', '-v', 'error', '-y']
+        vmp4 = os.path.join(tmp, 'v.mp4')
+        # raw ES carries no timestamps; two steps because -r only applies to the raw input
+        subprocess.run(ff + ['-fflags', '+genpts', '-r', str(fps), '-f', codec, '-i', es, '-c', 'copy', vmp4], check=True)
+        cmd = ff + ['-i', vmp4] + (['-i', adts] if audio else []) + ['-map', '0:v'] + (['-map', '1:a'] if audio else [])
+        cmd += ['-c', 'copy', '-movflags', '+faststart']
+        for stream, shifts in (('v', v_shift), ('a', a_shift)):
+            if shifts:
+                cmd += ['-bsf:' + stream, setts(shifts)]
+        subprocess.run(cmd + [out], check=True)
+
+    log(f'rebuilt: {len(video)} {codec} frames at {float(fps):.3f} fps'
+        + (f', {len(audio)} AAC frames at {rate} Hz {channels}ch' if audio else ', no audio'))
+
+
+cmd, *args = sys.argv[1:]
+if cmd == 'atoms':
+    with open(args[0], 'rb') as f:
+        d = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) if os.path.getsize(args[0]) else b''
+    print(' '.join(a[0] for a in atoms(d)))
+elif cmd == 'rebuild':
+    rebuild(*args)
+PY
+}
+
+fix_one() {
+    local file="$1" ref="$2"
+    local out="${file%.*}-fixed.mp4"
+
+    case "${file}" in
+        *-fixed.mp4)
+            echo >&2 "ignoring generated file: ${file}"
+            return 0
+            ;;
+    esac
+
+    echo >&2 "checking: ${file}"
+
+    local boxes
+    boxes=" $(video_py atoms "${file}") "
+
+    if ! ffprobe -v error "${file}" > /dev/null 2>&1; then
+        case "${boxes}" in
+            *' moov '* | *' moof '* | *' mdat '*) ;;
+            *)
+                echo >&2 "unfixable: not a recognizable container"
+                return 1
+                ;;
+        esac
+        case "${boxes}" in
+            *' moov '* | *' moof '*)
+                echo >&2 "unfixable: has an index but ffprobe still can't open it"
+                return 1
+                ;;
+        esac
+        echo >&2 "defect: no moov index, the recording was cut off before it was finalized"
+        video_py rebuild "${file}" "${out}" ${ref:+"${ref}"} || {
+            rm -f "${out}"
+            return 1
+        }
+    else
+        local defects=() format errors
+        format="$(ffprobe -v error -show_entries format=format_name -of csv=p=0 "${file}" 2> /dev/null)"
+        case "${format}" in
+            *mp4*) ;;
+            *) defects+=("container is ${format}, not mp4") ;;
+        esac
+        errors="$(ffmpeg -nostdin -v error -i "${file}" -map 0:v? -map 0:a? -c copy -f null - 2>&1 | head -n 3)"
+        test -z "${errors}" || defects+=("stream copy reports errors: ${errors//$'\n'/; }")
+        case "${boxes}" in
+            *' mdat'*' moov '*) defects+=("index after media data, playback waits for the full file") ;;
+        esac
+
+        if test "${#defects[@]}" -eq 0; then
+            echo >&2 "ok: no defects found"
+            return 0
+        fi
+        printf >&2 'defect: %s\n' "${defects[@]}"
+
+        ffmpeg -nostdin -hide_banner -loglevel error -y \
+            -fflags +genpts+discardcorrupt \
+            -i "${file}" \
+            -map 0:v? -map 0:a? \
+            -c copy \
+            -avoid_negative_ts make_zero \
+            -movflags +faststart \
+            "${out}"
+    fi
+
+    if ! ffprobe -v error "${out}" > /dev/null 2>&1; then
+        echo >&2 "generated file is invalid, removing: ${out}"
+        rm -f "${out}"
+        return 1
+    fi
+    echo >&2 "fixed: ${out}"
+}
+
+cmd_fix() {
+    local ref=''
+    if test "${1-}" = --ref; then
+        test "$#" -ge 2 || usage_error "fix: --ref expects a file"
+        ref="$(realpath "$2")"
+        shift 2
+    fi
+    test "$#" -ge 1 || usage_error "fix: expected at least one path"
+    local file status=0
+    while IFS= read -r file; do
+        fix_one "${file}" "${ref}" || status=1
+    done < <(expand_video_paths "$@")
+    return "${status}"
+}
+
 cmd_doctor() {
     local tool ok=0
-    for tool in ffmpeg ffprobe bc; do
+    for tool in ffmpeg ffprobe bc python3; do
         if command -v "${tool}" > /dev/null 2>&1; then
             echo "ok: ${tool} found"
         else
