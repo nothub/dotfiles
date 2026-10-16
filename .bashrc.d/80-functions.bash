@@ -99,3 +99,27 @@ function claude-temp() (
     cd -- "$dir" || return 1
     claude "$@"
 )
+
+function coder-yeet() {
+    if test -z "${1:-}"; then
+        echo >&2 "usage: coder-cleanup <workspace> [<username>]"
+        return 1
+    fi
+    local user="${2:-"fhuebner"}"
+    local ctx="gke_ces-coder-workspaces_europe-west3-c_${user}-k8s-ces-${1}"
+    echo "Context: ${ctx}" >&2
+    sleep 1
+    for _ in {1..3}; do
+        printf '.'
+        sleep 1
+    done
+    echo
+    kubectl \
+        --context "${ctx}" \
+        -n ecosystem \
+        delete --ignore-not-found --cascade=foreground sa,role,rolebinding,job ecosystem-core-cleanup || return 1
+    coder delete -y "${user}/${1}" || return 1
+    kubectl config delete-context "${ctx}"
+    kubectl config delete-cluster "${ctx}"
+    kubectl config delete-user "${ctx}"
+}
