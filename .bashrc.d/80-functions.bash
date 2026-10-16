@@ -103,23 +103,33 @@ function claude-temp() (
 
 function coder-yeet() {
     if test -z "${1:-}"; then
-        echo >&2 "usage: coder-cleanup <workspace> [<username>]"
+        echo >&2 "usage: coder-yeet <workspace> [<username>]"
         return 1
     fi
+    local workspace="${1}"
     local user="${2:-"fhuebner"}"
-    local ctx="gke_ces-coder-workspaces_europe-west3-c_${user}-k8s-ces-${1}"
-    echo "Context: ${ctx}" >&2
-    sleep 1
-    for _ in {1..3}; do
-        printf '.'
-        sleep 1
+    local project="ces-coder-workspaces"
+    local zone="europe-west3-c"
+    local cluster="${user}-k8s-ces-${workspace}"
+    local ctx="gke_${project}_${zone}_${cluster}"
+    printf "Deleting: %s/%s\nContext: %s\n" "${user}" "${workspace}" "${ctx}" >&2
+    for i in {3..1}; do
+        sleep 0.5
+        echo "${i}"
+        sleep 0.5
     done
-    echo
+    if test -z "$(kubectl --context "${ctx}" get nodes -o name)"; then
+        coder start -y "${user}/${workspace}"
+    fi
+    if test -z "$(kubectl --context "${ctx}" get nodes -o name)"; then
+        echo >&2 "error: cluster ${cluster} has no nodes"
+        return 1
+    fi
     kubectl \
         --context "${ctx}" \
         -n ecosystem \
         delete --ignore-not-found --cascade=foreground sa,role,rolebinding,job ecosystem-core-cleanup || return 1
-    coder delete -y "${user}/${1}" || return 1
+    coder delete -y "${user}/${workspace}" || return 1
     kubectl config delete-context "${ctx}"
     kubectl config delete-cluster "${ctx}"
     kubectl config delete-user "${ctx}"
