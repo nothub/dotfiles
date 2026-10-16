@@ -94,6 +94,7 @@ function gh-repos() {
 }
 
 function claude-temp() (
+    mkdir -p -- "$HOME/tmp" || return 1
     dir="$(mktemp -d -p "$HOME/tmp")" || return 1
     trap 'rm -rf -- "$dir"' EXIT
     cd -- "$dir" || return 1
