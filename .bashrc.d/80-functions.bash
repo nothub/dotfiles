@@ -93,6 +93,11 @@ function gh-repos() {
     printf '%s' "$out" | LC_ALL=C sort -u
 }
 
+function claude() {
+    printf '\033]0;🤖%s\007' "$(basename "${PWD}")"
+    command claude "$@"
+}
+
 function claude-temp() (
     mkdir -p -- "$HOME/tmp" || return 1
     dir="$(mktemp -d -p "$HOME/tmp")" || return 1
