@@ -41,3 +41,6 @@
 [commit]
 	gpgsign = true
 	verbose = true
+
+[protocol "file"]
+	allow = always
