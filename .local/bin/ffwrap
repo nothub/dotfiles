@@ -16,7 +16,7 @@ readonly COMMANDS=(
 )
 
 print_usage() {
-    printf 'Usage: video <command> [args...]\n\nCommands:\n'
+    printf 'Usage: ffwrap <command> [args...]\n\nCommands:\n'
 
     local i name args width=0 len
     for ((i = 0; i < ${#COMMANDS[@]}; i += 3)); do
@@ -36,14 +36,14 @@ print_usage() {
 }
 
 usage_error() {
-    echo >&2 "video: $*"
+    echo >&2 "ffwrap: $*"
     echo >&2
     print_usage >&2
     exit 2
 }
 
 on_interrupt() {
-    echo >&2 "video: interrupted"
+    echo >&2 "ffwrap: interrupted"
     exit 130
 }
 trap on_interrupt INT TERM
@@ -419,7 +419,7 @@ class AacDecoder:
         ctypes.c_void_p.from_address(par + 16).value = ext
         ctypes.c_int.from_address(par + 24).value = len(asc)
         if av.avcodec_parameters_to_context(self.ctx, ctypes.c_void_p(par)) or av.avcodec_open2(self.ctx, codec, None):
-            sys.exit('video: cannot open AAC decoder')
+            sys.exit('ffwrap: cannot open AAC decoder')
         self.pkt = ctypes.c_void_p(av.av_packet_alloc())
         self.frm = ctypes.c_void_p(au.av_frame_alloc())
 
@@ -487,7 +487,7 @@ def ref_param_sets(ref, codec):
     probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=codec_name',
                             '-of', 'csv=p=0', ref], capture_output=True, text=True).stdout.strip()
     if probe != codec:
-        sys.exit(f'video: reference is {probe or "unreadable"}, need {codec}')
+        sys.exit(f'ffwrap: reference is {probe or "unreadable"}, need {codec}')
     es = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-i', ref, '-map', '0:v:0', '-c', 'copy',
                          '-bsf:v', codec + '_mp4toannexb', '-frames:v', '1', '-f', codec, '-'],
                         capture_output=True, check=True).stdout
@@ -501,7 +501,7 @@ def rebuild(src, out, ref=None):
         d = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
     mdat = next((a for a in atoms(d) if a[0] == 'mdat'), None)
     if not mdat:
-        sys.exit('video: no mdat box, nothing to recover')
+        sys.exit('ffwrap: no mdat box, nothing to recover')
     start, end = mdat[1] + mdat[2], min(mdat[1] + mdat[3], len(d))
 
     def nal_at(o, spec):
@@ -520,7 +520,7 @@ def rebuild(src, out, ref=None):
     # mdat opens with a video sample; HEVC's header check is stricter, so try it first
     codec = next((c for c in ('hevc', 'h264') if (n := nal_at(start, CODECS[c])) and n[2]), None)
     if not codec:
-        sys.exit('video: mdat does not start with an H.264/HEVC picture')
+        sys.exit('ffwrap: mdat does not start with an H.264/HEVC picture')
     spec = CODECS[codec]
     nal = lambda o: nal_at(o, spec)
 
@@ -582,14 +582,14 @@ def rebuild(src, out, ref=None):
         video.append((cur[0], o - cur[0]))
         events.append(('v', 1))
     if not video:
-        sys.exit('video: no video samples recovered')
+        sys.exit('ffwrap: no video samples recovered')
     if cut is not None:
         log(f'dropping {end - cut} undecodable bytes from offset {cut} to the end')
 
     params = b''
     if not has_params:
         if not ref:
-            sys.exit(f'video: the {codec} parameter sets were stored in the lost moov; '
+            sys.exit(f'ffwrap: the {codec} parameter sets were stored in the lost moov; '
                      'rerun with --ref <healthy recording from the same source>')
         params = ref_param_sets(ref, codec)
 
@@ -623,7 +623,7 @@ def rebuild(src, out, ref=None):
             fps = Fraction(rate, SAMPLES_PER_FRAME) / ratio
             fps = next((f for f in FRAME_RATES if abs(f / fps - 1) < 0.01), fps)
         if not fps:
-            sys.exit('video: no frame rate in the stream and no audio to derive one from')
+            sys.exit('ffwrap: no frame rate in the stream and no audio to derive one from')
 
         # where one clock runs ahead (a stall dropped the other stream's
         # packets), shift the lagging stream so both stay in sync afterwards
