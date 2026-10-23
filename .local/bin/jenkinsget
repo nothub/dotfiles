@@ -6,26 +6,25 @@ set -o pipefail
 
 usage() {
     cat << 'EOF'
-Usage: jenkinsget <command> <url> [args]
+Usage: jenkinsget <command> <project> <branch> [build] [args]
 
 Read state, logs and artifacts of Jenkins pipeline builds behind CES CAS.
 
 Commands:
-  status   <build-url>              Build summary as JSON (state, progress, stages)
-  builds   <job-url> [count]        Recent builds as JSON (default count: 10)
-  branch   <project> <branch> [count]
-                                    Same as builds, with the job URL built from
-                                    JENKINSGET_ORG_URL, project and branch
-  log      <build-url> [start]      Console log; with start, only bytes from that
-                                    offset on. Prints "next-start=N more-data=B"
-                                    to stderr for incremental reads.
-  artifacts <build-url>             List artifact paths, one per line
-  artifact <build-url> <path> [out] Download one artifact to out (default: stdout)
+  builds    <project> <branch> [count]   Recent builds as JSON (default count: 10)
+  status    <project> <branch> <build>   Build summary as JSON (state, progress, stages)
+  log       <project> <branch> <build> [start]
+                                         Console log; with start, only bytes from
+                                         that offset on. Prints "next-start=N
+                                         more-data=B" to stderr for incremental reads.
+  artifacts <project> <branch> <build>   List artifact paths, one per line
+  artifact  <project> <branch> <build> <path> [out]
+                                         Download one artifact to out (default: stdout)
 
-A build URL is a job URL plus a build number, or plus lastBuild,
-lastSuccessfulBuild, lastFailedBuild, ...:
-  https://ecosystem.cloudogu.com/jenkins/job/cloudogu-github/job/cockpit/job/classic_pipeline/167/
+A build is a build number, or lastBuild for the newest build,
+including one still running.
 
+The job URL is JENKINSGET_ORG_URL/job/<project>/job/<branch>.
 JENKINSGET_ORG_URL defaults to
   https://ecosystem.cloudogu.com/jenkins/job/cloudogu-github
 
@@ -66,13 +65,8 @@ jcurl() {
         | curl --config - --globoff --silent --show-error --fail --location "$@"
 }
 
-trim_url() {
-    printf '%s' "${1%/}"
-}
-
 cmd_status() {
-    local url
-    url="$(trim_url "$1")"
+    local url="$1"
     local run stages
     run="$(jcurl "${url}/api/json?tree=number,url,building,result,timestamp,duration,estimatedDuration,artifacts[relativePath]")"
     stages="$(jcurl "${url}/wfapi/describe")"
@@ -103,8 +97,7 @@ cmd_status() {
 }
 
 cmd_builds() {
-    local url count
-    url="$(trim_url "$1")"
+    local url="$1" count
     count="${2:-10}"
     # Only SCMRevisionAction names the commit the build is for. BuildData
     # exists once per checkout, shared libraries included. Pull requests
@@ -122,17 +115,16 @@ cmd_builds() {
 
 # Multibranch jobs name branches with "/" encoded as %2F, which the URL
 # encodes once more: feature/x -> job/feature%252Fx.
-cmd_branch() {
+job_url() {
     local org project branch
-    org="$(trim_url "${JENKINSGET_ORG_URL:-https://ecosystem.cloudogu.com/jenkins/job/cloudogu-github}")"
+    org="${JENKINSGET_ORG_URL:-https://ecosystem.cloudogu.com/jenkins/job/cloudogu-github}"
     project="$(jq --raw-input --raw-output '@uri' <<< "$1")"
     branch="$(jq --raw-input --raw-output '@uri' <<< "$2")"
-    cmd_builds "${org}/job/${project}/job/${branch//%/%25}" "${@:3}"
+    printf '%s/job/%s/job/%s' "${org%/}" "${project}" "${branch//%/%25}"
 }
 
 cmd_log() {
-    local url
-    url="$(trim_url "$1")"
+    local url="$1"
     if test "$#" -lt 2; then
         jcurl "${url}/consoleText"
         return
@@ -150,14 +142,12 @@ cmd_log() {
 }
 
 cmd_artifacts() {
-    local url
-    url="$(trim_url "$1")"
+    local url="$1"
     jcurl "${url}/api/json?tree=artifacts[relativePath]" | jq --raw-output '.artifacts[].relativePath'
 }
 
 cmd_artifact() {
-    local url path
-    url="$(trim_url "$1")"
+    local url="$1" path
     path="$(jq --raw-input --raw-output '@uri' <<< "$2")"
     # @uri also encodes "/", which Jenkins needs as separator.
     path="${path//%2F//}"
@@ -181,16 +171,21 @@ main() {
             usage
             exit 0
             ;;
-        status | artifacts) test "$#" -eq 1 || die_usage "${command} takes <build-url>" ;;
-        builds) { test "$#" -ge 1 && test "$#" -le 2; } || die_usage "builds takes <job-url> [count]" ;;
-        branch) { test "$#" -ge 2 && test "$#" -le 3; } || die_usage "branch takes <project> <branch> [count]" ;;
-        log) { test "$#" -ge 1 && test "$#" -le 2; } || die_usage "log takes <build-url> [start]" ;;
-        artifact) { test "$#" -ge 2 && test "$#" -le 3; } || die_usage "artifact takes <build-url> <path> [out]" ;;
+        builds) { test "$#" -ge 2 && test "$#" -le 3; } || die_usage "builds takes <project> <branch> [count]" ;;
+        status | artifacts) test "$#" -eq 3 || die_usage "${command} takes <project> <branch> <build>" ;;
+        log) { test "$#" -ge 3 && test "$#" -le 4; } || die_usage "log takes <project> <branch> <build> [start]" ;;
+        artifact) { test "$#" -ge 4 && test "$#" -le 5; } || die_usage "artifact takes <project> <branch> <build> <path> [out]" ;;
         *) die_usage "unknown command '${command}'" ;;
     esac
 
     load_credentials
-    "cmd_${command}" "$@"
+    local url
+    url="$(job_url "$1" "$2")"
+    if test "${command}" = builds; then
+        cmd_builds "${url}" "${@:3}"
+    else
+        "cmd_${command}" "${url}/$3" "${@:4}"
+    fi
 }
 
 main "$@"
