@@ -171,6 +171,16 @@ main() {
             usage
             exit 0
             ;;
+        --list-commands)
+            # <lastBuild> completes as a hint, a build number cannot be guessed
+            printf '%s\t%s\n' \
+                builds '<project> <branch> <count>' \
+                status '<project> <branch> <lastBuild>' \
+                log '<project> <branch> <lastBuild> <start>' \
+                artifacts '<project> <branch> <lastBuild>' \
+                artifact '<project> <branch> <lastBuild> <artifact-path> <file>'
+            exit 0
+            ;;
         builds) { test "$#" -ge 2 && test "$#" -le 3; } || die_usage "builds takes <project> <branch> [count]" ;;
         status | artifacts) test "$#" -eq 3 || die_usage "${command} takes <project> <branch> <build>" ;;
         log) { test "$#" -ge 3 && test "$#" -le 4; } || die_usage "log takes <project> <branch> <build> [start]" ;;
