@@ -99,9 +99,9 @@ function claude() {
 }
 
 function claude-temp() (
-    mkdir -p -- "$HOME/tmp" || return 1
-    dir="$(mktemp -d -p "$HOME/tmp")" || return 1
-    trap 'rm -rf -- "$dir"' EXIT
+    base="$HOME/tmp/claude-temp"
+    mkdir -p -- "$base" || return 1
+    dir="$(mktemp -d -p "$base")" || return 1
     cd -- "$dir" || return 1
     claude "$@"
 )
