@@ -94,7 +94,7 @@ function gh-repos() {
 }
 
 function claude() {
-    printf '\033]0;🤖%s\007' "$(basename "${PWD}")"
+    printf '\033]0;🤖 %s\007' "$(basename "${PWD}")"
     command claude "$@"
 }
 
