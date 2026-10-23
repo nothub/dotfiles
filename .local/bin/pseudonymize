@@ -1,0 +1,194 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if test "${1:-}" = --list-commands; then
+    printf '\t<path>...\n'
+    exit 0
+fi
+
+map="${XDG_CONFIG_HOME:-${HOME}/.config}/pseudonymize/names"
+
+usage() {
+    echo >&2 "Usage: pseudonymize [--dry-run] <path>..."
+    echo >&2 "Replaces names in all text files under <path> in place, using ${map}"
+    echo >&2 "Map lines look like 'Real Name = Pseudo Name'; blank and '#' lines are skipped."
+    echo >&2 "'Foo Bar Baz = X' also replaces 'Foo', 'Foo Bar', 'Foo Baz' and 'Bar Baz' with X."
+}
+
+dry_run=0
+case "${1:-}" in
+    -n | --dry-run)
+        dry_run=1
+        shift
+        ;;
+    -h | --help)
+        usage
+        exit 0
+        ;;
+esac
+
+if test $# -eq 0; then
+    usage
+    exit 1
+fi
+
+if ! test -r "${map}"; then
+    echo >&2 "map not readable: ${map}"
+    exit 1
+fi
+
+# grep -I skips binary files, which leaves exactly the text files.
+# .git is skipped, or a commit message or hook script would be rewritten too
+grep --recursive --binary-files=without-match --files-with-matches --null \
+    --exclude-dir=.git '' -- "$@" \
+    | perl -CSA -Mutf8 -MEncode -MUnicode::Normalize -e '
+use strict;
+use warnings;
+
+my ($map_path, $dry_run) = @ARGV;
+
+# letters that carry no combining mark in NFD, so stripping marks misses them
+my %fold_extra = (
+    "ß" => "ss", "æ" => "ae", "œ" => "oe", "ø" => "o", "ł" => "l",
+    "đ" => "d", "ð" => "d", "þ" => "th", "ı" => "i",
+);
+my $fold_extra = join "", keys %fold_extra;
+
+# "Lukáš  Foo" and "lukas foo" fold to the same key
+sub fold {
+    my $s = lc NFD(shift);
+    $s =~ s/\p{Mn}//g;
+    $s =~ s/([$fold_extra])/$fold_extra{$1}/g;
+    # mail clients wrap quoted lines inside a name, as in "Foo" + newline + "> Bar"
+    $s =~ s/\s*\n[\s>]*/ /g;
+    $s =~ s/\s+/ /g;
+    return $s;
+}
+
+my (%pseudo, %short, $max_words);
+open my $mfh, "<:encoding(UTF-8)", $map_path or die "$map_path: $!\n";
+while (my $line = <$mfh>) {
+    next if $line =~ /^\s*(#|$)/;
+    my ($real, $fake) = $line =~ /^\s*(.*?)\s*=\s*(.*?)\s*$/
+        or die "$map_path:$.: expected \"Real Name = Pseudo Name\"\n";
+    die "$map_path:$.: empty name\n" if $real eq "" || $fake eq "";
+    my $key = fold($real);
+    die "$map_path:$.: \"$real\" folds to an earlier entry\n"
+        if exists $pseudo{$key} && $pseudo{$key} ne $fake;
+    $pseudo{$key} = $fake;
+    my $words = () = $real =~ /\w+/g;
+    $max_words = $words if !defined $max_words || $words > $max_words;
+
+    # short forms: the first name alone, plus every in-order pick of two or
+    # more words, so "Foo Bar Baz" also covers "Foo", "Foo Baz" and "Bar Baz".
+    # a later word alone is skipped, because surnames like "Loose" are words
+    my @parts = split / /, $key;
+    for my $mask (1 .. (1 << @parts) - 2) {
+        my @pick = map { $parts[$_] } grep { $mask >> $_ & 1 } 0 .. $#parts;
+        next if @pick == 1 && $mask != 1;
+        $short{join " ", @pick}{$fake} = 1;
+    }
+}
+close $mfh;
+
+# an explicit entry wins over a short form, and a short form that two people
+# share, like a common first name, is left alone rather than guessed
+my %ambiguous;
+for my $key (sort keys %short) {
+    next if exists $pseudo{$key};
+    my @fakes = sort keys %{$short{$key}};
+    if (@fakes > 1) {
+        $ambiguous{$key} = join ", ", @fakes;
+        next;
+    }
+    $pseudo{$key} = $fakes[0];
+}
+exit 0 unless %pseudo;
+
+# returns the replaced text and the number of replacements.
+# $line is the line number $text starts at, for warnings
+sub replace_names {
+    my ($text, $path, $line) = @_;
+
+    # match whole words only, so "Foo" inside "Foobar" stays, and try the
+    # longest span first, so "Lukáš Foo" wins over a separate "Lukáš" entry
+    my @words;
+    push @words, [$-[0], $+[0]] while $text =~ /\w+/g;
+    my @hits;
+    for (my $i = 0; $i < @words; $i++) {
+        my $n = $max_words < @words - $i ? $max_words : @words - $i;
+        for (; $n > 0; $n--) {
+            my ($start, $end) = ($words[$i][0], $words[$i + $n - 1][1]);
+            my $key = fold(substr $text, $start, $end - $start);
+            if (exists $ambiguous{$key}) {
+                my $at = $line + (substr($text, 0, $start) =~ tr/\n//);
+                warn "$path:$at: ambiguous short form \"$key\" ($ambiguous{$key}), add it to the map\n";
+                $i += $n - 1;
+                last;
+            }
+            my $fake = $pseudo{$key};
+            next unless defined $fake;
+            push @hits, [$start, $end, $fake];
+            $i += $n - 1;
+            last;
+        }
+    }
+
+    for my $hit (reverse @hits) {
+        substr($text, $hit->[0], $hit->[1] - $hit->[0]) = $hit->[2];
+    }
+    return ($text, scalar @hits);
+}
+
+# own Q encoder, because Encode MIME-Q folds long words with CRLF line breaks
+sub encode_q {
+    my $bytes = encode("UTF-8", shift);
+    $bytes =~ s/([^A-Za-z0-9!*+\-\/ ])/sprintf "=%02X", ord $1/ge;
+    $bytes =~ tr/ /_/;
+    return "=?UTF-8?Q?$bytes?=";
+}
+
+# mail headers hide names in RFC 2047 encoded words, e.g. =?UTF-8?Q?Florian_H=C3=BCbner?=.
+# adjacent words form one run, because a name can be split across them
+my $encoded_word = qr/=\?[^?\s]+\?[QqBb]\?[^?\s]*\?=/;
+
+local $/ = "\0";
+while (my $path = <STDIN>) {
+    chomp $path;
+    open my $fh, "<:raw", $path or die "$path: $!\n";
+    my $raw = do { local $/; <$fh> };
+    close $fh;
+
+    my $text = eval { decode("UTF-8", $raw, Encode::FB_CROAK) };
+    if (!defined $text) {
+        warn "skipping non-UTF-8 file: $path\n";
+        next;
+    }
+
+    my $count = 0;
+    my $orig = $text;
+    $text =~ s{($encoded_word(?:[ \t]+$encoded_word)*)}{
+        my ($run, $at) = ($1, $-[0]);
+        my $line = 1 + (substr($orig, 0, $at) =~ tr/\n//);
+        # an unknown charset leaves the run as it is
+        my $decoded = eval { decode("MIME-Header", $run) };
+        my ($replaced, $n) = defined $decoded ? replace_names($decoded, $path, $line) : ($run, 0);
+        $count += $n;
+        $n ? encode_q($replaced) : $run;
+    }ge;
+
+    ($text, my $n) = replace_names($text, $path, 1);
+    $count += $n;
+    next unless $count;
+
+    print "$path\t$count\n";
+    next if $dry_run;
+
+    open $fh, ">:raw", $path or die "$path: $!\n";
+    print $fh encode("UTF-8", $text);
+    close $fh or die "$path: $!\n";
+}
+' "${map}" "${dry_run}"
